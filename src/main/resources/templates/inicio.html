@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="head.html"> </head>
+<body>
+	<div class="limiter">
+		<div class="pos-f-t">
+		  <div class="collapse" id="navbarToggleExternalContent">
+		    <div class="bg-dark p-4">
+		      <h5 class="text-white h4">DBCase Web</h5>
+		      <span class="text-muted">Toggleable via the navbar brand.</span>
+		    </div>
+		  </div>
+		  <nav class="navbar navbar-dark bg-dark">
+		    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+		      <span class="navbar-toggler-icon"></span>
+		    </button>
+		    <span class="text-light text-center">DBCASE WEB</span>
+		     <div><span class="text-light text-center size-font" th:text="${perfil.userAuthentication.Details.name}"></span><!-- -->
+		    <span class="text-light text-center"><a href="/logout">Cerrar Sesión</a></span></div>
+		  </nav>
+		</div>
+	</div>
+	<div th:replace="footer.html"> </div>
+</body>
+</html>
