@@ -1,4 +1,4 @@
-package com.tfg.ucm.DBCaseWeb.configuration;
+package com.tfg.ucm.DBCaseWeb;
 
 import java.security.Principal;
 
@@ -34,6 +34,6 @@ public class GoogleserviceApplication {
    
    @GetMapping("/logout-success")
    public RedirectView redirectWithUsingRedirectView(RedirectAttributes attributes) {
-       return new RedirectView("index");
+       return new RedirectView("/");
    }
 }
