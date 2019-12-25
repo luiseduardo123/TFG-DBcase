@@ -13,6 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import controlador.Controlador;
+
 @SpringBootApplication
 @RestController
 public class GoogleserviceApplication {
@@ -29,6 +31,8 @@ public class GoogleserviceApplication {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("inicio");
 		model.addAttribute("perfil", principal);
+		Controlador as = new Controlador(1);
+		model.addAttribute("prueba", as.pepe());
 		return mav;
 	}
    

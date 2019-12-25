@@ -31,7 +31,83 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<!-- *********************************************************************************** -->
+		<!-- https://mvnrepository.com/artifact/com.apple/AppleJavaExtensions -->
+		<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-algorithms -->
+		<dependency>
+		    <groupId>net.sf.jung</groupId>
+		    <artifactId>jung-algorithms</artifactId>
+		    <version>2.1.1</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-graph-impl -->
+		<dependency>
+		    <groupId>net.sf.jung</groupId>
+		    <artifactId>jung-graph-impl</artifactId>
+		    <version>2.0.1</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.jgoodies/looks -->
+		<dependency>
+		    <groupId>com.jgoodies</groupId>
+		    <artifactId>looks</artifactId>
+		    <version>2.1.4</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<dependency>
+		    <groupId>mysql</groupId>
+		    <artifactId>mysql-connector-java</artifactId>
+		    <version>5.1.6</version>
+		</dependency>		
+		
+		<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-graph-impl -->
+		<dependency>
+		    <groupId>net.sf.jung</groupId>
+		    <artifactId>jung-graph-impl</artifactId>
+		    <version>2.0.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-algorithms</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<!-- Thanks for using https://jar-download.com -->
+		
+		<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-visualization -->
+		<dependency>
+		    <groupId>net.sf.jung</groupId>
+		    <artifactId>jung-visualization</artifactId>
+		    <version>2.0</version>
+		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/commons-collections/commons-collections -->
+		<dependency>
+		    <groupId>commons-collections</groupId>
+		    <artifactId>commons-collections</artifactId>
+		    <version>3.2.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
+		<dependency>
+		    <groupId>com.googlecode.json-simple</groupId>
+		    <artifactId>json-simple</artifactId>
+		    <version>1.1</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.apple/AppleJavaExtensions -->
+		<dependency>
+		    <groupId>com.apple</groupId>
+		    <artifactId>AppleJavaExtensions</artifactId>
+		    <version>1.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.sourceforge.collections/collections-generic -->
+		<dependency>
+		    <groupId>net.sourceforge.collections</groupId>
+		    <artifactId>collections-generic</artifactId>
+		    <version>4.01</version>
+		</dependency>
+		<!-- *********************************************************************************** -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
