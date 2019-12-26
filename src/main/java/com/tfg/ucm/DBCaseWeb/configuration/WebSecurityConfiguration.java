@@ -21,7 +21,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
        .authenticated()
        .and()
        .formLogin()
-       .loginPage("/login1.html")
+       .loginPage("/login")
        .loginProcessingUrl("/perform_login1")
        .defaultSuccessUrl("/homepage.html", true)
        .and()

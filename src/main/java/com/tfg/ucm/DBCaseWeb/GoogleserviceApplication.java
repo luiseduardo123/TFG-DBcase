@@ -26,6 +26,20 @@ public class GoogleserviceApplication {
       return principal;
    }
    
+   @RequestMapping(value = "/")
+   public ModelAndView login(Model model, Principal principal) {
+	   ModelAndView mav = new ModelAndView();
+	   if(principal != null) {   
+		   mav.setViewName("inicio");
+		   model.addAttribute("perfil", principal);
+			Controlador as = new Controlador(1);
+			model.addAttribute("prueba", as.pepe());
+	   }
+		else
+		   mav.setViewName("index");
+		return mav;
+   }
+   
    @RequestMapping(value="/inicio", method=RequestMethod.GET)
 	public ModelAndView inicio(Model model, Principal principal) {
 		ModelAndView mav = new ModelAndView();
