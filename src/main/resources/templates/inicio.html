@@ -2,25 +2,127 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="head.html"> </head>
 <body>
-	<div class="limiter">
-		<div class="pos-f-t">
-		  <div class="collapse" id="navbarToggleExternalContent">
-		    <div class="bg-dark p-4">
-		      <h5 class="text-white h4">DBCase Web</h5>
-		      <span class="text-muted">Toggleable via the navbar brand.</span>
-		    </div>
-		  </div>
-		  <nav class="navbar navbar-dark bg-dark">
-		    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-		      <span class="navbar-toggler-icon"></span>
-		    </button>
-		    <span class="text-light text-center">DBCASE WEB</span>
-		     <div><span class="text-light text-center size-font" th:text="${perfil.userAuthentication.Details.name}"></span>
-		    <span class="text-light text-center"><a href="/logout">Cerrar Sesión</a></span></div>
-		    <span class="text-light text-center size-font" th:text="${prueba}"></span>
-		  </nav>
-		</div>
-	</div>
-	<div th:replace="footer.html"> </div>
+    <div class="wrapper" style="height: 100%;">
+        <!-- Sidebar  -->
+        <nav id="sidebar" class="active bg-dark">
+            <div class="sidebar-header bg-dark">
+                <h4 class="text-center">Add Items</h4>
+            </div>
+			<div class="row">
+			  <div class="col-md-12 mt-4">
+			  	<div class="text-center">
+				  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addEntity" src="static/images/entidad.png" class="rounded closeSide" alt="Add Entity" style="cursor: pointer;">
+				</div>
+			  <p class="text-center">Entity</p>
+			  </div>
+			  <div class="col-md-12 mt-4">
+			  	<div class="text-center">
+				  <img data-toggle="modal" data-target="#modalAddItem" src="static/images/relation.png" class="rounded closeSide" alt="Add Relation" style="cursor: pointer;">
+				</div>
+				<p class="text-center">Relation</p>
+			</div>
+			  <div class="col-md-12 mt-4">
+			  	<div class="text-center">
+				  <img data-toggle="modal" data-target="#modalAddItem" src="static/images/isA.png" class="rounded closeSide" alt="Add IsA" style="cursor: pointer;">
+				</div>
+				<p class="text-center">IsA</p>
+			</div>
+			  <div class="col-md-12 mt-4">
+			  	<div class="text-center">
+				  <img data-toggle="modal" data-target="#modalAddItem" src="static/images/attribute.png" class="rounded closeSide" alt="Add Attribute" style="cursor: pointer;">
+				</div>
+				<p class="text-center">Attribute</p>
+			</div>
+			</div>
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="wrapper" style="width: 100%;">
+	    	<div class="pos-f-t">
+	            <div class="collapse" id="navbarToggleExternalContent">
+	              <div class="bg-dark p-4">
+	                <h5 class="text-white h4">DBCase Web</h5>
+	                <span class="text-muted">Toggleable via the navbar brand.</span>
+	              </div>
+	            </div>
+	            <nav class="navbar navbar-dark bg-dark mb-0">
+	              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+	                <span class="navbar-toggler-icon"></span>
+	              </button>
+	              <span class="text-light text-center">DBCASE WEB</span>
+	               <div><span class="text-light text-center size-font" th:text="${perfil.userAuthentication.Details.name}"></span>
+	              <span class="text-light text-center"><a href="/logout">Cerrar Sesión</a></span></div>
+	            </nav>
+	         </div>
+          	<div  style="height: 89%;">
+				<div class="row mr-0" style="height: 50%;">
+				  <div class="col-md-6" style="overflow-x: auto;overflow-y: auto;height: 100%;">
+					<div id="diagram" style="width: 100%;height: 100%;">
+					</div>
+					<button type="button" id="sidebarCollapse" class="btn btn-dark" style="position: absolute;top: 0px;left: 15px;">
+                        <span style="writing-mode: vertical-rl;text-orientation: upright;line-height: 0px;font-size: 12px;letter-spacing: -3px;">Add Items</span>
+                    </button>
+                  </div>
+				  <div class="col-md-6">.col-6 .col-md-4</div>
+				</div>
+				<div class="row mr-0" style="height: 50%;">
+				  <div class="col-md-6">.col-12 .col-md-8</div>
+				  <div class="col-md-6">.col-6 .col-md-4</div>
+				</div>
+			</div>
+            <div th:replace="footer.html"> </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#sidebarCollapse, .closeSide').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+            
+            $('.closeSide').on('click', function() {
+                $('#titleModal').html(this.getAttribute("alt"));
+                $('#tipoAdd').val(this.getAttribute("functionInsert"));
+            });
+            
+            $('#insertModal').on('click', function() {
+            	if($('#tipoAdd').val()=="addEntity"){
+            		addEntity($('#recipient-name').val(), $('#weak-entity').prop('checked') );
+            	}
+            	limpiar();
+            });           
+            
+        });
+    </script>
+<!-- Modal -->
+<div class="modal fade" id="modalAddItem" tabindex="-1" role="dialog" aria-labelledby="modalAddItemTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="titleModal"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="formInsert">
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Name:</label>
+            <input type="text" class="form-control" id="recipient-name">
+            <input type="hidden" id="tipoAdd" value="">
+          </div>
+          <div class="form-inline">
+            <input type="checkbox" class="form-control mr-1" id="weak-entity"><span>Is a weak entity.</span>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="insertModal">Insert</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
+
 </html>
