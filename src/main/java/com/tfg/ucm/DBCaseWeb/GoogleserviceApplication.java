@@ -18,6 +18,7 @@ import controlador.Controlador;
 @SpringBootApplication
 @RestController
 public class GoogleserviceApplication {
+	
    public static void main(String[] args) {
       SpringApplication.run(GoogleserviceApplication.class, args);
    }
@@ -47,6 +48,7 @@ public class GoogleserviceApplication {
 		model.addAttribute("perfil", principal);
 		Controlador as = new Controlador(1);
 		model.addAttribute("prueba", as.pepe());
+		
 		return mav;
 	}
    

@@ -38,7 +38,7 @@ var nodes = new vis.DataSet([]);
   
   function addIsA(){
 	  var id_node = nodes.length;
-	  nodes.add({id: id_node++, label: 'node\none', shape: 'triangleDown', color:'#ff554b', scale:20, widthConstraint:500, widthConstraint:{minimum:200, maximum:250}});
+	  nodes.add({id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20, widthConstraint:500, widthConstraint:{minimum:200, maximum:250}});
   }
   
   function addAttribute(){
