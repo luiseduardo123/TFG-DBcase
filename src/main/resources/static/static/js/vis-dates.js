@@ -27,12 +27,13 @@ var nodes = new vis.DataSet([]);
   
   function addEntity(nombre, weakEntity){
 	  var id_node = nodes.length;
+	  console.log("entra");
 	  nodes.add({id: id_node++, label: nombre, strong: weakEntity, shape: 'box', color:'#ffcc45', scale:20, widthConstraint:500, widthConstraint:{minimum:200, maximum:250}});
   }
   
-  function addRelation(){
+  function addRelation(nombre){
 	  var id_node = nodes.length;
-	  nodes.add({id: id_node++, label: 'node\none', shape: 'diamond', color:'#ff554b', scale:20, widthConstraint:500, widthConstraint:{minimum:200, maximum:250}});
+	  nodes.add({id: id_node++, label: nombre, shape: 'diamond', color:'#ff554b', scale:20, widthConstraint:500, widthConstraint:{minimum:200, maximum:250}});
   }
   
   function addIsA(){
@@ -45,6 +46,9 @@ var nodes = new vis.DataSet([]);
 	  nodes.add({id: id_node++, label: 'node\none', shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:500, widthConstraint:{minimum:200, maximum:250}});
   }
   
+  function returnNodes(){
+	  return nodes;
+  }
   function limpiar(){
 	  $( "#formInsert input" ).each(function() {
 	    $( this ).val( "" );
