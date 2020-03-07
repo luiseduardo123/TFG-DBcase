@@ -2,9 +2,9 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="head.html"> </head>
 <body>
-    <div class="wrapper" style="height: 100%;">
+	 <div class="wrapper" style="height: 100%;">
         <!-- Sidebar  -->
-        <nav id="sidebar" class="active bg-dark">
+        <nav id="sidebar" class="active bg-dark" style="z-index:1;">
             <div class="sidebar-header bg-dark">
                 <h4 class="text-center" th:text="#{add.items}"></h4>
                 
@@ -38,30 +38,34 @@
         </nav>
 
         <!-- Page Content  -->
-        <div id="wrapper" style="width: 100%;">
+        <div id="wrapper" style="width: 100%;position: absolute;height: 100%;">
 	    	<div class="pos-f-t">
-	            <div class="collapse" id="navbarToggleExternalContent">
-	              <div class="bg-dark p-4">
-	                <h5 class="text-white h4">DBCase Web</h5>
-	                <span class="text-muted">Toggleable via the navbar brand.</span>
-	              </div>
-	            </div>
 	            <nav class="navbar navbar-dark bg-dark mb-0">
-	              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-	                <span class="navbar-toggler-icon"></span>
-	              </button>
-	              <span class="text-light text-center">DBCASE WEB</span>
-	               <div><span class="text-light text-center size-font" th:text="${perfil.userAuthentication.Details.name}"></span>
-	              <span class="text-light text-center"><a href="/logout">Cerrar Sesión</a></span></div>
+	            	<div class="col-3 col-md-4">
+	            	</div>
+					<div class="col-6 col-md-4 text-center">
+						<span class="text-light">DBCASE WEB</span>
+					</div>
+					<div class="col-3 col-md-4 text-right">
+						<div>
+	             			<div class="dropdown">
+								<img th:attr="src=${perfil.userAuthentication.Details.picture},alt=${perfil.userAuthentication.Details.given_name}" class="dropdown-toggle rounded-circle" width="50" height="50" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  
+								<div class="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton" style="left: unset;right: 0;">
+								    <a class="dropdown-item text-center text-light" th:text="#{general.saludo}+' '+ ${perfil.userAuthentication.Details.given_name}" ></a>
+								    <a class="dropdown-item text-center text-light" href="/logout" th:text="#{general.logout}"></a>
+								</div>
+							</div>
+	             		</div>
+	             	</div>
 	            </nav>
 	         </div>
-          	<div  style="height: 89%;">
+          	<div  style="height: 90%;">
 				<div class="row mr-0" style="height: 50%;">
 				  <div class="col-md-6" style="overflow-x: auto;overflow-y: auto;height: 100%;">
 					<div id="diagram" style="width: 100%;height: 100%;">
 					</div>
-					<button type="button" id="sidebarCollapse" class="btn btn-dark" style="position: absolute;top: 0px;left: 15px;">
-                        <span style="writing-mode: vertical-rl;text-orientation: upright;line-height: 0px;font-size: 12px;letter-spacing: -3px;">Add Items</span>
+					<button type="button" id="sidebarCollapse" class="btn btn-dark" style="position: absolute;top: 0px;left: 15px;z-index: 2;">
+                        <span style="writing-mode: vertical-rl;text-orientation: upright;line-height: 0px;font-size: 12px;letter-spacing: -3px;" th:text="#{add.items}"></span>
                     </button>
                   </div>
 				  <div class="col-md-6">.col-6 .col-md-4</div>
@@ -120,7 +124,7 @@
 			            		            '<input type="hidden" id="tipoAdd" value="addEntity">'+
 			            		          '</div>'+
 			            		          '<div class="form-inline">'+
-			            		            '<input type="checkbox" class="form-control mr-1" id="weak-entity"><span><label for="weak-entity">Is a weak entity.</label></span>'+
+			            		            '<label for="weak-entity"><input type="checkbox" class="mr-1" id="weak-entity">Is a weak entity.</label>'+
 			            		          '</div>'+
 			            		        '</form>';
             	    break;
