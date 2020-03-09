@@ -2,14 +2,14 @@ var nodes = new vis.DataSet([]);
 
   // create an array with edges
   var edges = new vis.DataSet([
-    {from: 1, to: 8, color:{color:'red'}},
+/*    {from: 1, to: 8, color:{color:'red'}},
     {from: 1, to: 3, color:'rgb(20,24,200)'},
     {from: 1, to: 2, color:{color:'rgba(30,30,30,0.2)', highlight:'blue'}},
     {from: 2, to: 4, color:{inherit:'to'}},
     {from: 2, to: 5, color:{inherit:'from'}},
     {from: 5, to: 6, color:{inherit:'both'}},
     {from: 6, to: 7, color:{color:'#ff0000', opacity:0.3}},
-    {from: 6, to: 8, color:{opacity:0.3}},
+    {from: 6, to: 8, color:{opacity:0.3}},*/
   ]);
 
   // create a network
@@ -34,17 +34,18 @@ var nodes = new vis.DataSet([]);
   
   function addRelation(nombre){
 	  var id_node = nodes.length;
-	  nodes.add({id: id_node++, label: nombre, shape: 'diamond', color:'#ff554b', scale:20, widthConstraint:150, heightConstraint:150});
+	  nodes.add({id: id_node++, label: nombre, shape: 'diamond', color:'#ff554b', scale:20});
   }
   
   function addIsA(){
 	  var id_node = nodes.length;
-	  nodes.add({id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20, widthConstraint:150, heightConstraint:150});
+	  nodes.add({id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20});
   }
   
-  function addAttribute(){
+  function addAttribute(name, idEntity){
 	  var id_node = nodes.length;
-	  nodes.add({id: id_node++, label: 'node\none', shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:150, heightConstraint:150});
+	  nodes.add({id: id_node++, label: name, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25});
+	  edges.add({from: idEntity, to: id_node-1, color:{color:'blue'}});
   }
   
   function returnNodes(){
@@ -55,7 +56,8 @@ var nodes = new vis.DataSet([]);
 	    $( this ).val( "" );
 	  });
   }
-  // Metodo que otiene el nodo seleccionado con boton derecho
+  
+  // Metodo que obtiene el nodo seleccionado con boton derecho
   network.on('oncontext', function(params) {
 	  poscSelect = params.pointer.DOM;
 	  if(typeof network.getNodeAt(poscSelect) !== 'undefined'){
@@ -64,3 +66,4 @@ var nodes = new vis.DataSet([]);
 	  }
 	  params.event.preventDefault();
 	});
+  

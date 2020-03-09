@@ -103,7 +103,8 @@
 		          	  case "addRelation":
 		          		addRelation($('#recipient-name').val());
 		          	    break;
-		          	  case "addAtribute":
+		          	  case "addAttribute":
+		          		addAttribute($('#recipient-name').val(), $('#element').val());
 		            	break;
 		          	  case "addIsA":
 		            	break;
@@ -141,17 +142,16 @@
             		  if(nodo.length>0){
 	            		  insert = '<form id="formInsert">'+
 				      				'<div class="form-group">'+
-						            '<label for="elemens" class="col-form-label">Elements:</label>'+
-						            '<select id="elements" class="form-control">';
+						            '<label for="elemen" class="col-form-label">Elements:</label>'+
+						            '<select id="element" class="form-control">';
 						  				for(var i=0;i<nodo.length;i++){
 						  					if(nodo.get(i).shape == "box" || nodo.get(i).shape == "diamond")
 						  						insert += '<option value='+nodo.get(i).id+'>'+nodo.get(i).label+'</option>';
 						  				}
-						  				console.log(nodo);
 						  insert += '</select>'+
 						            '<label for="recipient-" class="col-form-label">Nombre:</label>'+
 						            '<input type="text" class="form-control" id="recipient-name">'+
-						            '<input type="hidden" id="tipoAdd" value="addRelation">'+
+						            '<input type="hidden" id="tipoAdd" value="addAttribute">'+
 						          '</div>'+
 						        '</form>';
             		 }else{
