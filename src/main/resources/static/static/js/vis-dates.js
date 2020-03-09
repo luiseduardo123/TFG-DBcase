@@ -19,6 +19,8 @@ var nodes = new vis.DataSet([]);
     edges: edges
   };
   var options = {
+		  height: '100%',
+		  width: '100%',
     nodes: {
       shape: 'circle',
     }
@@ -27,23 +29,22 @@ var nodes = new vis.DataSet([]);
   
   function addEntity(nombre, weakEntity){
 	  var id_node = nodes.length;
-	  console.log("entra");
-	  nodes.add({id: id_node++, label: nombre, strong: weakEntity, shape: 'box', color:'#ffcc45', scale:20, widthConstraint:500, widthConstraint:{minimum:200, maximum:250}});
+	  nodes.add({id: id_node++, label: nombre, strong: weakEntity, shape: 'box', color:'#ffcc45', scale:20, widthConstraint:150, heightConstraint:25});
   }
   
   function addRelation(nombre){
 	  var id_node = nodes.length;
-	  nodes.add({id: id_node++, label: nombre, shape: 'diamond', color:'#ff554b', scale:20, widthConstraint:500, widthConstraint:{minimum:200, maximum:250}});
+	  nodes.add({id: id_node++, label: nombre, shape: 'diamond', color:'#ff554b', scale:20, widthConstraint:150, heightConstraint:150});
   }
   
   function addIsA(){
 	  var id_node = nodes.length;
-	  nodes.add({id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20, widthConstraint:500, widthConstraint:{minimum:200, maximum:250}});
+	  nodes.add({id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20, widthConstraint:150, heightConstraint:150});
   }
   
   function addAttribute(){
 	  var id_node = nodes.length;
-	  nodes.add({id: id_node++, label: 'node\none', shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:500, widthConstraint:{minimum:200, maximum:250}});
+	  nodes.add({id: id_node++, label: 'node\none', shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:150, heightConstraint:150});
   }
   
   function returnNodes(){
@@ -54,3 +55,12 @@ var nodes = new vis.DataSet([]);
 	    $( this ).val( "" );
 	  });
   }
+  // Metodo que otiene el nodo seleccionado con boton derecho
+  network.on('oncontext', function(params) {
+	  poscSelect = params.pointer.DOM;
+	  if(typeof network.getNodeAt(poscSelect) !== 'undefined'){
+		  nodo = network.getNodeAt(poscSelect);
+		  console.log('Seleccionado ', nodo);
+	  }
+	  params.event.preventDefault();
+	});
