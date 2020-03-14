@@ -1,5 +1,5 @@
 var nodes = new vis.DataSet([]);
-
+var nodoSelected;
   // create an array with edges
   var edges = new vis.DataSet([
 /*    {from: 1, to: 8, color:{color:'red'}},
@@ -42,28 +42,29 @@ var nodes = new vis.DataSet([]);
 	  nodes.add({id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20});
   }
   
-  function addAttribute(name, idEntity){
+  function addAttribute(name, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
 	  var id_node = nodes.length;
-	  nodes.add({id: id_node++, label: name, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25});
+	  nodes.add({id: id_node++, label: name, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25});
 	  edges.add({from: idEntity, to: id_node-1, color:{color:'blue'}});
   }
   
   function returnNodes(){
 	  return nodes;
   }
+  
   function limpiar(){
 	  $( "#formInsert input" ).each(function() {
 	    $( this ).val( "" );
 	  });
   }
   
-  // Metodo que obtiene el nodo seleccionado con boton derecho
+  // Metodo que obtiene el nodo seleccionado con boton derecho y lo almacena en nodoSelect
   network.on('oncontext', function(params) {
 	  poscSelect = params.pointer.DOM;
 	  if(typeof network.getNodeAt(poscSelect) !== 'undefined'){
-		  nodo = network.getNodeAt(poscSelect);
-		  console.log('Seleccionado ', nodo);
+		  nodoSelected = network.getNodeAt(poscSelect);
+	  }else{
+		  nodoSelected = null;
 	  }
 	  params.event.preventDefault();
 	});
-  
