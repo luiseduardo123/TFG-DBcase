@@ -1,6 +1,7 @@
 var nodes = new vis.DataSet([]);
 var nodoSelected;
   // create an array with edges
+
   var edges = new vis.DataSet([
 /*    {from: 1, to: 8, color:{color:'red'}},
     {from: 1, to: 3, color:'rgb(20,24,200)'},
@@ -32,15 +33,22 @@ var nodoSelected;
 	  nodes.add({id: id_node++, label: nombre, strong: weakEntity, shape: 'box', color:'#ffcc45', scale:20, widthConstraint:150, heightConstraint:25});
   }
   
-  function addRelation(nombre){
+  function addRelation(nombre, action, idSelected){
 	  var id_node = nodes.length;
-	  nodes.add({id: id_node++, label: nombre, shape: 'diamond', color:'#ff554b', scale:20});
+	  var data_element = {label: nombre, shape: 'diamond', color:'#ff554b', scale:20};
+	  if(action == "edit"){
+		  data_element.id = parseInt(idSelected);
+		  nodes.update(data_element);
+	  }else{
+		  data_element.id = id_node++;
+		  nodes.add(data_element);
+	  }
   }
   
   function addIsA(){
 	  var id_node = nodes.length;
 	  nodes.add({id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20});
-  }
+  }//revisar la creacion de entidades con nombre unico, no debe de crear con nombre unico!!!!
   
   function addAttribute(name, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
 	  var id_node = nodes.length;
@@ -48,14 +56,31 @@ var nodoSelected;
 	  edges.add({from: idEntity, to: id_node-1, color:{color:'blue'}});
   }
   
-  function returnNodes(){
+  function getAllNodes(){
 	  return nodes;
   }
   
-  function limpiar(){
+  function clean(){
 	  $( "#formInsert input" ).each(function() {
 	    $( this ).val( "" );
 	  });
+  }
+  
+  function existElementName(oneNodeName, allNodes){
+	  var exist = false;
+	  var i = 0;
+	  if(oneNodeName == ""){
+		  exist = true;
+	  }else{
+		  while(i<allNodes.length && !exist){
+			  if(allNodes.get(i).label == oneNodeName){
+				  exist = true;
+			  }
+			  i++
+		  }  
+	  }
+	  
+	  return exist;
   }
   
   // Metodo que obtiene el nodo seleccionado con boton derecho y lo almacena en nodoSelect
@@ -68,3 +93,12 @@ var nodoSelected;
 	  }
 	  params.event.preventDefault();
 	});
+  
+  function getNodeSelected(){
+	  return nodoSelected;
+  }
+ 
+  function setNodeSelected(value){
+	  nodoSelected = value;
+  }
+  

@@ -1,21 +1,38 @@
 $(document).ready(function(){
-	
+	var dataSelect;
 	context.init({preventDoubleContext: false});
 	
 	var box = [
 		{text: $("#addNewAttribute").text(), action: function(e){
 			$( "[functioninsert='addAtribute']").click();
 		}},
-		{text: $("#renameEntity").text(), href: '#', target:'_blank', action: function(e){
+		{text: $("#renameEntity").text(), href: '#', action: function(e){
+			$( "[functioninsert='addRelation']").click();
+			$( "#typeAction").val("edit");
+		}},
+		{text: $("#removeEntity").text(), href: '#', action: function(e){
 			_gaq.push(['_trackEvent', 'ContextJS Download', this.pathname, this.innerHTML]);
 		}},
-		{text: $("#removeEntity").text(), href: '#', target:'_blank', action: function(e){
+		{text: $("#constraints").text(), href: '#', action: function(e){
 			_gaq.push(['_trackEvent', 'ContextJS Download', this.pathname, this.innerHTML]);
 		}},
-		{text: $("#constraints").text(), href: '#', target:'_blank', action: function(e){
+		{text: $("#tableUnique").text(), href: '#', action: function(e){
 			_gaq.push(['_trackEvent', 'ContextJS Download', this.pathname, this.innerHTML]);
 		}},
-		{text: $("#tableUnique").text(), href: '#', target:'_blank', action: function(e){
+	];
+	
+	var diamond = [
+		{text: $("#renameEntity").text(), href: '#', action: function(e){
+			$( "[functioninsert='addRelation']").click();
+			$( "#typeAction").val("edit");
+		}},
+		{text: $("#removeEntity").text(), href: '#', action: function(e){
+			_gaq.push(['_trackEvent', 'ContextJS Download', this.pathname, this.innerHTML]);
+		}},
+		{text: $("#constraints").text(), href: '#', action: function(e){
+			_gaq.push(['_trackEvent', 'ContextJS Download', this.pathname, this.innerHTML]);
+		}},
+		{text: $("#tableUnique").text(), href: '#', action: function(e){
 			_gaq.push(['_trackEvent', 'ContextJS Download', this.pathname, this.innerHTML]);
 		}},
 	];
@@ -73,10 +90,10 @@ var box1 = [
 			]}
 		]}
 	];
+	
+	console.log("pintor");
 	context.attach('#diagram', box);
-	
 	context.settings({compress: true});
-	
 	
 	$(document).on('mouseover', '.me-codesta', function(){
 		$('.finale h1:first').css({opacity:0});

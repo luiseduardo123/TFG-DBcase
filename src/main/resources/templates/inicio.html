@@ -100,7 +100,7 @@
 		          		addEntity($('#recipient-name').val(), $('#weak-entity').prop('checked') );
 		          	    break;
 		          	  case "addRelation":
-		          		addRelation($('#recipient-name').val());
+		          		addRelation($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val());
 		          	    break;
 		          	  case "addAttribute":
 		          		addAttribute($('#recipient-name').val(), $('#element').val(), $('#primaryKey').prop('checked'), $('#composite').prop('checked'), $('#notNull').prop('checked'), $('#unique').prop('checked'), $('#multivalued').prop('checked'), $('#domain').val(), $('#size').val());
@@ -109,17 +109,20 @@
 		            	break;
 		          	  default:
 		          	}
-            	limpiar();
+            	clean();
             });
             
             $('.insertarDatos').on('click', function() {
             	var insert = ""
+            	var nodo_select = getNodeSelected();
+            	console.log("NodeSelected "+nodo_select);
             	switch($(this).attr("functionInsert")) {
             	  case "addEntity":
             		  insert = '<form id="formInsert">'+
             		          				'<div class="form-group">'+
 			            		            '<label for="recipient-name" class="col-form-label">Name:</label>'+
 			            		            '<input type="text" class="form-control" id="recipient-name">'+
+			            		            '<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>'+
 			            		            '<input type="hidden" id="tipoAdd" value="addEntity">'+
 			            		          '</div>'+
 			            		          '<div class="form-inline">'+
@@ -132,21 +135,23 @@
 			        				'<div class="form-group">'+
 			  		            '<label for="recipient-name" class="col-form-label">Name:</label>'+
 			  		            '<input type="text" class="form-control" id="recipient-name">'+
+			  		          	'<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>'+
 			  		            '<input type="hidden" id="tipoAdd" value="addRelation">'+
+			  		          	'<input type="hidden" id="typeAction" value="create">'+
+			  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
 			  		          '</div>'+
 			  		        '</form>';
             	    break;
             	  case "addAtribute":
-            		  nodo = returnNodes();
+            		  nodo = getAllNodes();
             		  if(nodo.length>0){
-            			  console.log("NodeSelected "+nodoSelected);
 	            		  insert = '<form id="formInsert">'+
 				      				'<div class="form-group">'+
 						            '<label for="element" class="col-form-label">'+$('#textElements').text()+':</label>'+
 						            '<select id="element" class="form-control">';
 						  				for(var i=0;i<nodo.length;i++){
 						  					if(nodo.get(i).shape == "box" || nodo.get(i).shape == "diamond"){
-						  						if(nodo.get(i).id == nodoSelected)
+						  						if(nodo.get(i).id == nodo_select)
 						  							var select = "selected";
 						  						else
 						  							var select = "";
@@ -156,6 +161,7 @@
 						  insert += '</select>'+
 						            '<label for="recipient-" class="col-form-label">Nombre:</label>'+
 						            '<input type="text" class="form-control" id="recipient-name">'+
+	            		            '<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>'+
 						            '<div class="form-inline">'+  
 	            		            	'<label for="primaryKey"><input type="checkbox" class="mr-1" id="primaryKey">'+$('#textPrimaryKey').text()+'</label>'+
 	            		          	'</div>'+
@@ -190,13 +196,13 @@
 						            '<input type="hidden" id="tipoAdd" value="addAttribute">'+
 						          '</div>'+
 						        '</form>';
-						  nodoSelected = null;
             		 }else{
             			 insert = '<p class="text-center">Add an entity or a relation first</p>';
             		 }
               	    break;
             	  default:
             	}
+            	setNodeSelected(null);
             	$("#formModal").html(insert);
             	$("#primaryKey, #composite").change(function() {
             		if(($("#primaryKey").prop('checked') && $("#composite").prop('checked')) || 
@@ -211,6 +217,24 @@
 						$("[for='notNull'],[for='unique'],[for='multivalued']").toggle(true);  
 					}						            		
            		});
+            	
+            	/*
+            	Verifica que el campo no añada elementos con nombre de campos repetidos
+            	*/
+            	$( "#recipient-name" ).on( "blur keyup", function(){
+            		  var nameValue = $( "#recipient-name" ).val();
+           			  if(!existElementName(nameValue, nodes)){
+            			  $('#insertModal').prop('disabled', false);
+            			  $( "#recipient-name" ).removeClass("is-invalid");
+           			  }else{
+           				  $('#insertModal').prop('disabled', true);
+           				  $( "#recipient-name" ).addClass("is-invalid");
+           			  }
+            	});
+            	
+            	$( ".insertarDatos" ).click(function() {
+            		$('#insertModal').prop('disabled', true);
+          		});
             });
         });
     </script>
@@ -227,9 +251,9 @@
       <div class="modal-body" id="formModal">
         
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" id="formModalButton">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" id="insertModal">Insert</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="insertModal" disabled>Insert</button>
       </div>
     </div>
   </div>
@@ -248,6 +272,7 @@
 	<span id="textDomain" th:text="#{textos.domain}"></span>
 	<span id="textSize" th:text="#{textos.size}"></span>
 	<span id="textElements" th:text="#{textos.elements}"></span>
+	<span id="textErrorNameExist" th:text="#{textos.errorNameExist}"></span>
 </div>
 </body>
 </html>

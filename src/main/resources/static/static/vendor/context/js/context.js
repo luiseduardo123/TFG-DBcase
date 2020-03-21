@@ -99,16 +99,17 @@ var context = context || (function () {
 		
 		
 		$(document).on('contextmenu', selector, function (e) {
-			//console.log('Seleccionado ', nodoSelected);
 			e.preventDefault();
 			e.stopPropagation();
-			if(nodoSelected != null){
-				typeNodoSelected = nodes.get(nodoSelected);
+			var nodo_select = getNodeSelected();
+			if(nodo_select != null){
+				typeNodoSelected = nodes.get(nodo_select);
 				switch(typeNodoSelected.shape){
 					case "box":
-						console.log("box si");
+						console.log("box si");//nodoSelected=box;
 						break;
-					case "box3":
+					case "diamond":
+						console.log("diamond");//nodoSelected=diamond;
 						break;
 					case "box2":
 						break;
