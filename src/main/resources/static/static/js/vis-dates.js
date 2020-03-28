@@ -24,6 +24,9 @@ var nodoSelected;
 		  width: '100%',
     nodes: {
       shape: 'circle',
+      font: {
+          multi: 'md',
+      }
     }
   };
   var network = new vis.Network(container, data, options);
@@ -52,7 +55,10 @@ var nodoSelected;
   
   function addAttribute(name, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
 	  var id_node = nodes.length;
-	  nodes.add({id: id_node++, label: name, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25});
+	  var word_pk = name;
+	  if(pk)
+		word_pk = '*'+name+' (PK)*';
+	  nodes.add({id: id_node++, label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25});
 	  edges.add({from: idEntity, to: id_node-1, color:{color:'blue'}});
   }
   
@@ -66,20 +72,49 @@ var nodoSelected;
 	  });
   }
   
-  function existElementName(oneNodeName, allNodes){
+  function getEntitis(){
+	  
+  }
+  
+  function existElementName(oneNodeName, allNodes, typeElement){
 	  var exist = false;
 	  var i = 0;
-	  if(oneNodeName == ""){
-		  exist = true;
+	  if(typeElement=="addAttribute"){
+		  id_atribute = jQuery('#element').val();
+		  id_atribute = parseInt(id_atribute);
+		  allNodes = network.getConnectedNodes(id_atribute); 
+		  if(oneNodeName == ""){
+			  exist = true;
+		  }else{
+			  
+			  while(i<allNodes.length && !exist){
+				  if(nodes.get(allNodes[i]).shape != "box"){
+					  if(nodes.get(allNodes[i]).label == oneNodeName){
+						  exist = true;
+					  }
+				  }
+				  i++
+			  }  
+		  }
 	  }else{
-		  while(i<allNodes.length && !exist){
-			  if(allNodes.get(i).label == oneNodeName){
-				  exist = true;
-			  }
-			  i++
-		  }  
+		  allNodes = nodes.getIds({
+		  filter: function (item) {
+			  return (item.shape == "box");
+		  	}
+		  });
+		  
+		  if(oneNodeName == ""){
+			  exist = true;
+		  }else{
+			  
+			  while(i<allNodes.length && !exist){
+				  if(nodes.get(allNodes[i]).label == oneNodeName){
+					  exist = true;
+				  }
+				  i++
+			  }  
+		  }
 	  }
-	  
 	  return exist;
   }
   

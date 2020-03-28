@@ -115,7 +115,6 @@
             $('.insertarDatos').on('click', function() {
             	var insert = ""
             	var nodo_select = getNodeSelected();
-            	console.log("NodeSelected "+nodo_select);
             	switch($(this).attr("functionInsert")) {
             	  case "addEntity":
             		  insert = '<form id="formInsert">'+
@@ -124,6 +123,8 @@
 			            		            '<input type="text" class="form-control" id="recipient-name">'+
 			            		            '<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>'+
 			            		            '<input type="hidden" id="tipoAdd" value="addEntity">'+
+			            		            '<input type="hidden" id="typeAction" value="create">'+
+						  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
 			            		          '</div>'+
 			            		          '<div class="form-inline">'+
 			            		            '<label for="weak-entity"><input type="checkbox" class="mr-1" id="weak-entity">Is a weak entity.</label>'+
@@ -194,6 +195,8 @@
 						  			'<label for="size" class="col-form-label">'+$('#textSize').text()+':</label>'+
 						            '<input type="number" class="form-control" id="size">'+
 						            '<input type="hidden" id="tipoAdd" value="addAttribute">'+
+						            '<input type="hidden" id="typeAction" value="create">'+
+				  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
 						          '</div>'+
 						        '</form>';
             		 }else{
@@ -204,6 +207,7 @@
             	}
             	setNodeSelected(null);
             	$("#formModal").html(insert);
+            	alert($( "#typeAction").val());
             	$("#primaryKey, #composite").change(function() {
             		if(($("#primaryKey").prop('checked') && $("#composite").prop('checked')) || 
             		   ($("#primaryKey").prop('checked') && !$("#composite").prop('checked'))){
@@ -223,7 +227,8 @@
             	*/
             	$( "#recipient-name" ).on( "blur keyup", function(){
             		  var nameValue = $( "#recipient-name" ).val();
-           			  if(!existElementName(nameValue, nodes)){
+            		  var tipoAdd = $( "#tipoAdd" ).val();
+           			  if(!existElementName(nameValue, nodes, tipoAdd)){
             			  $('#insertModal').prop('disabled', false);
             			  $( "#recipient-name" ).removeClass("is-invalid");
            			  }else{

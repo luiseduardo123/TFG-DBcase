@@ -6,24 +6,16 @@ $(document).ready(function(){
 		{text: $("#addNewAttribute").text(), action: function(e){
 			$( "[functioninsert='addAtribute']").click();
 		}},
-		{text: $("#renameEntity").text(), href: '#', action: function(e){
+		{text: $("#renameEntity").text()+" Entidad", href: '#', action: function(e){
+			$( "[functioninsert='addEntity']").click();
+			$( "#typeAction").val("edit");
+		}},
+		{text: $("#renameEntity").text()+" Relacion", href: '#', action: function(e){
 			$( "[functioninsert='addRelation']").click();
 			$( "#typeAction").val("edit");
 		}},
-		{text: $("#removeEntity").text(), href: '#', action: function(e){
-			_gaq.push(['_trackEvent', 'ContextJS Download', this.pathname, this.innerHTML]);
-		}},
-		{text: $("#constraints").text(), href: '#', action: function(e){
-			_gaq.push(['_trackEvent', 'ContextJS Download', this.pathname, this.innerHTML]);
-		}},
-		{text: $("#tableUnique").text(), href: '#', action: function(e){
-			_gaq.push(['_trackEvent', 'ContextJS Download', this.pathname, this.innerHTML]);
-		}},
-	];
-	
-	var diamond = [
-		{text: $("#renameEntity").text(), href: '#', action: function(e){
-			$( "[functioninsert='addRelation']").click();
+		{text: $("#renameEntity").text()+" Atributo", href: '#', action: function(e){
+			$( "[functioninsert='addAtribute']").click();
 			$( "#typeAction").val("edit");
 		}},
 		{text: $("#removeEntity").text(), href: '#', action: function(e){
@@ -91,7 +83,6 @@ var box1 = [
 		]}
 	];
 	
-	console.log("pintor");
 	context.attach('#diagram', box);
 	context.settings({compress: true});
 	
