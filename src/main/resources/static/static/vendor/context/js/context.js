@@ -106,10 +106,10 @@ var context = context || (function () {
 				typeNodoSelected = nodes.get(nodo_select);
 				switch(typeNodoSelected.shape){
 					case "box":
-						console.log("box si");//nodoSelected=box;
+						fillEditEntity(nodo_select);
 						break;
 					case "diamond":
-						console.log("diamond");//nodoSelected=diamond;
+						fillEditRelation(nodo_select);
 						break;
 					case "box2":
 						break;

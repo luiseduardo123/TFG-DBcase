@@ -31,9 +31,17 @@ var nodoSelected;
   };
   var network = new vis.Network(container, data, options);
   
-  function addEntity(nombre, weakEntity){
+  function addEntity(nombre, weakEntity,action, idSelected){
 	  var id_node = nodes.length;
-	  nodes.add({id: id_node++, label: nombre, strong: weakEntity, shape: 'box', color:'#ffcc45', scale:20, widthConstraint:150, heightConstraint:25});
+	  var data_element = {label: nombre, strong: weakEntity, shape: 'box', color:'#ffcc45', scale:20, widthConstraint:150, heightConstraint:25};
+	  if(action == "edit"){
+		  data_element.id = parseInt(idSelected);
+		  nodes.update(data_element);
+		  $("#modalAddItem").unbind('show.bs.modal');//quitar evento linea 137, tenemos que cambiar para que se elimine el evento siempre que se cierre el modal
+	  }else{
+		  data_element.id = id_node++;
+		  nodes.add(data_element);
+	  }
   }
   
   function addRelation(nombre, action, idSelected){
@@ -42,6 +50,7 @@ var nodoSelected;
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
+		  $("#modalAddItem").unbind('show.bs.modal');//quitar evento linea 137, tenemos que cambiar para que se elimine el evento siempre que se cierre el modal
 	  }else{
 		  data_element.id = id_node++;
 		  nodes.add(data_element);
@@ -72,13 +81,10 @@ var nodoSelected;
 	  });
   }
   
-  function getEntitis(){
-	  
-  }
-  
-  function existElementName(oneNodeName, allNodes, typeElement){
+  function existElementName(oneNodeName, typeElement){
 	  var exist = false;
 	  var i = 0;
+	  var allNodes;
 	  if(typeElement=="addAttribute"){
 		  id_atribute = jQuery('#element').val();
 		  id_atribute = parseInt(id_atribute);
@@ -99,7 +105,7 @@ var nodoSelected;
 	  }else{
 		  allNodes = nodes.getIds({
 		  filter: function (item) {
-			  return (item.shape == "box");
+			  return (item.shape == "box" || item.shape == "diamond" || item.shape == "triangleDown");
 		  	}
 		  });
 		  
@@ -117,6 +123,24 @@ var nodoSelected;
 	  }
 	  return exist;
   }
+  
+  function fillEditRelation(idNodo){
+	  idNodo = parseInt(idNodo);
+	  $('#modalAddItem').on('show.bs.modal', function(){
+		  jQuery("#recipient-name").val(nodes.get(idNodo).label);
+		  $('#titleModal').html($('#textEditRelation').text());
+	  });
+  }
+  
+  function fillEditEntity(idNodo){
+	  idNodo = parseInt(idNodo);
+	  $('#modalAddItem').on('show.bs.modal', function(){
+		  jQuery("#recipient-name").val(nodes.get(idNodo).label);
+		  $('#titleModal').html($('#textEditEntity').text());
+		  $("#weak-entity").prop("checked",nodes.get(idNodo).strong);
+	  });
+  }
+
   
   // Metodo que obtiene el nodo seleccionado con boton derecho y lo almacena en nodoSelect
   network.on('oncontext', function(params) {
