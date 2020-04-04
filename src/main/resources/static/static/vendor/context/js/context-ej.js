@@ -9,14 +9,20 @@ $(document).ready(function(){
 		{text: $("#renameEntity").text()+" Entidad", href: '#', action: function(e){
 			$( "[functioninsert='addEntity']").click();
 			$( "#typeAction").val("edit");
+			idSele = $("#idSelected").val();
+			fillEditEntity(idSele);
 		}},
 		{text: $("#renameEntity").text()+" Relacion", href: '#', action: function(e){
 			$( "[functioninsert='addRelation']").click();
 			$( "#typeAction").val("edit");
+			idSele = $("#idSelected").val();
+			fillEditRelation(idSele);
 		}},
 		{text: $("#renameEntity").text()+" Atributo", href: '#', action: function(e){
 			$( "[functioninsert='addAtribute']").click();
 			$( "#typeAction").val("edit");
+			idSele = $("#idSelected").val();
+			fillEditAtributte(idSele);
 		}},
 		{text: $("#removeEntity").text(), href: '#', action: function(e){
 			_gaq.push(['_trackEvent', 'ContextJS Download', this.pathname, this.innerHTML]);
@@ -82,7 +88,7 @@ var box1 = [
 			]}
 		]}
 	];
-	
+
 	context.attach('#diagram', box);
 	context.settings({compress: true});
 	

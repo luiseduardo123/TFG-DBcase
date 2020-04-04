@@ -2,16 +2,7 @@ var nodes = new vis.DataSet([]);
 var nodoSelected;
   // create an array with edges
 
-  var edges = new vis.DataSet([
-/*    {from: 1, to: 8, color:{color:'red'}},
-    {from: 1, to: 3, color:'rgb(20,24,200)'},
-    {from: 1, to: 2, color:{color:'rgba(30,30,30,0.2)', highlight:'blue'}},
-    {from: 2, to: 4, color:{inherit:'to'}},
-    {from: 2, to: 5, color:{inherit:'from'}},
-    {from: 5, to: 6, color:{inherit:'both'}},
-    {from: 6, to: 7, color:{color:'#ff0000', opacity:0.3}},
-    {from: 6, to: 8, color:{opacity:0.3}},*/
-  ]);
+  var edges = new vis.DataSet([]);
 
   // create a network
   var container = document.getElementById('diagram');
@@ -37,7 +28,6 @@ var nodoSelected;
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
-		  $("#modalAddItem").unbind('show.bs.modal');//quitar evento linea 137, tenemos que cambiar para que se elimine el evento siempre que se cierre el modal
 	  }else{
 		  data_element.id = id_node++;
 		  nodes.add(data_element);
@@ -50,7 +40,6 @@ var nodoSelected;
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
-		  $("#modalAddItem").unbind('show.bs.modal');//quitar evento linea 137, tenemos que cambiar para que se elimine el evento siempre que se cierre el modal
 	  }else{
 		  data_element.id = id_node++;
 		  nodes.add(data_element);
@@ -62,13 +51,24 @@ var nodoSelected;
 	  nodes.add({id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20});
   }//revisar la creacion de entidades con nombre unico, no debe de crear con nombre unico!!!!
   
-  function addAttribute(name, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
+  function addAttribute(name, action, idSelected, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
 	  var id_node = nodes.length;
 	  var word_pk = name;
-	  if(pk)
-		word_pk = '*'+name+' (PK)*';
-	  nodes.add({id: id_node++, label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25});
-	  edges.add({from: idEntity, to: id_node-1, color:{color:'blue'}});
+	  if(pk){
+		  word_pk = '*'+name+' (PK)*';
+	  }else{
+		  word_pk = name;
+	  }
+	  
+	  var data_element = {label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25};
+	  if(action == "edit"){
+		  data_element.id = parseInt(idSelected);
+		  nodes.update(data_element);
+	  }else{
+		  data_element.id = id_node++;
+		  nodes.add(data_element);
+		  edges.add({from: idEntity, to: id_node-1, color:{color:'blue'}});
+	  }
   }
   
   function getAllNodes(){
@@ -125,22 +125,35 @@ var nodoSelected;
   }
   
   function fillEditRelation(idNodo){
-	  idNodo = parseInt(idNodo);
-	  $('#modalAddItem').on('show.bs.modal', function(){
-		  jQuery("#recipient-name").val(nodes.get(idNodo).label);
-		  $('#titleModal').html($('#textEditRelation').text());
-	  });
+	  idNodo = parseInt(idNodo);  
+	  jQuery("#recipient-name").val(nodes.get(idNodo).label);
+	  $('#titleModal').html($('#textEditRelation').text());
+	  $('#insertModal').prop('disabled', false);
   }
   
   function fillEditEntity(idNodo){
 	  idNodo = parseInt(idNodo);
-	  $('#modalAddItem').on('show.bs.modal', function(){
-		  jQuery("#recipient-name").val(nodes.get(idNodo).label);
-		  $('#titleModal').html($('#textEditEntity').text());
-		  $("#weak-entity").prop("checked",nodes.get(idNodo).strong);
-	  });
+	  jQuery("#recipient-name").val(nodes.get(idNodo).label);
+	  $('#titleModal').html($('#textEditEntity').text());
+	  $("#weak-entity").prop("checked",nodes.get(idNodo).strong);
+	  $('#insertModal').prop('disabled', false);
   }
-
+  
+  function fillEditAtributte(idNodo){
+	  idNodo = parseInt(idNodo);
+	  jQuery("#recipient-name").val(nodes.get(idNodo).label);
+	  jQuery("#domain").val(nodes.get(idNodo).dataAttribute.domain);
+	  jQuery("#size").val(nodes.get(idNodo).dataAttribute.size);
+	  $('#titleModal').html($('#textEditAttribute').text());
+	  $("#composite").prop("checked",nodes.get(idNodo).dataAttribute.composite);
+	  $("#multivalued").prop("checked",nodes.get(idNodo).dataAttribute.multivalued);
+	  $("#notNull").prop("checked",nodes.get(idNodo).dataAttribute.notNull);
+	  $("#primaryKey").prop("checked",nodes.get(idNodo).dataAttribute.primaryKey);
+	  $("#unique").prop("checked",nodes.get(idNodo).dataAttribute.unique);
+	  $('#insertModal').prop('disabled', false);
+	  $("label[for='element']" ).hide();
+	  $("#element" ).hide();
+  }
   
   // Metodo que obtiene el nodo seleccionado con boton derecho y lo almacena en nodoSelect
   network.on('oncontext', function(params) {
