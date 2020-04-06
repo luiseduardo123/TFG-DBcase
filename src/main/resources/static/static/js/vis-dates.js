@@ -33,6 +33,17 @@ var nodoSelected;
 		  nodes.add(data_element);
 	  }
   }
+
+  function addConstrainst(values, idSelected, action){
+	  var valuesFilter = [];
+	  for(var i=0;i<values.length;i++){
+		  valuesFilter.push(values[i].value);
+	  }
+	  var data_element = {constraints: valuesFilter};
+	  data_element.id = parseInt(idSelected);
+	  nodes.update(data_element);
+  }
+  
   
   function addRelation(nombre, action, idSelected){
 	  var id_node = nodes.length;
@@ -49,7 +60,7 @@ var nodoSelected;
   function addIsA(){
 	  var id_node = nodes.length;
 	  nodes.add({id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20});
-  }//revisar la creacion de entidades con nombre unico, no debe de crear con nombre unico!!!!
+  }
   
   function addAttribute(name, action, idSelected, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
 	  var id_node = nodes.length;
@@ -124,6 +135,18 @@ var nodoSelected;
 	  return exist;
   }
   
+  function fillEditConstraints(idNodo){
+	  idNodo = parseInt(idNodo);
+	  valuesConstraints = nodes.get(idNodo).constraints;
+	  for(var i=0;i<valuesConstraints.length;i++){
+		  if(i!=0){
+			  $("#inputList").append('<input type="text" name="listText[]" class="form-control" id="list'+i+'" value="'+valuesConstraints[i]+'">');
+		  }else{
+			  $("#list0").val(valuesConstraints[i]);
+		  }
+	  }
+  }
+  
   function fillEditRelation(idNodo){
 	  idNodo = parseInt(idNodo);  
 	  jQuery("#recipient-name").val(nodes.get(idNodo).label);
@@ -163,6 +186,7 @@ var nodoSelected;
 	  }else{
 		  nodoSelected = null;
 	  }
+	  
 	  params.event.preventDefault();
 	});
   
@@ -172,5 +196,10 @@ var nodoSelected;
  
   function setNodeSelected(value){
 	  nodoSelected = value;
+  }
+  
+  function existConstraints(idSelected){
+	  idSelected = parseInt(idSelected);
+	  return (nodes.get(idSelected).constraints === undefined)
   }
   

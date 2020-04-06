@@ -33,6 +33,12 @@
 				</div>
 				<p class="text-center" th:text="#{item.attribute}"></p>
 			</div>
+			<div class="col-md-12 mt-4 d-none">
+			  	<div class="text-center">
+				  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addConstrainst" src="static/images/attribute.png" class="rounded closeSide insertarDatos" alt="Add Constrainst" style="cursor: pointer;">
+				</div>
+				<p class="text-center" th:text="#{item.constrainst}"></p>
+			</div>
 			</div>
         </nav>
 
@@ -99,16 +105,19 @@
       
             $('#insertModal').on('click', function() {
             	switch($('#tipoAdd').val()) {
-		          	  case "addEntity":
+	            	case "addConstrainst":
+	            		addConstrainst($('input[name=listText\\[\\]]').serializeArray(),$('#idSelected').val(), $('#typeAction').val());
+		          	    break;
+		          	case "addEntity":
 		          		addEntity($('#recipient-name').val(), $('#weak-entity').prop('checked'),$('#typeAction').val(),$('#idSelected').val());
 		          	    break;
-		          	  case "addRelation":
+		          	case "addRelation":
 		          		addRelation($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val());
 		          	    break;
-		          	  case "addAttribute":
+		          	case "addAttribute":
 		          		addAttribute($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val(), $('#element').val(), $('#primaryKey').prop('checked'), $('#composite').prop('checked'), $('#notNull').prop('checked'), $('#unique').prop('checked'), $('#multivalued').prop('checked'), $('#domain').val(), $('#size').val());
 		            	break;
-		          	  case "addIsA":
+		          	case "addIsA":
 		            	break;
 		          	  default:
 		          	}
@@ -119,6 +128,24 @@
             	var insert = ""
             	var nodo_select = getNodeSelected();
             	switch($(this).attr("functionInsert")) {
+            	  case "addConstrainst":
+            		  insert = '<form id="formInsert">'+
+            		  					'<div class="row">'+
+            		  					  '<div class="col-10">'+
+            		          				'<div class="form-group" id="inputList" style="height: 250px;overflow: auto;">'+
+				            		            '<input type="text" name="listText[]" class="form-control" id="list0">'+
+				            		            '<input type="hidden" id="tipoAdd" value="addConstrainst">'+
+				            		            '<input type="hidden" id="typeAction" value="create">'+
+							  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
+			            		          	'</div>'+
+			            		          '</div>'+
+			            		          '<div class="col-2 pl-0">'+
+			            		          	'<button type="button" class="btn btn-lg btn-block btn-dark" id="addList">+</button>'+
+			            		          	'<button type="button" class="btn btn-lg btn-block btn-dark" id="removeList">-</button>'+
+			            		          '</div>'+
+			            		        '</div>'+
+			            		        '</form>';
+            	    break;
             	  case "addEntity":
             		  insert = '<form id="formInsert">'+
             		          				'<div class="form-group">'+
@@ -210,6 +237,7 @@
             	}
             	setNodeSelected(null);
             	$("#formModal").html(insert);
+            	editList();
             	$("#primaryKey, #composite").change(function() {
             		if(($("#primaryKey").prop('checked') && $("#composite").prop('checked')) || 
             		   ($("#primaryKey").prop('checked') && !$("#composite").prop('checked'))){
@@ -238,6 +266,17 @@
            				  $( "#recipient-name" ).addClass("is-invalid");
            			  }
             	});
+            	/*
+            	Verifica que el campo de restriccion no este vacio
+            	*/
+            	$( "#list0" ).on( "blur keyup", function(){
+          			var nameValue = $( "#list0" ).val();
+         			if(nameValue == ""){
+          				$('#insertModal').prop('disabled', true);
+         			}else{
+         				$('#insertModal').prop('disabled', false);
+         			}
+          		});
             	
             	$( ".insertarDatos" ).click(function() {
             		$('#insertModal').prop('disabled', true);
