@@ -11,6 +11,7 @@
 	<groupId>com.tfg.ucm</groupId>
 	<artifactId>DBCaseWeb</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>DBCaseWeb</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -31,6 +32,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<!-- 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		 -->
 		<!-- *********************************************************************************** -->
 		<!-- https://mvnrepository.com/artifact/com.apple/AppleJavaExtensions -->
 		<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-algorithms -->

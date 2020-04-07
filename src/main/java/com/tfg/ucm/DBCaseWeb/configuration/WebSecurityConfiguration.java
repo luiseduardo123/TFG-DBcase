@@ -25,9 +25,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
        .loginProcessingUrl("/perform_login1")
        .defaultSuccessUrl("/homepage.html", true)
        .and()
-       .logout().invalidateHttpSession(true)
-       .clearAuthentication(true)
-       .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-       .logoutSuccessUrl("/logout-success");
+       .logout().permitAll();
    }
 }

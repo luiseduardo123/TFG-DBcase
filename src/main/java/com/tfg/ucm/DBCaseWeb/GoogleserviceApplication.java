@@ -29,7 +29,7 @@ public class GoogleserviceApplication {
    public Principal user(Principal principal) {
       return principal;
    }
-   //localhost:8080/lang?lang=en
+
    @GetMapping("/lang")
    public RedirectView redirectCookieLanguage(RedirectAttributes attributes, HttpServletResponse response,@RequestParam String lang) {
 	   Cookie cookie = new Cookie("language", lang);
@@ -37,7 +37,7 @@ public class GoogleserviceApplication {
        attributes.addAttribute("idioma", lang);
        return new RedirectView("inicio");
    }
- //localhost:8080/theme?theme=dark
+
    @GetMapping("/theme")
    public RedirectView redirectCookieTheme(RedirectAttributes attributes, HttpServletResponse response,@RequestParam String theme) {
 	   Cookie cookie = new Cookie("theme", theme);
@@ -78,7 +78,7 @@ public class GoogleserviceApplication {
 		return mav;
 	}
    
-   @GetMapping("/logout-success")
+   @GetMapping("/logout")
    public RedirectView redirectWithUsingRedirectView(RedirectAttributes attributes) {
        return new RedirectView("/");
    }
