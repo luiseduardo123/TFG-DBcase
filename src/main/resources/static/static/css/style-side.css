@@ -163,3 +163,19 @@ a.article:hover {
         display: none;
     }
 }
+
+/*
+	PRINCIPAL
+*/
+
+.col-md-6-height{
+	height: 50%;
+}
+
+.col-md-12-height{
+	height: 100%;
+}
+
+.col-md-24-height{
+	height: 200%;
+}

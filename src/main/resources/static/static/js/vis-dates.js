@@ -18,7 +18,11 @@ var nodoSelected;
       font: {
           multi: 'md',
       }
-    }
+    },
+    interaction: {
+    	navigationButtons: true,
+	    keyboard: true
+	}
   };
   var network = new vis.Network(container, data, options);
   

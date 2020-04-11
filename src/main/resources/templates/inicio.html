@@ -76,15 +76,15 @@
 	            </nav>
 	         </div>
           	<div  style="height: 87.8%;">
-				<div class="row mr-0" style="height: 50%;">
-				  <div class="col-md-6" style="overflow-x: auto;overflow-y: auto;height: 100%;">
+				<div class="row mr-0 changeSizeHeight col-md-6-height">
+				  <div class="col-md-6 changeSizeWidth col-md-12-height" style="overflow-x: auto;overflow-y: auto;">
 					<div id="diagram" style="width: 100%;height: 100%;">
 					</div>
 					<button type="button" id="sidebarCollapse" class="btn" th:classappend="${theme=='dark'} ? btn-dark : btn-light" style="position: absolute;top: 0px;left: 15px;z-index: 2;">
                         <span style="writing-mode: vertical-rl;text-orientation: upright;line-height: 0px;font-size: 12px;letter-spacing: -3px;" th:text="#{add.items}"></span>
                     </button>
                   </div>
-				  <div class="col-md-6">.col-6 .col-md-4</div>
+				  <div class="col-md-6 changeSizeWidth col-md-12-height">.col-6 .col-md-4</div>
 				</div>
 				<div class="row mr-0" style="height: 50%;">
 				  <div class="col-md-6">.col-12 .col-md-8</div>
@@ -97,7 +97,14 @@
     <!-- Bootstrap JS -->
     <script type="text/javascript">
         $(document).ready(function () {
-        	       	  
+        	 $('.vis-zoomExtends').on('click', function () {
+        		 $('.changeSizeWidth').toggleClass('col-md-6');
+                 $('.changeSizeWidth').toggleClass('col-md-12');
+                 $('.changeSizeWidth').toggleClass('col-md-6-height');
+                 $('.changeSizeWidth').toggleClass('col-md-12-height');
+                 $('.changeSizeHeight').toggleClass('col-md-6-height');
+                 $('.changeSizeHeight').toggleClass('col-md-24-height');
+             });
             $('#sidebarCollapse, .closeSide').on('click', function () {
                 $('#sidebar').toggleClass('active');
             });
