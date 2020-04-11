@@ -3,7 +3,7 @@ var nodoSelected;
   // create an array with edges
 
   var edges = new vis.DataSet([]);
-
+// edges.add({from: 1, to: 3, label: 'edge', labelFrom:'fasdsarom', labelTo:'tosdsad'}) con cardinalidad
   // create a network
   var container = document.getElementById('diagram');
   var data = {
@@ -24,7 +24,7 @@ var nodoSelected;
   
   function addEntity(nombre, weakEntity,action, idSelected){
 	  var id_node = nodes.length;
-	  var data_element = {label: nombre, strong: weakEntity, shape: 'box', color:'#ffcc45', scale:20, widthConstraint:150, heightConstraint:25};
+	  var data_element = {label: nombre, strong: weakEntity, shape: 'box', color:'#ffcc45', scale:20, widthConstraint:150, heightConstraint:25,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
@@ -47,7 +47,7 @@ var nodoSelected;
   
   function addRelation(nombre, action, idSelected){
 	  var id_node = nodes.length;
-	  var data_element = {label: nombre, shape: 'diamond', color:'#ff554b', scale:20};
+	  var data_element = {label: nombre, shape: 'diamond', color:'#ff554b', scale:20, physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
@@ -59,7 +59,7 @@ var nodoSelected;
   
   function addIsA(){
 	  var id_node = nodes.length;
-	  nodes.add({id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20});
+	  nodes.add({id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20, physics:false});
   }
   
   function addAttribute(name, action, idSelected, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
@@ -71,7 +71,7 @@ var nodoSelected;
 		  word_pk = name;
 	  }
 	  
-	  var data_element = {label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25};
+	  var data_element = {label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);

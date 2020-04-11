@@ -2,7 +2,20 @@ $(document).ready(function(){
 	var dataSelect;
 	context.init({preventDoubleContext: false});
 	
-	var box = [
+	var menu_options = [
+		{text: $("#textaddNewEntity").text(), action: function(e){
+			$( "[functioninsert='addEntity']").click();
+		}},
+		{text: $("#textaddNewRelation").text(), action: function(e){
+			$( "[functioninsert='addRelation']").click();
+		}},
+		{text: $("#textaddNewRelationIsA").text(), action: function(e){
+			$( "[functioninsert='addIsA']").click();
+		}},
+		{text: $("#textcreateDomain").text(), action: function(e){
+			alert("crear Dominio");
+		}},
+		//entity
 		{text: $("#addNewAttribute").text(), action: function(e){
 			$( "[functioninsert='addAtribute']").click();
 		}},
@@ -12,21 +25,34 @@ $(document).ready(function(){
 			idSele = $("#idSelected").val();
 			fillEditEntity(idSele);
 		}},
+		{text: $("#constraints").text(), href: '#', action: function(e){
+			$( "[functioninsert='addConstrainst']").click();
+			idSele = $("#idSelected").val();
+			if(!existConstraints(idSele)){
+				fillEditConstraints(idSele);
+			}
+		}},
+		{text: $("#tableUnique").text(), href: '#', action: function(e){
+			alert("crear unique");
+		}},	
+		// relation
+		{text: $("#textAddEntitytoRelation").text(), href: '#', action: function(e){
+			alert("textAddEntitytoRelation");
+		}},
+		{text: $("#textRemoveEntitytoRelation").text(), href: '#', action: function(e){
+			alert("textRemoveEntitytoRelation");
+		}},
+		{text: $("#textEditCardOrRol").text(), href: '#', action: function(e){
+			alert("textEditCardOrRol");
+		}},
+		{text: $("#addNewAttribute").text(), action: function(e){
+			$( "[functioninsert='addAtribute']").click();
+		}},
 		{text: $("#renameEntity").text()+" Relacion", href: '#', action: function(e){
 			$( "[functioninsert='addRelation']").click();
 			$( "#typeAction").val("edit");
 			idSele = $("#idSelected").val();
 			fillEditRelation(idSele);
-		}},
-		{text: $("#renameEntity").text()+" Atributo", href: '#', action: function(e){
-			$( "[functioninsert='addAtribute']").click();
-			$( "#typeAction").val("edit");
-			idSele = $("#idSelected").val();
-			fillEditAtributte(idSele);
-		}},
-		{text: $("#removeEntity").text(), href: '#', action: function(e){
-			network.selectNodes([getNodeSelected()]);
-			network.deleteSelected();
 		}},
 		{text: $("#constraints").text(), href: '#', action: function(e){
 			$( "[functioninsert='addConstrainst']").click();
@@ -36,11 +62,38 @@ $(document).ready(function(){
 			}
 		}},
 		{text: $("#tableUnique").text(), href: '#', action: function(e){
-			_gaq.push(['_trackEvent', 'ContextJS Download', this.pathname, this.innerHTML]);
+			alert("crear unique");
+		}},	
+		// atributos
+		{text: $("#renameEntity").text()+" Atributo", href: '#', action: function(e){
+			$( "[functioninsert='addAtribute']").click();
+			$( "#typeAction").val("edit");
+			idSele = $("#idSelected").val();
+			fillEditAtributte(idSele);
 		}},
+		{text: $("#textAddSubAtributte").text(), href: '#', action: function(e){
+			alert("textAddSubAtributte"); // solo si es compuesto
+		}},
+		//IsA
+		{text: $("#textAddParentEntity").text(), href: '#', action: function(e){
+			alert("textAddParentEntity"); // solo si es compuesto
+		}},
+		{text: $("#textRemoveParentEntity").text(), href: '#', action: function(e){
+			alert("textRemoveParentEntity"); // solo si es compuesto
+		}},
+		{text: $("#textAddChildEntity").text(), href: '#', action: function(e){
+			alert("textAddChildEntity"); // solo si es compuesto
+		}},
+		{text: $("#textRemoveChildEntity").text(), href: '#', action: function(e){
+			alert("textRemoveChildEntity"); // solo si es compuesto
+		}},
+		{text: $("#removeEntity").text(), href: '#', action: function(e){
+			network.selectNodes([getNodeSelected()]);
+			network.deleteSelected();
+		}}
 	];
 	
-	context.attach('#diagram', box);
+	context.attach('#diagram', menu_options);
 	context.settings({compress: true});
 	
 	$(document).on('mouseover', '.me-codesta', function(){

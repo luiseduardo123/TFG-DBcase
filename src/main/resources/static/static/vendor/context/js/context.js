@@ -103,20 +103,120 @@ var context = context || (function () {
 			e.stopPropagation();
 			var nodo_select = getNodeSelected();
 			if(nodo_select != null){
+				$( ".dropdown-context li:nth-child(0)" ).hide();
+				$( ".dropdown-context li:nth-child(1)" ).hide();
+				$( ".dropdown-context li:nth-child(2)" ).hide();
+				$( ".dropdown-context li:nth-child(3)" ).hide();
+				$( ".dropdown-context li:nth-child(4)" ).hide();
+				
 				typeNodoSelected = nodes.get(nodo_select);
 				switch(typeNodoSelected.shape){
 					case "box":
-					//	fillEditEntity(nodo_select);
+						$( ".dropdown-context li:nth-child(5)" ).show();
+						$( ".dropdown-context li:nth-child(6)" ).show();
+						$( ".dropdown-context li:nth-child(7)" ).show();
+						$( ".dropdown-context li:nth-child(8)" ).show();
+						$( ".dropdown-context li:nth-child(9)" ).hide();
+						$( ".dropdown-context li:nth-child(10)" ).hide();
+						$( ".dropdown-context li:nth-child(11)" ).hide();
+						$( ".dropdown-context li:nth-child(12)" ).hide();
+						$( ".dropdown-context li:nth-child(13)" ).hide();
+						$( ".dropdown-context li:nth-child(14)" ).hide();
+						$( ".dropdown-context li:nth-child(15)" ).hide();
+						$( ".dropdown-context li:nth-child(16)" ).hide();
+						$( ".dropdown-context li:nth-child(17)" ).hide();
+						$( ".dropdown-context li:nth-child(18)" ).hide();
+						$( ".dropdown-context li:nth-child(19)" ).hide();
+						$( ".dropdown-context li:nth-child(20)" ).hide();
+						$( ".dropdown-context li:nth-child(21)" ).hide();
+						$( ".dropdown-context li:nth-child(22)" ).show();
 						break;
 					case "diamond":
-					//	fillEditRelation(nodo_select);
+						$( ".dropdown-context li:nth-child(5)" ).hide();
+						$( ".dropdown-context li:nth-child(6)" ).hide();
+						$( ".dropdown-context li:nth-child(7)" ).hide();
+						$( ".dropdown-context li:nth-child(8)" ).hide();
+						$( ".dropdown-context li:nth-child(9)" ).show();
+						$( ".dropdown-context li:nth-child(10)" ).show();
+						$( ".dropdown-context li:nth-child(11)" ).show();
+						$( ".dropdown-context li:nth-child(12)" ).show();
+						$( ".dropdown-context li:nth-child(13)" ).show();
+						$( ".dropdown-context li:nth-child(14)" ).show();
+						$( ".dropdown-context li:nth-child(15)" ).show();
+						$( ".dropdown-context li:nth-child(16)" ).hide();
+						$( ".dropdown-context li:nth-child(17)" ).hide();
+						$( ".dropdown-context li:nth-child(18)" ).hide();
+						$( ".dropdown-context li:nth-child(19)" ).hide();
+						$( ".dropdown-context li:nth-child(20)" ).hide();
+						$( ".dropdown-context li:nth-child(21)" ).hide();
+						$( ".dropdown-context li:nth-child(22)" ).show();
 						break;
-					case "box2":
+					case "ellipse":
+						$( ".dropdown-context li:nth-child(5)" ).hide();
+						$( ".dropdown-context li:nth-child(6)" ).hide();
+						$( ".dropdown-context li:nth-child(7)" ).hide();
+						$( ".dropdown-context li:nth-child(8)" ).hide();
+						$( ".dropdown-context li:nth-child(9)" ).hide();
+						$( ".dropdown-context li:nth-child(10)" ).hide();
+						$( ".dropdown-context li:nth-child(11)" ).hide();
+						$( ".dropdown-context li:nth-child(12)" ).hide();
+						$( ".dropdown-context li:nth-child(13)" ).hide();
+						$( ".dropdown-context li:nth-child(14)" ).hide();
+						$( ".dropdown-context li:nth-child(15)" ).hide();
+						$( ".dropdown-context li:nth-child(16)" ).show();
+						$( ".dropdown-context li:nth-child(17)" ).show();
+						$( ".dropdown-context li:nth-child(18)" ).hide();
+						$( ".dropdown-context li:nth-child(19)" ).hide();
+						$( ".dropdown-context li:nth-child(20)" ).hide();
+						$( ".dropdown-context li:nth-child(21)" ).hide();
+						$( ".dropdown-context li:nth-child(22)" ).show();
 						break;
-					case "box1":
+					case "triangleDown":
+						$( ".dropdown-context li:nth-child(5)" ).hide();
+						$( ".dropdown-context li:nth-child(6)" ).hide();
+						$( ".dropdown-context li:nth-child(7)" ).hide();
+						$( ".dropdown-context li:nth-child(8)" ).hide();
+						$( ".dropdown-context li:nth-child(9)" ).hide();
+						$( ".dropdown-context li:nth-child(10)" ).hide();
+						$( ".dropdown-context li:nth-child(11)" ).hide();
+						$( ".dropdown-context li:nth-child(12)" ).hide();
+						$( ".dropdown-context li:nth-child(13)" ).hide();
+						$( ".dropdown-context li:nth-child(14)" ).hide();
+						$( ".dropdown-context li:nth-child(15)" ).hide();
+						$( ".dropdown-context li:nth-child(16)" ).hide();
+						$( ".dropdown-context li:nth-child(17)" ).hide();
+						$( ".dropdown-context li:nth-child(18)" ).show();
+						$( ".dropdown-context li:nth-child(19)" ).show();
+						$( ".dropdown-context li:nth-child(20)" ).show();
+						$( ".dropdown-context li:nth-child(21)" ).show();
+						$( ".dropdown-context li:nth-child(22)" ).show();
 						break;
 				}
-//				console.log(typeNodoSelected);
+			}else{
+				$( ".dropdown-context li:nth-child(0)" ).show();
+				$( ".dropdown-context li:nth-child(1)" ).show();
+				$( ".dropdown-context li:nth-child(2)" ).show();
+				$( ".dropdown-context li:nth-child(3)" ).show();
+				$( ".dropdown-context li:nth-child(4)" ).show();
+				$( ".dropdown-context li:nth-child(5)" ).hide();
+				$( ".dropdown-context li:nth-child(6)" ).hide();
+				$( ".dropdown-context li:nth-child(7)" ).hide();
+				$( ".dropdown-context li:nth-child(8)" ).hide();
+				$( ".dropdown-context li:nth-child(9)" ).hide();
+				$( ".dropdown-context li:nth-child(10)" ).hide();
+				$( ".dropdown-context li:nth-child(11)" ).hide();
+				$( ".dropdown-context li:nth-child(12)" ).hide();
+				$( ".dropdown-context li:nth-child(13)" ).hide();
+				$( ".dropdown-context li:nth-child(14)" ).hide();
+				$( ".dropdown-context li:nth-child(15)" ).hide();
+				$( ".dropdown-context li:nth-child(16)" ).hide();
+				$( ".dropdown-context li:nth-child(17)" ).hide();
+				$( ".dropdown-context li:nth-child(18)" ).hide();
+				$( ".dropdown-context li:nth-child(19)" ).hide();
+				$( ".dropdown-context li:nth-child(20)" ).hide();
+				$( ".dropdown-context li:nth-child(21)" ).hide();
+				$( ".dropdown-context li:nth-child(22)" ).hide();
+			}
 				$('.dropdown-context:not(.dropdown-context-sub)').hide();
 				
 				$dd = $('#dropdown-' + id);
@@ -140,7 +240,6 @@ var context = context || (function () {
 						}).fadeIn(options.fadeSpeed);
 					}
 				}
-			}
 		});
 	}
 	
