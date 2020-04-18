@@ -12,3 +12,39 @@ function editList(){
 			$("#list"+(numList-1)).remove();
 	});
 }
+
+function eventsEntityToRelation(){
+	$( "input[name='cardinality']" ).click(function(){
+		if($(this).attr('id') == 'minMax'){
+			$("#minCardinality").prop("disabled", false);
+			$("#maxCardinality").prop("disabled", false);
+        }else{
+        	$("#minCardinality").prop("disabled", true);
+			$("#maxCardinality").prop("disabled", true);
+        }
+	});
+	$('#modalAddItem').on('shown.bs.modal', function () {
+		$('#insertModal').prop('disabled', false);
+	});
+	
+	$('#modalAddItem').on('hidden.bs.modal', function () {
+		$( "#modalAddItem" ).unbind( "shown.bs.modal");
+	});
+}
+
+function eventsRemoveEntityToRelation(){
+	$('#modalAddItem').on('shown.bs.modal', function () {
+		$('#insertModal').prop('disabled', false);
+	});
+	
+	$('#modalAddItem').on('hidden.bs.modal', function () {
+		$( "#modalAddItem" ).unbind( "shown.bs.modal");
+	});
+}
+
+
+
+(function ($) {
+	
+	
+})(jQuery);

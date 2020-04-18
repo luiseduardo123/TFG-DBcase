@@ -1,0 +1,49 @@
+<nav id="sidebar" class="active" th:classappend="${theme=='dark'} ? bg-dark : bg-light" style="z-index:1;">
+          <div class="sidebar-header" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
+              <h4 class="text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{add.items}"></h4>
+          </div>
+	<div class="row">
+	  <div class="col-md-12 mt-4">
+	  	<div class="text-center">
+		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addEntity" src="static/images/entidad.png" class="rounded closeSide insertarDatos" alt="Add Entity" style="cursor: pointer;">
+		</div>
+	  <p class="text-center" th:text="#{item.entity}"></p>
+	  </div>
+	  <div class="col-md-12 mt-4">
+	  	<div class="text-center">
+		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addRelation" src="static/images/relation.png" class="rounded closeSide insertarDatos" alt="Add Relation" style="cursor: pointer;">
+		</div>
+		<p class="text-center" th:text="#{item.relation}"></p>
+	</div>
+	  <div class="col-md-12 mt-4">
+	  	<div class="text-center">
+		  <img id="addIsA" functionInsert="addIsA" src="static/images/isA.png" class="rounded closeSide insertarDatos" alt="Add IsA" style="cursor: pointer;">
+		</div>
+		<p class="text-center">IsA</p>
+	</div>
+	  <div class="col-md-12 mt-4">
+	  	<div class="text-center">
+		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addAtribute" src="static/images/attribute.png" class="rounded closeSide insertarDatos" alt="Add Attribute" style="cursor: pointer;">
+		</div>
+		<p class="text-center" th:text="#{item.attribute}"></p>
+	</div>
+	<div class="col-md-12 mt-4 d-none">
+	  	<div class="text-center">
+		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addConstrainst" src="static/images/attribute.png" class="rounded closeSide insertarDatos" alt="Add Constrainst" style="cursor: pointer;">
+		</div>
+		<p class="text-center" th:text="#{item.constrainst}"></p>
+	</div>
+	<div class="col-md-12 mt-4 d-none">
+	  	<div class="text-center">
+		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addEntitytoRelation" src="static/images/attribute.png" class="rounded closeSide insertarDatos" th:alt="#{textos.addEntitytoRelation}" style="cursor: pointer;">
+		</div>
+		<p class="text-center" th:text="#{item.constrainst}"></p>
+	</div>
+	<div class="col-md-12 mt-4 d-none">
+	  	<div class="text-center">
+		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="removeEntitytoRelation" src="static/images/attribute.png" class="rounded closeSide insertarDatos" th:alt="#{textos.removeEntitytoRelation}" style="cursor: pointer;">
+		</div>
+		<p class="text-center" th:text="#{item.constrainst}"></p>
+	</div>
+	</div>
+</nav>

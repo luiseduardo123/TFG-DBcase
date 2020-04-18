@@ -86,8 +86,54 @@ var nodoSelected;
 	  }
   }
   
-  function getAllNodes(){
-	  return nodes;
+  function addEntitytoRelation(idFrom, cardinality, roleName, minCardinality, maxCardinality, action, idSelected){
+	  var left;
+	  var center;
+	  var right;
+	  switch(cardinality){
+	  	case 'max1':
+	  		left = '0';
+	  		right = '1';
+	  	break;
+	  	case 'maxN':
+		  	left = '0';
+	  		right = 'N';
+	  	break;
+	  	case 'minMax':
+		  	left = minCardinality;
+	  		right = maxCardinality;
+	  	break;
+	  	default:
+	  }
+	  if(roleName == "")
+		  center = "  ";
+	  else
+		  center = roleName;
+	  edges.add({from: parseInt(idSelected), to: parseInt(idFrom), label: center, labelFrom:left, labelTo:right});
+  }
+  
+  function removeEntitytoRelation(idEdge, action, idSelected){
+	  edges.remove(idEdge);
+  }
+  
+  /* 
+   * filter = array
+   * if (filter = null) return allNodes 
+   * else return nodes of type filter
+   * */
+  function getAllNodes(filter = null){
+	  var data = [];
+	  if(filter != null){
+		  nodes.forEach(function(nod) {
+			  if(filter.indexOf(nod.shape) != -1)
+				  data.push(nod);				  
+		  });
+	  }else{
+		  nodes.forEach(function(nod) {
+			  data.push(nod);
+		  });
+	  }
+	  return data;
   }
   
   function clean(){
@@ -205,5 +251,16 @@ var nodoSelected;
   function existConstraints(idSelected){
 	  idSelected = parseInt(idSelected);
 	  return (nodes.get(idSelected).constraints === undefined)
+  }
+  
+  function allEntitysToRelation(nodo_select){
+	  var data = [];
+	  nodos = network.getConnectedEdges(parseInt(nodo_select));
+	  nodos.forEach(function(edg) {
+		  	idNodo = edges.get(edg).to;
+			  data.push({id:edg, label:nodes.get(idNodo).label});				  
+	  });
+	  console.log(data);
+	  return data;
   }
   

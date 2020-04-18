@@ -37,10 +37,10 @@ $(document).ready(function(){
 		}},	
 		// relation
 		{text: $("#textAddEntitytoRelation").text(), href: '#', action: function(e){
-			alert("textAddEntitytoRelation");
+			$( "[functioninsert='addEntitytoRelation']").click();
 		}},
 		{text: $("#textRemoveEntitytoRelation").text(), href: '#', action: function(e){
-			alert("textRemoveEntitytoRelation");
+			$( "[functioninsert='removeEntitytoRelation']").click();
 		}},
 		{text: $("#textEditCardOrRol").text(), href: '#', action: function(e){
 			alert("textEditCardOrRol");

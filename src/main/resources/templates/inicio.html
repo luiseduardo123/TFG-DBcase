@@ -4,44 +4,8 @@
 <body>
 	 <div class="wrapper" style="height: 100%;">
         <!-- Sidebar  -->
-        <nav id="sidebar" class="active" th:classappend="${theme=='dark'} ? bg-dark : bg-light" style="z-index:1;">
-            <div class="sidebar-header" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
-                <h4 class="text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{add.items}"></h4>
-            </div>
-			<div class="row">
-			  <div class="col-md-12 mt-4">
-			  	<div class="text-center">
-				  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addEntity" src="static/images/entidad.png" class="rounded closeSide insertarDatos" alt="Add Entity" style="cursor: pointer;">
-				</div>
-			  <p class="text-center" th:text="#{item.entity}"></p>
-			  </div>
-			  <div class="col-md-12 mt-4">
-			  	<div class="text-center">
-				  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addRelation" src="static/images/relation.png" class="rounded closeSide insertarDatos" alt="Add Relation" style="cursor: pointer;">
-				</div>
-				<p class="text-center" th:text="#{item.relation}"></p>
-			</div>
-			  <div class="col-md-12 mt-4">
-			  	<div class="text-center">
-				  <img id="addIsA" functionInsert="addIsA" src="static/images/isA.png" class="rounded closeSide insertarDatos" alt="Add IsA" style="cursor: pointer;">
-				</div>
-				<p class="text-center">IsA</p>
-			</div>
-			  <div class="col-md-12 mt-4">
-			  	<div class="text-center">
-				  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addAtribute" src="static/images/attribute.png" class="rounded closeSide insertarDatos" alt="Add Attribute" style="cursor: pointer;">
-				</div>
-				<p class="text-center" th:text="#{item.attribute}"></p>
-			</div>
-			<div class="col-md-12 mt-4 d-none">
-			  	<div class="text-center">
-				  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addConstrainst" src="static/images/attribute.png" class="rounded closeSide insertarDatos" alt="Add Constrainst" style="cursor: pointer;">
-				</div>
-				<p class="text-center" th:text="#{item.constrainst}"></p>
-			</div>
-			</div>
-        </nav>
-
+        <nav th:replace="sidebar.html"> </nav>
+        <!-- Sidebar  -->
         <!-- Page Content  -->
         <div id="wrapper" style="width: 100%;position: absolute;height: 100%;">
 	    	<div class="pos-f-t">
@@ -133,6 +97,12 @@
 		          	case "addAttribute":
 		          		addAttribute($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val(), $('#element').val(), $('#primaryKey').prop('checked'), $('#composite').prop('checked'), $('#notNull').prop('checked'), $('#unique').prop('checked'), $('#multivalued').prop('checked'), $('#domain').val(), $('#size').val());
 		            	break;
+		          	case "addEntitytoRelation":
+		          		addEntitytoRelation($('#element').val(), $('[name=cardinality]:checked').val(), $('#roleName').val(), $('#minCardinality').val(), $('#maxCardinality').val(), $('#typeAction').val(),$('#idSelected').val());
+		            	break;
+		          	case "removeEntitytoRelation":
+		          		removeEntitytoRelation($('#element').val(), $('#typeAction').val(),$('#idSelected').val());
+		            	break;
 		          	case "addIsA":
 		            	break;
 		          	  default:
@@ -190,20 +160,18 @@
 			  		        '</form>';
             	    break;
             	  case "addAtribute":
-            		  nodo = getAllNodes();
+            		  nodo = getAllNodes(["box","diamond"]);
             		  if(nodo.length>0){
 	            		  insert = '<form id="formInsert">'+
 				      				'<div class="form-group">'+
 						            '<label for="element" class="col-form-label">'+$('#textElements').text()+':</label>'+
 						            '<select id="element" class="form-control">';
 						  				for(var i=0;i<nodo.length;i++){
-						  					if(nodo.get(i).shape == "box" || nodo.get(i).shape == "diamond"){
-						  						if(nodo.get(i).id == nodo_select)
+						  						if(nodo[i].id == nodo_select)
 						  							var select = "selected";
 						  						else
 						  							var select = "";
-						  						insert += '<option value='+nodo.get(i).id+' '+select+'>'+nodo.get(i).label+'</option>';
-						  					}
+						  						insert += '<option value='+nodo[i].id+' '+select+'>'+nodo[i].label+'</option>';
 						  				}
 						  insert += '</select>'+
 						            '<label for="recipient-" class="col-form-label">Nombre:</label>'+
@@ -246,13 +214,85 @@
 						          '</div>'+
 						        '</form>';
             		 }else{
-            			 insert = '<p class="text-center">Add an entity or a relation first</p>';
+            			 insert = '<p class="text-center">'+$('#textNotEntitysRelation').text()+'</p>';
+            		 }
+              	    break;
+            	  case "addEntitytoRelation":
+            		  nodo = getAllNodes(["box"]);
+            		  if(nodo.length>0){
+	            		  insert = '<form id="formInsert">'+
+				      				'<div class="form-group">'+
+						            '<label for="element" class="col-form-label">'+$('#textItemEntity').text()+':</label>'+
+						            '<select id="element" class="form-control">';
+					           		for(var i=0;i<nodo.length;i++){
+					  					insert += '<option value='+nodo[i].id+'>'+nodo[i].label+'</option>';
+					  				}
+						  insert += '</select>'+
+						            '<label for="recipient-" class="col-form-label">'+$('#textCardinality').text()+':</label>'+
+	            		            '<div class="form-inline">'+
+							        	'<input class="form-check-input" type="radio" name="cardinality" id="max1" value="max1" checked>'+
+							         	'<label class="form-check-label" for="max1">'+
+							         		'Max 1'+
+							         	'</label>'+
+							        '</div>'+
+							       	'<div class="form-inline">'+
+							        	'<input class="form-check-input" type="radio" name="cardinality" id="maxN" value="maxN">'+
+							        	'<label class="form-check-label" for="maxN">'+
+							        		'Max N'+
+							         	'</label>'+
+							        '</div>'+
+							        '<div class="form-inline">'+
+							        	'<input class="form-check-input" type="radio" name="cardinality" id="minMax" value="minMax">'+
+							        	'<label for="minMax" class="form-check-label col-11 pl-0 justify-content-start">'+
+							        		'Min <input type="number" id="minCardinality" class="form-control col-2 ml-1 mr-1" disabled>'+
+							        		'Max <input type="number" id="maxCardinality" class="form-control col-2 ml-1" disabled>'+
+							        	'</label>'+
+							        '</div>'+
+									'<label for="domain" class="col-form-label">'+$('#textRoleName').text()+':</label>'+
+									'<input type="text" class="form-control" id="roleName">'+
+						            '<input type="hidden" id="tipoAdd" value="addEntitytoRelation">'+
+						            '<input type="hidden" id="typeAction" value="create">'+
+				  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
+						          '</div>'+
+						        '</form>';
+            		 }else{
+            			 insert = '<p class="text-center">'+$('#textNotEntitys').text()+'</p>';
+            		 }
+              	    break;
+            	  case "removeEntitytoRelation":
+            		  nodo = allEntitysToRelation(nodo_select);
+            		  if(nodo.length>0){
+	            		  insert = '<form id="formInsert">'+
+				      				'<div class="form-group">'+
+						            '<label for="element" class="col-form-label">'+$('#textQuitTheEntity').text()+':</label>'+
+						            '<select id="element" class="form-control">';
+					           		for(var i=0;i<nodo.length;i++){
+					  					insert += '<option value='+nodo[i].id+'>'+nodo[i].label+'</option>';
+					  				}
+						  insert += '</select>'+
+						            '<input type="hidden" id="tipoAdd" value="removeEntitytoRelation">'+
+						            '<input type="hidden" id="typeAction" value="create">'+
+				  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
+						          '</div>'+
+						        '</form>';
+            		 }else{
+            			 insert = '<p class="text-center">'+$('#textNotEntitys').text()+'</p>';
             		 }
               	    break;
             	  default:
             	}
             	setNodeSelected(null);
             	$("#formModal").html(insert);
+            	
+            	switch($(this).attr("functionInsert")) {
+            		case "addEntitytoRelation":
+            			eventsEntityToRelation();
+            		break;
+            		case "removeEntitytoRelation":
+            			eventsRemoveEntityToRelation();
+            		break;
+              	 	default:
+            	}
             	editList();
             	$("#primaryKey, #composite").change(function() {
             		if(($("#primaryKey").prop('checked') && $("#composite").prop('checked')) || 
@@ -320,38 +360,6 @@
     </div>
   </div>
 </div>
-<div class="textosJS d-none">
-	<span id="addNewAttribute" th:text="#{textos.add}"></span>
-	<span id="renameEntity" th:text="#{textos.rename}"></span>
-	<span id="removeEntity" th:text="#{textos.remove}"></span>
-	<span id="constraints" th:text="#{textos.constraints}"></span>
-	<span id="tableUnique" th:text="#{textos.tableUnique}"></span>
-	<span id="textPrimaryKey" th:text="#{textos.primaryKey}"></span>
-	<span id="textComposite" th:text="#{textos.composite}"></span>
-	<span id="textNotNull" th:text="#{textos.notNull}"></span>
-	<span id="textUnique" th:text="#{textos.unique}"></span>
-	<span id="textMultivalued" th:text="#{textos.multivalued}"></span>
-	<span id="textDomain" th:text="#{textos.domain}"></span>
-	<span id="textSize" th:text="#{textos.size}"></span>
-	<span id="textElements" th:text="#{textos.elements}"></span>
-	<span id="textErrorNameExist" th:text="#{textos.errorNameExist}"></span>
-	<span id="textAddtRelation" th:text="#{textos.addtRelation}"></span>
-	<span id="textEditRelation" th:text="#{textos.editRelation}"></span>
-	<span id="textAddtEntity" th:text="#{textos.addEntity}"></span>
-	<span id="textEditEntity" th:text="#{textos.editEntity}"></span>
-	<span id="textAddtAttribute" th:text="#{textos.addAttribute}"></span>
-	<span id="textaddNewRelation" th:text="#{textos.addNewRelation}"></span>
-	<span id="textaddNewRelationIsA" th:text="#{textos.addNewRelationIsA}"></span>
-	<span id="textaddNewEntity" th:text="#{textos.addNewEntity}"></span>
-	<span id="textcreateDomain" th:text="#{textos.createDomain}"></span>
-	<span id="textAddEntitytoRelation" th:text="#{textos.addEntitytoRelation}"></span>
-	<span id="textRemoveEntitytoRelation" th:text="#{textos.removeEntitytoRelation}"></span>
-	<span id="textEditCardOrRol" th:text="#{textos.editCardOrRol}"></span>
-	<span id="textAddSubAtributte" th:text="#{textos.addSubAtributte}"></span>
-	<span id="textAddParentEntity" th:text="#{textos.addParentEntity}"></span>
-	<span id="textRemoveParentEntity" th:text="#{textos.removeParentEntity}"></span>
-	<span id="textAddChildEntity" th:text="#{textos.addChildEntity}"></span>
-	<span id="textRemoveChildEntity" th:text="#{textos.removeChildEntity}"></span> 
-</div>
+<div th:replace="textJS.html"> </div>
 </body>
 </html>
