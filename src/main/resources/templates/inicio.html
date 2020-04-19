@@ -51,7 +51,7 @@
                         <span style="writing-mode: vertical-rl;text-orientation: upright;line-height: 0px;font-size: 12px;letter-spacing: -3px;" th:text="#{add.items}"></span>
                     </button>
                   </div>
-				  <div class="col-md-6 changeSizeWidth col-md-12-height">.col-6 .col-md-4</div>
+				  <div class="col-md-6 changeSizeWidth col-md-12-height" id="testResult">.col-6 .col-md-4</div>
 				</div>
 				<div class="row mr-0" style="height: 50%;">
 				  <div class="col-md-6">.col-12 .col-md-8</div>
@@ -81,6 +81,7 @@
                      contentType: "application/json",
                      success: function (data) {
                          console.log("respuesta valida");
+                         $("#testResult").html(data);
                      },
                      error: function (xhr, ajaxOptions, thrownError) {
                          console.log(xhr.status);
