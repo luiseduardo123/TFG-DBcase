@@ -74,7 +74,7 @@
             });
             
             $('.closeSide').on('click', function() {
-            	console.log(this.getAttribute("alt"));
+            	console.log("as "+this.getAttribute("alt"));
                 $('#titleModal').html(this.getAttribute("alt"));
                 $('#tipoAdd').val(this.getAttribute("functionInsert"));
             });
@@ -267,7 +267,7 @@
 						            '<label for="element" class="col-form-label">'+$('#textQuitTheEntity').text()+':</label>'+
 						            '<select id="element" class="form-control">';
 					           		for(var i=0;i<nodo.length;i++){
-					  					insert += '<option value='+nodo[i].id+'>'+nodo[i].label+'</option>';
+					  					insert += '<option value='+nodo[i].id+'>'+nodo[i].label+' - '+nodo[i].role+'</option>';
 					  				}
 						  insert += '</select>'+
 						            '<input type="hidden" id="tipoAdd" value="removeEntitytoRelation">'+

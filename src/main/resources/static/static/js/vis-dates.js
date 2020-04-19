@@ -70,9 +70,15 @@ var nodoSelected;
 	  var id_node = nodes.length;
 	  var word_pk = name;
 	  if(pk){
-		  word_pk = '*'+name+' (PK)*';
+		  var word = name;
+		  word = word.replace(/./gi, "¯");
+		  word_pk = name+'\n'+word;
 	  }else{
 		  word_pk = name;
+		  if(notNll){
+			  word_pk +="*";
+		  }
+		  
 	  }
 	  
 	  var data_element = {label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25,physics:false};
@@ -86,10 +92,11 @@ var nodoSelected;
 	  }
   }
   
-  function addEntitytoRelation(idFrom, cardinality, roleName, minCardinality, maxCardinality, action, idSelected){
+  function addEntitytoRelation(idTo, cardinality, roleName, minCardinality, maxCardinality, action, idSelected){
 	  var left;
 	  var center;
 	  var right;
+	  var exist = false;
 	  switch(cardinality){
 	  	case 'max1':
 	  		left = '0';
@@ -109,7 +116,15 @@ var nodoSelected;
 		  center = "  ";
 	  else
 		  center = roleName;
-	  edges.add({from: parseInt(idSelected), to: parseInt(idFrom), label: center, labelFrom:left, labelTo:right});
+	  
+	  var idEdge = existEdge(idSelected, idTo);
+	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: center, labelFrom:left, labelTo:right};
+	  if(idEdge != null){
+		  data_element.id = idEdge;
+		  edges.update(data_element);
+	  }else{
+		  edges.add(data_element);
+	  }
   }
   
   function removeEntitytoRelation(idEdge, action, idSelected){
@@ -140,6 +155,22 @@ var nodoSelected;
 	  $( "#formInsert input" ).each(function() {
 	    $( this ).val( "" );
 	  });
+  }
+  
+  /*
+   * Check if exist a edge between "idFrom" to "idTo" nodes
+   * return "null" if it doesn't exist
+   * return idEdge if it  exist
+   * */
+  function existEdge(idFrom, idTo){
+	  var idEdgeExist = null;
+	  var edgesFrom = network.getConnectedEdges(parseInt(idFrom));
+	  var edgesTo = network.getConnectedEdges(parseInt(idTo));
+	  edgesTo.forEach(function(idEdge) {
+		  if(edgesFrom.indexOf(idEdge) != -1)
+			  idEdgeExist = idEdge;		  
+	  });
+	  return idEdgeExist
   }
   
   function existElementName(oneNodeName, typeElement){
@@ -214,7 +245,10 @@ var nodoSelected;
   
   function fillEditAtributte(idNodo){
 	  idNodo = parseInt(idNodo);
-	  jQuery("#recipient-name").val(nodes.get(idNodo).label);
+	  var nameAttribute = nodes.get(idNodo).label;
+	  var pk = nameAttribute.split("\n");
+	  nameAttribute = pk[0].replace("*","");
+	  jQuery("#recipient-name").val(nameAttribute);
 	  jQuery("#domain").val(nodes.get(idNodo).dataAttribute.domain);
 	  jQuery("#size").val(nodes.get(idNodo).dataAttribute.size);
 	  $('#titleModal').html($('#textEditAttribute').text());
@@ -258,9 +292,9 @@ var nodoSelected;
 	  nodos = network.getConnectedEdges(parseInt(nodo_select));
 	  nodos.forEach(function(edg) {
 		  	idNodo = edges.get(edg).to;
-			  data.push({id:edg, label:nodes.get(idNodo).label});				  
+		  	roleName = edges.get(edg).label;
+			  data.push({id:edg, label:nodes.get(idNodo).label, role:roleName});				  
 	  });
-	  console.log(data);
 	  return data;
   }
   
