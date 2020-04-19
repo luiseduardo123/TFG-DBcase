@@ -21,7 +21,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @SpringBootApplication
 @RestController
 public class GoogleserviceApplication {
-	
+	//test
    public static void main(String[] args) {
       SpringApplication.run(GoogleserviceApplication.class, args);
    }
