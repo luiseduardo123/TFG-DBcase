@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="head.html"> </head>
+
+
 <body>
+	 <button id="btnTest" type="button" class="btn btn-success">Generate</button>
 	 <div class="wrapper" style="height: 100%;">
         <!-- Sidebar  -->
         <nav th:replace="sidebar.html"> </nav>
@@ -61,6 +64,34 @@
     <!-- Bootstrap JS -->
     <script type="text/javascript">
         $(document).ready(function () {
+        	
+
+       	 	 $('#btnTest').on('click', function () {
+       		  //var url = "<c:url value="/generateData"/>";
+       		  var f= 2;
+       		  var myObj = {}; 
+              myObj["data1"] = JSON.stringify(nodes.get()); 
+              myObj["data2"] = JSON.stringify(edges.get()); 
+              var json = JSON.stringify(myObj);
+                
+       		  $.ajax({
+                     type: 'POST',
+                     url: '/generateData',
+                     data: json,
+                     contentType: "application/json",
+                     success: function (data) {
+                         console.log("respuesta valida");
+                     },
+                     error: function (xhr, ajaxOptions, thrownError) {
+                         console.log(xhr.status);
+                         console.log(xhr.responseText);
+                         console.log(thrownError);
+                     }
+
+                 });
+            });
+        	
+        	
         	 $('.vis-zoomExtends').on('click', function () {
         		 $('.changeSizeWidth').toggleClass('col-md-6');
                  $('.changeSizeWidth').toggleClass('col-md-12');

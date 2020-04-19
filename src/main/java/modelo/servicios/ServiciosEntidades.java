@@ -59,7 +59,7 @@ public class ServiciosEntidades {
 		if (id==-1)	controlador.mensajeDesde_SE(TC.SE_InsertarEntidad_ERROR_DAO,null);
 		else{
 			te.setIdEntidad(id);
-			controlador.mensajeDesde_SE(TC.SE_InsertarEntidad_HECHO, daoEntidades.consultarEntidad(te));
+//			controlador.mensajeDesde_SE(TC.SE_InsertarEntidad_HECHO, daoEntidades.consultarEntidad(te));
 		}
 	}
 	

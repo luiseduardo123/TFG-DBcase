@@ -109,6 +109,7 @@ public class GeneradorEsquema {
 		}
 	}
 	
+	
 	private void generaTablasRelaciones() {
 		DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
 		Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
@@ -840,5 +841,40 @@ public class GeneradorEsquema {
 		this.controlador = controlador;
 		this.validadorBD = ValidadorBD.getInstancia();
 		this.validadorBD.setControlador(controlador);
+	}
+	
+	public String generaModeloRelacional_v3() {
+		reset();
+		StringBuilder warnings = new StringBuilder();
+		if (!validadorBD.validaBaseDeDatos(true, warnings))
+			return warnings.toString();
+		restriccionesPerdidas = new RestriccionesPerdidas();
+		generaTablasEntidades();
+		generaTablasRelaciones();
+		mr = warnings.toString();
+		mr += "<div class='card'><h2>" + Lenguaje.text(Lenguaje.RELATIONS) + "</h2>";
+		Iterator tablasE = tablasEntidades.values().iterator();
+		while (tablasE.hasNext()) {
+			Tabla t = (Tabla) tablasE.next();
+			mr += t.modeloRelacionalDeTabla(true);
+		}
+
+		Iterator tablasR = tablasRelaciones.values().iterator();
+		while (tablasR.hasNext()) {
+			Tabla t = (Tabla) tablasR.next();
+			mr += t.modeloRelacionalDeTabla(true);
+		}
+
+		Iterator tablasM = tablasMultivalorados.iterator();
+		while (tablasM.hasNext()) {
+			Tabla t = (Tabla) tablasM.next();
+			mr += t.modeloRelacionalDeTabla(true);
+		}
+		mr += "<p></p></div><div class='card'><h2>" + Lenguaje.text(Lenguaje.RIC) + "</h2>";
+		mr += restriccionesIR();
+		mr += "<p></p></div><div class='card'><h2>" + Lenguaje.text(Lenguaje.LOST_CONSTR) + "</h2>";
+		mr += restriccionesPerdidas();
+		mr += "<p></p></div>";
+		return mr;
 	}
 }

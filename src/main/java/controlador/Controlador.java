@@ -97,7 +97,7 @@ public class Controlador {
 	// Dominios
 	private GUI_RenombrarDominio theGUIRenombrarDominio;
 	private GUI_ModificarDominio theGUIModificarElementosDominio;
-	//About
+	// About
 	private GUI_About about;
 	// Servicios
 	private ServiciosEntidades theServiciosEntidades;
@@ -105,7 +105,7 @@ public class Controlador {
 	private ServiciosRelaciones theServiciosRelaciones;
 	private ServiciosDominios theServiciosDominios;
 	private GeneradorEsquema theServiciosSistema;
-	//Otros
+	// Otros
 	private String path;
 	private Vector<TransferAtributo> listaAtributos;
 	private boolean cambios;
@@ -115,7 +115,7 @@ public class Controlador {
 	private GUI_Pregunta panelOpciones;
 	private Theme theme;
 	private int modoVista;
-	
+
 	public Controlador() {
 		iniciaFrames();
 		cambios = false;
@@ -124,202 +124,204 @@ public class Controlador {
 		theGUIPrincipal.setControlador(this);
 		theme = Theme.getInstancia();
 	}
-	
-	public Controlador(int uno) {
-		iniciaFramesWeb();
-	}
-	
-	public static void main(String[] args) {
-		for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) 
-            if ("Nimbus".equals(info.getName())) {
-            	try { javax.swing.UIManager.setLookAndFeel(info.getClassName());} 
-            	catch (ClassNotFoundException | InstantiationException | IllegalAccessException| UnsupportedLookAndFeelException e) {e.printStackTrace();}
-            break;
-        }
-		//creamos la carpeta projects si no existe
-		File directory = new File(System.getProperty("user.dir")+"/projects");
-	    if (!directory.exists()) directory.mkdir();
-	        
+
+	public Controlador(String debug) throws IOException {
+//		iniciaFrames();
+		cambios = false;
+		theServiciosEntidades = new ServiciosEntidades();
+		theServiciosEntidades.setControlador(this);
+		theServiciosAtributos = new ServiciosAtributos();
+		theServiciosAtributos.setControlador(this);
+		theServiciosRelaciones = new ServiciosRelaciones();
+		theServiciosRelaciones.setControlador(this);
+		theServiciosDominios = new ServiciosDominios();
+		theServiciosDominios.setControlador(this);
+		theServiciosSistema = new GeneradorEsquema();
+		theServiciosSistema.reset();
+		theServiciosSistema.setControlador(this);
+
+
+//		theGUIPrincipal = new GUIPrincipal();
+//		theGUIPrincipal.setControlador(this);
+		
+		// creamos la carpeta projects si no existe
+		File directory = new File(System.getProperty("user.dir") + "/projects");
+		if (!directory.exists())
+			directory.mkdir();
+
 		// Obtenemos configuración inicial (si la hay)
 		ConfiguradorInicial conf = new ConfiguradorInicial();
 		conf.leerFicheroConfiguracion();
-		
+
+		// Obtenemos el lenguaje en el que vamos a trabajar
+		Lenguaje.encuentraLenguajes();
+
+		if (conf.existeFichero()) {
+			Vector<String> lengs = Lenguaje.obtenLenguajesDisponibles();
+			boolean encontrado = false;
+			int k = 0;
+			while (!encontrado && k < lengs.size()) {
+				encontrado = lengs.get(k).equalsIgnoreCase(conf.obtenLenguaje());
+				k++;
+			}
+			if (encontrado)
+				Lenguaje.cargaLenguaje(conf.obtenLenguaje());
+			else
+				Lenguaje.cargaLenguajePorDefecto();
+		} else {
+			Lenguaje.cargaLenguajePorDefecto();
+			Theme.loadDefaultTheme();
+		}
+
+		this.setFiletemp(File.createTempFile("dbcase", "xml"));
+		creaFicheroXML(this.getFiletemp());
+
+		String ruta = this.getFiletemp().getPath();
+		this.setPath(ruta);
+		this.setNullAttrs(conf.obtenNullAttr());
+
+		// Abrimos el documento guardado últimamente
+		File ultimo = new File(conf.obtenUltimoProyecto());
+		if (ultimo.exists()) {
+			this.setFileguardar(ultimo);
+			this.setModoVista(conf.obtenModoVista());
+			this.setNullAttrs(conf.obtenNullAttr());
+			String abrirPath = conf.obtenUltimoProyecto();
+			String tempPath = this.filetemp.getAbsolutePath();
+			FileCopy(abrirPath, tempPath);
+
+			// Reinicializamos la GUIPrincipal
+			//this.getTheGUIPrincipal().setActiva(this.getModoVista());
+			// Reiniciamos los datos de los servicios de sistema
+			this.getTheServiciosSistema().reset();
+			this.setCambios(false);
+		//	this.getTheGUIPrincipal().loadInfo();
+
+		} else {
+			this.setModoVista(0);
+		//	this.getTheGUIPrincipal().setActiva(this.getModoVista());
+		}
+		// Establecemos la base de datos por defecto
+	//	if (conf.existeFichero())
+			//this.getTheGUIPrincipal().cambiarConexion(conf.obtenGestorBBDD());
+	
+
+	// GUIPrincipal
+//		theGUIPrincipal = new GUIPrincipal();
+//		theGUIPrincipal.setControlador(this);
+//		theme = Theme.getInstancia();
+	}
+
+	public static void main(String[] args) {
+		for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
+			if ("Nimbus".equals(info.getName())) {
+				try {
+					javax.swing.UIManager.setLookAndFeel(info.getClassName());
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+						| UnsupportedLookAndFeelException e) {
+					e.printStackTrace();
+				}
+				break;
+			}
+		// creamos la carpeta projects si no existe
+		File directory = new File(System.getProperty("user.dir") + "/projects");
+		if (!directory.exists())
+			directory.mkdir();
+
+		// Obtenemos configuración inicial (si la hay)
+		ConfiguradorInicial conf = new ConfiguradorInicial();
+		conf.leerFicheroConfiguracion();
+
 		// Obtenemos el lenguaje en el que vamos a trabajar
 		Lenguaje.encuentraLenguajes();
 		Theme.loadThemes();
 		Theme.changeTheme(conf.obtenTema());
-		
-		if (conf.existeFichero()){
+
+		if (conf.existeFichero()) {
 			Vector<String> lengs = Lenguaje.obtenLenguajesDisponibles();
 			boolean encontrado = false;
 			int k = 0;
-			while (!encontrado && k < lengs.size()){
+			while (!encontrado && k < lengs.size()) {
 				encontrado = lengs.get(k).equalsIgnoreCase(conf.obtenLenguaje());
 				k++;
 			}
-			if (encontrado) Lenguaje.cargaLenguaje(conf.obtenLenguaje());
-			else Lenguaje.cargaLenguajePorDefecto();
-		}else{
+			if (encontrado)
+				Lenguaje.cargaLenguaje(conf.obtenLenguaje());
+			else
+				Lenguaje.cargaLenguajePorDefecto();
+		} else {
 			Lenguaje.cargaLenguajePorDefecto();
 			Theme.loadDefaultTheme();
 		}
 		Controlador controlador = new Controlador();
 		SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-            	try {
-        			controlador.setFiletemp(File.createTempFile("dbcase", "xml"));
-        			creaFicheroXML(controlador.getFiletemp());
-        		} catch (IOException e) {
-        			JOptionPane.showMessageDialog(null,
-        				Lenguaje.text(Lenguaje.ERROR_TEMP_FILE),
-        				Lenguaje.text(Lenguaje.DBCASE), JOptionPane.ERROR_MESSAGE);
-        		}
-        		String ruta = controlador.getFiletemp().getPath();
-        		controlador.setPath(ruta);
-        		controlador.setNullAttrs(conf.obtenNullAttr());
-        		
-        		// Abrimos el documento guardado últimamente
-        		File ultimo = new File(conf.obtenUltimoProyecto());
-        		if (ultimo.exists()){
-        			controlador.setFileguardar(ultimo);
-        			controlador.setModoVista(conf.obtenModoVista());
-        			controlador.setNullAttrs(conf.obtenNullAttr());
-        			String abrirPath =conf.obtenUltimoProyecto();
-        			String tempPath =controlador.filetemp.getAbsolutePath();
-        			FileCopy(abrirPath, tempPath);
-        			
-        			// Reinicializamos la GUIPrincipal
-        			controlador.getTheGUIPrincipal().setActiva(controlador.getModoVista());
-        			// Reiniciamos los datos de los servicios de sistema
-        			controlador.getTheServiciosSistema().reset();
-        			controlador.setCambios(false);
-        			controlador.getTheGUIPrincipal().loadInfo();
-        			
-        		}else {
-        			controlador.setModoVista(0);
-        			controlador.getTheGUIPrincipal().setActiva(controlador.getModoVista());
-        		}
-        		// Establecemos la base de datos por defecto
-        		if (conf.existeFichero())
-        			controlador.getTheGUIPrincipal().cambiarConexion(conf.obtenGestorBBDD());
-            }
-        });
+			@Override
+			public void run() {
+				try {
+					controlador.setFiletemp(File.createTempFile("dbcase", "xml"));
+					creaFicheroXML(controlador.getFiletemp());
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ERROR_TEMP_FILE),
+							Lenguaje.text(Lenguaje.DBCASE), JOptionPane.ERROR_MESSAGE);
+				}
+				String ruta = controlador.getFiletemp().getPath();
+				controlador.setPath(ruta);
+				controlador.setNullAttrs(conf.obtenNullAttr());
+
+				// Abrimos el documento guardado últimamente
+				File ultimo = new File(conf.obtenUltimoProyecto());
+				if (ultimo.exists()) {
+					controlador.setFileguardar(ultimo);
+					controlador.setModoVista(conf.obtenModoVista());
+					controlador.setNullAttrs(conf.obtenNullAttr());
+					String abrirPath = conf.obtenUltimoProyecto();
+					String tempPath = controlador.filetemp.getAbsolutePath();
+					FileCopy(abrirPath, tempPath);
+
+					// Reinicializamos la GUIPrincipal
+					controlador.getTheGUIPrincipal().setActiva(controlador.getModoVista());
+					// Reiniciamos los datos de los servicios de sistema
+					controlador.getTheServiciosSistema().reset();
+					controlador.setCambios(false);
+					controlador.getTheGUIPrincipal().loadInfo();
+
+				} else {
+					controlador.setModoVista(0);
+					controlador.getTheGUIPrincipal().setActiva(controlador.getModoVista());
+				}
+				// Establecemos la base de datos por defecto
+				if (conf.existeFichero())
+					controlador.getTheGUIPrincipal().cambiarConexion(conf.obtenGestorBBDD());
+			}
+		});
 	}
-	
-	public static boolean creaFicheroXML(File f){
+
+	public static boolean creaFicheroXML(File f) {
 		FileWriter fw;
 		String ruta = f.getPath();
 		try {
 			fw = new FileWriter(ruta);
-			fw.write("<?xml version=" + '\"' + "1.0" + '\"' + " encoding="
-					+ '\"' + "utf-8" + '\"' + " ?>" + '\n');
-			//"ISO-8859-1"
+			fw.write("<?xml version=" + '\"' + "1.0" + '\"' + " encoding=" + '\"' + "utf-8" + '\"' + " ?>" + '\n');
+			// "ISO-8859-1"
 			fw.write("<Inf_dbcase>" + "\n");
-			fw.write("<EntityList proximoID=\"1\">" + "\n" + "</EntityList>"+ "\n");
-			fw.write("<RelationList proximoID=\"1\">" + "\n" + "</RelationList>"+ "\n");
-			fw.write("<AttributeList proximoID=\"1\">" + "\n" + "</AttributeList>"+ "\n");
+			fw.write("<EntityList proximoID=\"1\">" + "\n" + "</EntityList>" + "\n");
+			fw.write("<RelationList proximoID=\"1\">" + "\n" + "</RelationList>" + "\n");
+			fw.write("<AttributeList proximoID=\"1\">" + "\n" + "</AttributeList>" + "\n");
 			fw.write("<DomainList proximoID=\"1\">" + "\n" + "</DomainList>");
-			fw.write("</Inf_dbcase>" +"\n");
+			fw.write("</Inf_dbcase>" + "\n");
 			fw.close();
 			return true;
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null,
-					Lenguaje.text(Lenguaje.ERROR_CREATING_FILE) + "\n" +ruta,
+			JOptionPane.showMessageDialog(null, Lenguaje.text(Lenguaje.ERROR_CREATING_FILE) + "\n" + ruta,
 					Lenguaje.text(Lenguaje.DBCASE), JOptionPane.ERROR_MESSAGE);
 			return false;
-		}		
+		}
 	}
-	
-	private void iniciaFramesWeb() {
-		// Creamos todos los servicios y les asignamos el controlador
-		theServiciosEntidades = new ServiciosEntidades(); 
-		theServiciosEntidades.setControlador(this);		
-		theServiciosAtributos = new ServiciosAtributos();
-		theServiciosAtributos.setControlador(this);
-		theServiciosRelaciones = new ServiciosRelaciones();
-		theServiciosRelaciones.setControlador(this);
-		theServiciosDominios = new ServiciosDominios();
-		theServiciosDominios.setControlador(this);
-		theServiciosSistema = new GeneradorEsquema();
-		theServiciosSistema.reset();
-		theServiciosSistema.setControlador(this);
 
-		// Fuera
-		/*
-		theGUIInsertarEntidad = new GUI_InsertarEntidad();
-		theGUIInsertarEntidad.setControlador(this);
-		theGUIInsertarRelacion = new GUI_InsertarRelacion();
-		theGUIInsertarRelacion.setControlador(this);
-		theGUIInsertarDominio = new GUI_InsertarDominio();
-		theGUIInsertarDominio.setControlador(this);
-		theGUIConexion = new GUI_Conexion();
-		theGUIConexion.setControlador(this);
-		theGUISeleccionarConexion = new GUI_SeleccionarConexion();
-		theGUISeleccionarConexion.setControlador(this);
-
-		// Entidades
-		theGUIRenombrarEntidad = new GUI_RenombrarEntidad();
-		theGUIRenombrarEntidad.setControlador(this);
-		theGUIAnadirAtributoEntidad = new GUI_AnadirAtributoEntidad();
-		theGUIAnadirAtributoEntidad.setControlador(this);
-		theGUIAnadirRestriccionAEntidad = new GUI_InsertarRestriccionAEntidad();
-		theGUIAnadirRestriccionAEntidad.setControlador(this);
-		theGUIAnadirAtributo = new GUI_AnadirAtributo();
-		theGUIAnadirAtributo.setControlador(this);
-
-		// Atributos
-		theGUIRenombrarAtributo = new GUI_RenombrarAtributo();
-		theGUIRenombrarAtributo.setControlador(this);
-		theGUIEditarDominioAtributo = new GUI_EditarDominioAtributo();
-		theGUIEditarDominioAtributo.setControlador(this);
-		theGUIAnadirSubAtributoAtributo = new GUI_AnadirSubAtributoAtributo();
-		theGUIAnadirSubAtributoAtributo.setControlador(this);
-		theGUIAnadirRestriccionAAtributo = new GUI_InsertarRestriccionAAtributo();
-		theGUIAnadirRestriccionAAtributo.setControlador(this);
-
-		// Relaciones IsA
-		theGUIEstablecerEntidadPadre = new GUI_EstablecerEntidadPadre();
-		theGUIEstablecerEntidadPadre.setControlador(this);
-		theGUIQuitarEntidadPadre = new GUI_QuitarEntidadPadre();
-		theGUIQuitarEntidadPadre.setControlador(this);
-		theGUIAnadirEntidadHija = new GUI_AnadirEntidadHija();
-		theGUIAnadirEntidadHija.setControlador(this);
-		theGUIQuitarEntidadHija = new GUI_QuitarEntidadHija();
-		theGUIQuitarEntidadHija.setControlador(this);
-
-		// Relaciones Normales
-		theGUIRenombrarRelacion = new GUI_RenombrarRelacion();
-		theGUIRenombrarRelacion.setControlador(this);
-		theGUIAnadirEntidadARelacion = new GUI_AnadirEntidadARelacion();
-		theGUIAnadirEntidadARelacion.setControlador(this);
-		theGUIQuitarEntidadARelacion = new GUI_QuitarEntidadARelacion();
-		theGUIQuitarEntidadARelacion.setControlador(this);
-		theGUIEditarCardinalidadEntidad = new GUI_EditarCardinalidadEntidad();
-		theGUIEditarCardinalidadEntidad.setControlador(this);
-		theGUIAnadirAtributoRelacion = new GUI_AnadirAtributoRelacion();
-		theGUIAnadirAtributoRelacion.setControlador(this);
-		theGUIAnadirRestriccionARelacion = new GUI_InsertarRestriccionARelacion();
-		theGUIAnadirRestriccionARelacion.setControlador(this);
-
-		// Dominios
-		theGUIRenombrarDominio = new GUI_RenombrarDominio();
-		theGUIRenombrarDominio.setControlador(this);
-		theGUIModificarElementosDominio = new GUI_ModificarDominio();
-		theGUIModificarElementosDominio.setControlador(this);
-		
-		// Otras
-		about = new GUI_About();
-		theGUIWorkSpace = new GUI_SaveAs();
-		theGUIWorkSpace.setControlador(this);
-		panelOpciones= new GUI_Pregunta();*/
-		System.out.println("Se prueba");
-	}
-	
 	private void iniciaFrames() {
 		// Creamos todos los servicios y les asignamos el controlador
-		theServiciosEntidades = new ServiciosEntidades(); 
-		theServiciosEntidades.setControlador(this);		
+		theServiciosEntidades = new ServiciosEntidades();
+		theServiciosEntidades.setControlador(this);
 		theServiciosAtributos = new ServiciosAtributos();
 		theServiciosAtributos.setControlador(this);
 		theServiciosRelaciones = new ServiciosRelaciones();
@@ -391,14 +393,14 @@ public class Controlador {
 		theGUIRenombrarDominio.setControlador(this);
 		theGUIModificarElementosDominio = new GUI_ModificarDominio();
 		theGUIModificarElementosDominio.setControlador(this);
-		
+
 		// Otras
 		about = new GUI_About();
 		theGUIWorkSpace = new GUI_SaveAs();
 		theGUIWorkSpace.setControlador(this);
-		panelOpciones= new GUI_Pregunta();
+		panelOpciones = new GUI_Pregunta();
 	}
-		
+
 	// Mensajes que le manda la GUI_WorkSpace al Controlador
 	public void mensajeDesde_GUIWorkSpace(TC mensaje, Object datos){
 		switch (mensaje){
@@ -419,36 +421,26 @@ public class Controlador {
 			String tempPath =this.filetemp.getAbsolutePath();
 			FileCopy(abrirPath, tempPath);
 			SwingUtilities.invokeLater(new Runnable() {
-	            @Override
+
+	@Override
 	            public void run() {
 					getTheServiciosSistema().reset();
 					theGUIPrincipal.loadInfo();
 					getTheGUIPrincipal().reiniciar();
-	        }});
-			setCambios(false);
-			break;
-		}
-		case GUI_WorkSpace_Click_Guardar:{
-			String guardarPath =(String)datos;
-			String tempPath =this.filetemp.getAbsolutePath();
-			FileCopy(tempPath, guardarPath);
+	        }});setCambios(false);break;}case GUI_WorkSpace_Click_Guardar:{
+
+	String guardarPath = (String) datos;
+	String tempPath = this.filetemp.getAbsolutePath();
+
+	FileCopy(tempPath, guardarPath);
 			this.getTheGUIWorkSpace().setInactiva();
 			setCambios(false);
 			break;
-		}
-		case GUI_WorkSpace_ERROR_CreacionFicherosXML:{
-			JOptionPane.showMessageDialog(null,Lenguaje.text(Lenguaje.INITIAL_ERROR)+"\n" +
-					Lenguaje.text(Lenguaje.OF_XMLFILES)+"\n"+this.getPath(),Lenguaje.text(Lenguaje.DBCASE),JOptionPane.ERROR_MESSAGE);
-			break;
-		}
-		default: break;
-		}// Switch
+		}case GUI_WorkSpace_ERROR_CreacionFicherosXML:{JOptionPane.showMessageDialog(null,Lenguaje.text(Lenguaje.INITIAL_ERROR)+"\n"+Lenguaje.text(Lenguaje.OF_XMLFILES)+"\n"+this.getPath(),Lenguaje.text(Lenguaje.DBCASE),JOptionPane.ERROR_MESSAGE);break;
+
+	}default:break;}// Switch
 	}
-	
-	public String pepe() {
-		System.out.println("Se ha llamado a esta funcion");
-		return "<h2>FUNCIONA</h2>";
-	}
+
 	// Mensajes que manda el Panel de Diseño al Controlador
 	public void mensajeDesde_PanelDiseno(TC mensaje, Object datos){
 		switch(mensaje){
@@ -1206,7 +1198,6 @@ public class Controlador {
 		default: break;
 		} // switch 
 	}
-
 
 	// Mensajes que manda la GUIPrincipal al Controlador
 	@SuppressWarnings("static-access")
@@ -1979,8 +1970,8 @@ public class Controlador {
 			v.get(1);
 			setCambios(true);
 			
-			this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirAtributoAEntidad, v);
-			this.getTheGUIAnadirAtributoEntidad().setInactiva();
+//			this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirAtributoAEntidad, v);
+			//this.getTheGUIAnadirAtributoEntidad().setInactiva();
 			break;
 		}
 		/*
@@ -2254,7 +2245,7 @@ public class Controlador {
 		default: break;
 		} // switch
 	}
-	
+
 	// Mensajes que mandan los Servicios de Atributos al Controlador
 	public void mensajeDesde_SA(TC mensaje, Object datos){
 		switch(mensaje){
@@ -2483,7 +2474,7 @@ public class Controlador {
 			Vector<Transfer> vt = (Vector<Transfer>) datos;
 			vt.get(0);
 			vt.get(1);
-			this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarClavePrimariaAtributo, vt);
+			//this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_EditarClavePrimariaAtributo, vt);
 			break;
 		}
 		/*
@@ -2536,7 +2527,6 @@ public class Controlador {
 		} // switch
 	}
 
-	
 	// Mensajes que mandan los Servicios de Relaciones al Controlador
 	public void mensajeDesde_SR(TC mensaje, Object datos){
 		switch(mensaje){
@@ -2583,10 +2573,9 @@ public class Controlador {
 		}
 		case SR_InsertarRelacion_HECHO:{
 			setCambios(true);
-			this.getTheGUIInsertarRelacion().setInactiva();
+		//	this.getTheGUIInsertarRelacion().setInactiva();
 			TransferRelacion te = (TransferRelacion) datos;
-			this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarRelacion, te);
-			
+		//	this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarRelacion, te);
 			break;
 		}
 		/*
@@ -2967,8 +2956,8 @@ public class Controlador {
 			v.get(2);
 			v.get(3);
 			
-			this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirEntidadARelacion, v);
-			this.getTheGUIAnadirEntidadARelacion().setInactiva();
+			//this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_AnadirEntidadARelacion, v);
+			//this.getTheGUIAnadirEntidadARelacion().setInactiva();
 			break;
 		}
 		/*
@@ -3110,7 +3099,6 @@ public class Controlador {
 	  }
 	}
 
-
 	// Mensajes que mandan los Servicios del Sistema al Controlador
 	@SuppressWarnings("incomplete-switch")
 	public void mensajeDesde_SS(TC mensaje, Object datos){
@@ -3144,42 +3132,46 @@ public class Controlador {
 		}// switch
 	}
 
-	//Utilidades
+	// Utilidades
 	private static void quicksort(Vector<String> a) {
         quicksort(a, 0, a.size() - 1);
     }
 
-    // quicksort a[left] to a[right]
-    private static void quicksort(Vector<String> a, int left, int right) {
-        if (right <= left) return;
-        int i = partition(a, left, right);
-        quicksort(a, left, i-1);
-        quicksort(a, i+1, right);
-    }
+	// quicksort a[left] to a[right]
+	private static void quicksort(Vector<String> a, int left, int right) {
+		if (right <= left)
+			return;
+		int i = partition(a, left, right);
+		quicksort(a, left, i - 1);
+		quicksort(a, i + 1, right);
+	}
 
-    // partition a[left] to a[right], assumes left < right
-    private static int partition(Vector<String> a, int left, int right) {
-        int i = left - 1;
-        int j = right;
-        while (true) {
-            while ((a.get(++i).compareToIgnoreCase(a.get(right))<0))      // find item on left to swap
-                ;                               // a[right] acts as sentinel
-            while ((a.get(right).compareToIgnoreCase(a.get(--j))<0))      // find item on right to swap
-                if (j == left) break;           // don't go out-of-bounds
-            if (i >= j) break;                  // check if pointers cross
-            exch(a, i, j);                      // swap two elements into place
-        }
-        exch(a, i, right);                      // swap with partition element
-        return i;
-    }
-    private static void exch(Vector<String> a, int i, int j) {
-        //exchanges++;
-        String swap = a.get(i);
-        a.set(i,a.get(j));
-        a.set(j,swap);
-    }
-    
-    public static void FileCopy(String sourceFile, String destinationFile) {
+	// partition a[left] to a[right], assumes left < right
+	private static int partition(Vector<String> a, int left, int right) {
+		int i = left - 1;
+		int j = right;
+		while (true) {
+			while ((a.get(++i).compareToIgnoreCase(a.get(right)) < 0)) // find item on left to swap
+				; // a[right] acts as sentinel
+			while ((a.get(right).compareToIgnoreCase(a.get(--j)) < 0)) // find item on right to swap
+				if (j == left)
+					break; // don't go out-of-bounds
+			if (i >= j)
+				break; // check if pointers cross
+			exch(a, i, j); // swap two elements into place
+		}
+		exch(a, i, right); // swap with partition element
+		return i;
+	}
+
+	private static void exch(Vector<String> a, int i, int j) {
+		// exchanges++;
+		String swap = a.get(i);
+		a.set(i, a.get(j));
+		a.set(j, swap);
+	}
+
+	public static void FileCopy(String sourceFile, String destinationFile) {
 		try {
 			File inFile = new File(sourceFile);
 			File outFile = new File(destinationFile);
@@ -3188,272 +3180,347 @@ public class Controlador {
 			FileOutputStream out = new FileOutputStream(outFile);
 
 			int c;
-			while( (c = in.read() ) != -1) out.write(c);
+			while ((c = in.read()) != -1)
+				out.write(c);
 			in.close();
 			out.close();
-		} catch(IOException e) {
+		} catch (IOException e) {
 			System.err.println("Hubo un error de entrada/salida");
 		}
 	}
-    
-    private void guardarConf() {
-    	String ruta = "";
-		if (fileguardar != null && fileguardar.exists()) ruta = fileguardar.getPath();
-		ConfiguradorInicial conf = new ConfiguradorInicial(
-			Lenguaje.getIdiomaActual(),
-			this.getTheGUIPrincipal().getConexionActual().getRuta(),
-			ruta, theme.getThemeName(), this.getTheGUIPrincipal().getPanelsMode(), nullAttrs
-		);
+
+	private void guardarConf() {
+		String ruta = "";
+		if (fileguardar != null && fileguardar.exists())
+			ruta = fileguardar.getPath();
+		ConfiguradorInicial conf = new ConfiguradorInicial(Lenguaje.getIdiomaActual(),
+				this.getTheGUIPrincipal().getConexionActual().getRuta(), ruta, theme.getThemeName(),
+				this.getTheGUIPrincipal().getPanelsMode(), nullAttrs);
 		conf.guardarFicheroCofiguracion();
-    }
-    
-    private void guardarYSalir() {
-    	guardarConf();
-    	salir();
-    }
-    
-    private void salir() {
-    	filetemp.delete();
+	}
+
+	private void guardarYSalir() {
+		guardarConf();
+		salir();
+	}
+
+	private void salir() {
+		filetemp.delete();
 		System.exit(0);
-    }
-    
-    private void ActualizaArbol(Transfer t){
-    	this.getTheGUIPrincipal().getPanelDiseno().EnviaInformacionNodo(t);
-    }
-    
+	}
+
+	private void ActualizaArbol(Transfer t) {
+	//	this.getTheGUIPrincipal().getPanelDiseno().EnviaInformacionNodo(t);
+	}
+
 	/**
 	 * Getters y Setters
 	 */
 	private void setListaAtributos(Vector datos) {
 		this.listaAtributos = datos;
 	}
+
 	public GUI_AnadirAtributoEntidad getTheGUIAnadirAtributoEntidad() {
 		return theGUIAnadirAtributoEntidad;
 	}
+
 	public void setTheGUIAnadirAtributoEntidad(GUI_AnadirAtributoEntidad theGUIAnadirAtributoEntidad) {
 		this.theGUIAnadirAtributoEntidad = theGUIAnadirAtributoEntidad;
 	}
+
 	public GUI_InsertarRestriccionAEntidad getTheGUIAnadirRestriccionAEntidad() {
 		return theGUIAnadirRestriccionAEntidad;
 	}
+
 	public GUI_InsertarRestriccionAAtributo getTheGUIAnadirRestriccionAAtributo() {
 		return theGUIAnadirRestriccionAAtributo;
 	}
+
 	public GUI_InsertarRestriccionARelacion getTheGUIAnadirRestriccionARelacion() {
 		return theGUIAnadirRestriccionARelacion;
 	}
+
 	public void setTheGUIAnadirRestriccionAEntidad(GUI_InsertarRestriccionAEntidad theGUIAnadirRestriccionAEntidad) {
 		this.theGUIAnadirRestriccionAEntidad = theGUIAnadirRestriccionAEntidad;
 	}
+
 	public GUI_AnadirAtributoRelacion getTheGUIAnadirAtributoRelacion() {
 		return theGUIAnadirAtributoRelacion;
 	}
+
 	public GUI_AnadirAtributo getTheGUIAnadirAtributo() {
 		return theGUIAnadirAtributo;
 	}
+
 	public void setTheGUIAnadirAtributoRelacion(GUI_AnadirAtributoRelacion theGUIAnadirAtributoRelacion) {
 		this.theGUIAnadirAtributoRelacion = theGUIAnadirAtributoRelacion;
 	}
+
 	public GUI_AnadirEntidadHija getTheGUIAnadirEntidadHija() {
 		return theGUIAnadirEntidadHija;
 	}
+
 	public void setTheGUIAnadirEntidadHija(GUI_AnadirEntidadHija theGUIAnadirEntidadHija) {
 		this.theGUIAnadirEntidadHija = theGUIAnadirEntidadHija;
 	}
+
 	public GUI_AnadirSubAtributoAtributo getTheGUIAnadirSubAtributoAtributo() {
 		return theGUIAnadirSubAtributoAtributo;
 	}
+
 	public void setTheGUIAnadirSubAtributoAtributo(GUI_AnadirSubAtributoAtributo theGUIAnadirSubAtributoAtributo) {
 		this.theGUIAnadirSubAtributoAtributo = theGUIAnadirSubAtributoAtributo;
 	}
+
 	public GUI_EditarDominioAtributo getTheGUIEditarDominioAtributo() {
 		return theGUIEditarDominioAtributo;
 	}
+
 	public void setTheGUIEditarDominioAtributo(GUI_EditarDominioAtributo theGUIEditarDominioAtributo) {
 		this.theGUIEditarDominioAtributo = theGUIEditarDominioAtributo;
 	}
+
 	public GUI_EstablecerEntidadPadre getTheGUIEstablecerEntidadPadre() {
 		return theGUIEstablecerEntidadPadre;
 	}
+
 	public void setTheGUIEstablecerEntidadPadre(GUI_EstablecerEntidadPadre theGUIEstablecerEntidadPadre) {
 		this.theGUIEstablecerEntidadPadre = theGUIEstablecerEntidadPadre;
 	}
+
 	public GUI_InsertarEntidad getTheGUIInsertarEntidad() {
 		return theGUIInsertarEntidad;
 	}
+
 	public void setTheGUIInsertarEntidad(GUI_InsertarEntidad theGUIInsertarEntidad) {
 		this.theGUIInsertarEntidad = theGUIInsertarEntidad;
 	}
+
 	public GUI_InsertarRelacion getTheGUIInsertarRelacion() {
 		return theGUIInsertarRelacion;
 	}
+
 	public GUI_InsertarDominio getTheGUIInsertarDominio() {
 		return theGUIInsertarDominio;
 	}
+
 	public void setTheGUIInsertarRelacion(GUI_InsertarRelacion theGUIInsertarRelacion) {
 		this.theGUIInsertarRelacion = theGUIInsertarRelacion;
 	}
-	public GUI_Conexion getTheGUIConfigurarConexionDBMS(){
+
+	public GUI_Conexion getTheGUIConfigurarConexionDBMS() {
 		return theGUIConexion;
 	}
-	public void setTheGUIConfigurarConexionDBMS(GUI_Conexion theGUIConexion){
+
+	public void setTheGUIConfigurarConexionDBMS(GUI_Conexion theGUIConexion) {
 		this.theGUIConexion = theGUIConexion;
 	}
-	public GUI_SeleccionarConexion getTheGuiSeleccionarConexion(){
+
+	public GUI_SeleccionarConexion getTheGuiSeleccionarConexion() {
 		return theGUISeleccionarConexion;
 	}
-	public void setTheGuiSelecceionarConexion(GUI_SeleccionarConexion selector){
+
+	public void setTheGuiSelecceionarConexion(GUI_SeleccionarConexion selector) {
 		this.theGUISeleccionarConexion = selector;
 	}
+
 	public GUIPrincipal getTheGUIPrincipal() {
 		return theGUIPrincipal;
 	}
+
 	public void setTheGUIPrincipal(GUIPrincipal theGUIPrincipal) {
 		this.theGUIPrincipal = theGUIPrincipal;
 	}
+
 	public GUI_QuitarEntidadHija getTheGUIQuitarEntidadHija() {
 		return theGUIQuitarEntidadHija;
 	}
+
 	public void setTheGUIQuitarEntidadHija(GUI_QuitarEntidadHija theGUIQuitarEntidadHija) {
 		this.theGUIQuitarEntidadHija = theGUIQuitarEntidadHija;
 	}
+
 	public GUI_QuitarEntidadPadre getTheGUIQuitarEntidadPadre() {
 		return theGUIQuitarEntidadPadre;
 	}
+
 	public void setTheGUIQuitarEntidadPadre(GUI_QuitarEntidadPadre theGUIQuitarEntidadPadre) {
 		this.theGUIQuitarEntidadPadre = theGUIQuitarEntidadPadre;
 	}
+
 	public GUI_RenombrarAtributo getTheGUIRenombrarAtributo() {
 		return theGUIRenombrarAtributo;
 	}
+
 	public void setTheGUIRenombrarAtributo(GUI_RenombrarAtributo theGUIRenombrarAtributo) {
 		this.theGUIRenombrarAtributo = theGUIRenombrarAtributo;
 	}
+
 	public GUI_RenombrarEntidad getTheGUIRenombrarEntidad() {
 		return theGUIRenombrarEntidad;
 	}
+
 	public void setTheGUIRenombrarEntidad(GUI_RenombrarEntidad theGUIRenombrarEntidad) {
 		this.theGUIRenombrarEntidad = theGUIRenombrarEntidad;
 	}
+
 	public GUI_RenombrarRelacion getTheGUIRenombrarRelacion() {
 		return theGUIRenombrarRelacion;
 	}
+
 	public void setTheGUIRenombrarRelacion(GUI_RenombrarRelacion theGUIRenombrarRelacion) {
 		this.theGUIRenombrarRelacion = theGUIRenombrarRelacion;
 	}
+
 	public GUI_RenombrarDominio getTheGUIRenombrarDominio() {
 		return theGUIRenombrarDominio;
 	}
+
 	public void setTheGUIRenombrarDominio(GUI_RenombrarDominio theGUIRenombrarDominio) {
 		this.theGUIRenombrarDominio = theGUIRenombrarDominio;
 	}
+
 	public GUI_ModificarDominio getTheGUIModificarElementosDominio() {
 		return theGUIModificarElementosDominio;
 	}
+
 	public void setTheGUIModificarElementosDominio(GUI_ModificarDominio theGUIModificarElementosDominio) {
 		this.theGUIModificarElementosDominio = theGUIModificarElementosDominio;
 	}
+
 	public ServiciosAtributos getTheServiciosAtributos() {
 		return theServiciosAtributos;
 	}
+
 	public void setTheServiciosAtributos(ServiciosAtributos theServiciosAtributos) {
 		this.theServiciosAtributos = theServiciosAtributos;
 	}
+
 	public ServiciosEntidades getTheServiciosEntidades() {
 		return theServiciosEntidades;
 	}
+
 	public void setTheServiciosEntidades(ServiciosEntidades theServiciosEntidades) {
 		this.theServiciosEntidades = theServiciosEntidades;
 	}
+
 	public ServiciosRelaciones getTheServiciosRelaciones() {
 		return theServiciosRelaciones;
 	}
+
 	public void setTheServiciosRelaciones(ServiciosRelaciones theServiciosRelaciones) {
 		this.theServiciosRelaciones = theServiciosRelaciones;
 	}
+
 	public ServiciosDominios getTheServiciosDominios() {
 		return theServiciosDominios;
 	}
+
 	public void setTheServiciosDominios(ServiciosDominios theServiciosDominios) {
 		this.theServiciosDominios = theServiciosDominios;
 	}
+
 	public GUI_AnadirEntidadARelacion getTheGUIAnadirEntidadARelacion() {
 		return theGUIAnadirEntidadARelacion;
 	}
+
 	public void setTheGUIAnadirEntidadARelacion(GUI_AnadirEntidadARelacion theGUIAnadirEntidadARelacion) {
 		this.theGUIAnadirEntidadARelacion = theGUIAnadirEntidadARelacion;
 	}
+
 	public GUI_QuitarEntidadARelacion getTheGUIQuitarEntidadARelacion() {
 		return theGUIQuitarEntidadARelacion;
 	}
+
 	public void setTheGUIQuitarEntidadARelacion(GUI_QuitarEntidadARelacion theGUIQuitarEntidadARelacion) {
 		this.theGUIQuitarEntidadARelacion = theGUIQuitarEntidadARelacion;
 	}
+
 	public GUI_EditarCardinalidadEntidad getTheGUIEditarCardinalidadEntidad() {
 		return theGUIEditarCardinalidadEntidad;
 	}
+
 	public void setTheGUIEditarCardinalidadEntidad(GUI_EditarCardinalidadEntidad theGUIEditarCardinalidadEntidad) {
 		this.theGUIEditarCardinalidadEntidad = theGUIEditarCardinalidadEntidad;
 	}
+
 	public GeneradorEsquema getTheServiciosSistema() {
 		return theServiciosSistema;
 	}
+
 	public void setTheServiciosSistema(GeneradorEsquema theServiciosSistema) {
 		this.theServiciosSistema = theServiciosSistema;
 	}
+
 	public GUI_SaveAs getTheGUIWorkSpace() {
 		return theGUIWorkSpace;
 	}
+
 	public void setTheGUIWorkSpace(GUI_SaveAs theGUIWorkSpace) {
 		this.theGUIWorkSpace = theGUIWorkSpace;
 	}
+
 	public String getPath() {
 		return path;
 	}
+
 	public void setPath(String path) {
 		this.path = path;
 	}
-	public File getFiletemp(){
+
+	public File getFiletemp() {
 		return filetemp;
 	}
-	public void setFiletemp(File temp){
+
+	public void setFiletemp(File temp) {
 		this.filetemp = temp;
 	}
-	public File getFileguardar(){
+
+	public File getFileguardar() {
 		return fileguardar;
 	}
-	public void setFileguardar(File guardar){
+
+	public void setFileguardar(File guardar) {
 		this.fileguardar = guardar;
 	}
-	public GUI_Pregunta getPanelOpciones(){
+
+	public GUI_Pregunta getPanelOpciones() {
 		return this.panelOpciones;
 	}
+
 	private GUI_TablaUniqueEntidad getTheGUITablaUniqueEntidad() {
 		return this.theGUITablaUniqueEntidad;
 	}
+
 	private GUI_TablaUniqueRelacion getTheGUITablaUniqueRelacion() {
 		return this.theGUITablaUniqueRelacion;
 	}
+
 	private void setModoVista(int m) {
 		this.modoVista = m;
 	}
+
 	private int getModoVista() {
 		return modoVista;
 	}
-	private void setCambios(boolean b){
-		cambios=b;
-		getTheGUIPrincipal().setTitle(getTitle());
+
+	private void setCambios(boolean b) {
+		cambios = b;
+	//	getTheGUIPrincipal().setTitle(getTitle());
 	}
+
 	public boolean isNullAttrs() {
 		return nullAttrs;
 	}
+
 	public void setNullAttrs(boolean nullAttrs) {
 		this.nullAttrs = nullAttrs;
 	}
+
 	public String getTitle() {
 		try {
-			return Lenguaje.text(Lenguaje.DBCASE)+" - "+getFileguardar().getName() + (cambios?"*":"");
-		}catch(NullPointerException e) {
+			return Lenguaje.text(Lenguaje.DBCASE) + " - " + getFileguardar().getName() + (cambios ? "*" : "");
+		} catch (NullPointerException e) {
 			return Lenguaje.text(Lenguaje.DBCASE);
 		}
 	}
