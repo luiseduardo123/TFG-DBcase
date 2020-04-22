@@ -55,7 +55,7 @@ public class GoogleserviceApplication {
    public Principal user(Principal principal) {
       return principal;
    }
-
+//test
    @GetMapping("/lang")
    public RedirectView redirectCookieLanguage(RedirectAttributes attributes, HttpServletResponse response,@RequestParam String lang) {
 	   Cookie cookie = new Cookie("language", lang);

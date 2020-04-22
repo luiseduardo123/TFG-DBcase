@@ -1,0 +1,84 @@
+package modelo.transfers;
+
+public class Edge {
+	
+	int from;
+	int to;
+	Color color;
+	String id;
+	String label;
+	String labelFrom;
+	String labelTo;
+	
+	public Edge() {
+		
+	} 
+	
+	public Edge(int from, int to, Color color, String id, String label, String labelFrom, String labelTo) {
+		this.from = from;
+		this.to = to;
+		this.color = color;
+		this.id = id;
+		this.label = label;
+		this.labelFrom = labelFrom;
+		this.labelTo = labelTo;
+	}
+ 
+	public int getFrom() {
+		return from;
+	}
+
+	public void setFrom(int from) {
+		this.from = from;
+	}
+
+	public int getTo() {
+		return to;
+	}
+
+	public void setTo(int to) {
+		this.to = to;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public String getLabelFrom() {
+		return labelFrom;
+	}
+
+	public void setLabelFrom(String labelFrom) {
+		this.labelFrom = labelFrom;
+	}
+
+	public String getLabelTo() {
+		return labelTo;
+	}
+
+	public void setLabelTo(String labelTo) {
+		this.labelTo = labelTo;
+	}
+	
+	
+}
