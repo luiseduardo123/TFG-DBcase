@@ -21,7 +21,7 @@
 						<div>
 	             			<div class="dropdown">
 								<img th:attr="src=${perfil.userAuthentication.Details.picture},alt=${perfil.userAuthentication.Details.given_name}" class="dropdown-toggle rounded-circle" width="50" height="50" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  
-								<div class="dropdown-menu" th:classappend="${theme=='dark'} ? bg-dark : bg-light" aria-labelledby="dropdownMenuButton" style="left: unset;right: 0;">
+								<div class="dropdown-menu" th:classappend="${theme=='dark'} ? bg-dark : bg-light" aria-labelledby="dropdownMenuButton" style="left: unset;right: 0;z-index: 1000000;">
 								    <a class="dropdown-item text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{general.saludo}+' '+ ${perfil.userAuthentication.Details.given_name}" ></a>
 								    <a class="dropdown-item text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" href="/logout" th:text="#{general.logout}"></a>
 								    <div class="dropdown-divider"></div>
@@ -41,9 +41,9 @@
 	             	</div>
 	            </nav>
 	         </div>
-          	<div  style="height: 87.8%;">
+          	<div  style="height: 87.27%;">
 				<div class="row mr-0 changeSizeHeight col-md-6-height">
-				  <div class="col-md-6 changeSizeWidth col-md-12-height overflow-auto">
+				  <div class="col-md-6 changeSizeWidth col-md-12-height overflow-auto" th:classappend="${theme=='dark'} ? 'text-white bg-dark' : 'text-dark bg-light'">
 					<div id="diagram" class="w-100 h-100">
 					</div>
 					<button type="button" id="sidebarCollapse" class="btn" th:classappend="${theme=='dark'} ? btn-dark : btn-light" style="position: absolute;top: 0px;left: 15px;z-index: 2;">
@@ -52,7 +52,7 @@
                   </div>
 				  <div class="col-md-6 changeSizeWidth col-md-12-height overflow-auto" th:classappend="${theme=='dark'} ? 'text-white bg-dark' : 'text-dark bg-light'">
 					  	<div class="row pt-2 sticky-top" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
-						  <div class="col-6 col-md-6"><p class="h4 mt-2" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{textos.logicalSchema}"></p></div>
+						  <div class="col-6 col-md-6"><p class="h5 mt-2" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{textos.logicalSchema}"></p></div>
 						  <div class="col-6 col-md-6"><button type="button" class="btn float-right ml-2" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.saveAs}"></button><button type="button" id="btnTest" class="btn float-right" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.generate}"></button></div>
 						</div>
 						<div class="w-100" id="testResult">
@@ -98,7 +98,6 @@
                  });
             });
         	
-        	
         	 $('.vis-zoomExtends').on('click', function () {
         		 $('.changeSizeWidth').toggleClass('col-md-6');
                  $('.changeSizeWidth').toggleClass('col-md-12');
@@ -140,6 +139,9 @@
 		          	case "removeEntitytoRelation":
 		          		removeEntitytoRelation($('#element').val(), $('#typeAction').val(),$('#idSelected').val());
 		            	break;
+		          	case "addDomain":
+		          		addTypeDomain($('#recipient-name').val(), $('#types').val(), $('#values_separated').val(), $('#typeAction').val());
+		            	break;	
 		          	case "addIsA":
 		            	break;
 		          	  default:
@@ -172,7 +174,7 @@
             	  case "addEntity":
             		  insert = '<form id="formInsert">'+
             		          				'<div class="form-group">'+
-			            		            '<label for="recipient-name" class="col-form-label">Name:</label>'+
+			            		            '<label for="recipient-name" class="col-form-label">'+$('#textItemName').text()+':</label>'+
 			            		            '<input type="text" class="form-control" id="recipient-name">'+
 			            		            '<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>'+
 			            		            '<input type="hidden" id="tipoAdd" value="addEntity">'+
@@ -187,7 +189,7 @@
             	  case "addRelation":
             		  insert = '<form id="formInsert">'+
 			        				'<div class="form-group">'+
-			  		            '<label for="recipient-name" class="col-form-label">Name:</label>'+
+			  		            '<label for="recipient-name" class="col-form-label">'+$('#textItemName').text()+':</label>'+
 			  		            '<input type="text" class="form-control" id="recipient-name">'+
 			  		          	'<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>'+
 			  		            '<input type="hidden" id="tipoAdd" value="addRelation">'+
@@ -198,6 +200,7 @@
             	    break;
             	  case "addAtribute":
             		  nodo = getAllNodes(["box","diamond"]);
+            		  types = getAllTypesDomain();
             		  if(nodo.length>0){
 	            		  insert = '<form id="formInsert">'+
 				      				'<div class="form-group">'+
@@ -211,7 +214,7 @@
 						  						insert += '<option value='+nodo[i].id+' '+select+'>'+nodo[i].label+'</option>';
 						  				}
 						  insert += '</select>'+
-						            '<label for="recipient-" class="col-form-label">Nombre:</label>'+
+						            '<label for="recipient-" class="col-form-label">'+$('#textItemName').text()+':</label>'+
 						            '<input type="text" class="form-control" id="recipient-name">'+
 	            		            '<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>'+
 						            '<div class="form-inline">'+  
@@ -230,19 +233,11 @@
 					            		'<label for="multivalued"><input type="checkbox" class="mr-1" id="multivalued">'+$('#textMultivalued').text()+'</label>'+
 					          		'</div>'+
 									'<label for="domain" class="col-form-label">'+$('#textDomain').text()+':</label>'+
-						            '<select id="domain" class="form-control">'+
-						            	'<option value="bit">BIT</option>'+
-						            	'<option value="blob">BLOB</option>'+
-						            	'<option value="char">CHAR</option>'+
-						            	'<option value="date">DATE</option>'+
-						            	'<option value="datetime">DATETIME</option>'+
-						            	'<option value="decimal">DECIMAL</option>'+
-						            	'<option value="float">FLOAT</option>'+
-						            	'<option value="integer">INTEGER</option>'+
-						            	'<option value="text">TEXT</option>'+
-						            	'<option value="time">TIME</option>'+
-						            	'<option value="varchar">VARCHAR</option>'+
-						  			'</select>'+
+									'<select id="domain" class="form-control">';
+							  				for(var i=0;i<types.length;i++){
+							  						insert += '<option value='+types[i].id+'>'+types[i].value+'</option>';
+							  				}
+									insert += '</select>'+
 						  			'<label for="size" class="col-form-label">'+$('#textSize').text()+':</label>'+
 						            '<input type="number" class="form-control" id="size">'+
 						            '<input type="hidden" id="tipoAdd" value="addAttribute">'+
@@ -267,20 +262,20 @@
 						  insert += '</select>'+
 						            '<label for="recipient-" class="col-form-label">'+$('#textCardinality').text()+':</label>'+
 	            		            '<div class="form-inline">'+
-							        	'<input class="form-check-input" type="radio" name="cardinality" id="max1" value="max1" checked>'+
+							        	'<input class="" type="radio" name="cardinality" id="max1" value="max1" checked>'+
 							         	'<label class="form-check-label" for="max1">'+
 							         		'Max 1'+
 							         	'</label>'+
 							        '</div>'+
 							       	'<div class="form-inline">'+
-							        	'<input class="form-check-input" type="radio" name="cardinality" id="maxN" value="maxN">'+
+							        	'<input class="" type="radio" name="cardinality" id="maxN" value="maxN">'+
 							        	'<label class="form-check-label" for="maxN">'+
 							        		'Max N'+
 							         	'</label>'+
 							        '</div>'+
 							        '<div class="form-inline">'+
-							        	'<input class="form-check-input" type="radio" name="cardinality" id="minMax" value="minMax">'+
-							        	'<label for="minMax" class="form-check-label col-11 pl-0 justify-content-start">'+
+							        	'<input class="" type="radio" name="cardinality" id="minMax" value="minMax">'+
+							        	'<label for="minMax" class="row form-check-label col-11 pl-3 justify-content-start">'+
 							        		'Min <input type="number" id="minCardinality" class="form-control col-2 ml-1 mr-1" disabled>'+
 							        		'Max <input type="number" id="maxCardinality" class="form-control col-2 ml-1" disabled>'+
 							        	'</label>'+
@@ -315,6 +310,27 @@
             		 }else{
             			 insert = '<p class="text-center">'+$('#textNotEntitys').text()+'</p>';
             		 }
+              	    break;
+            	  case "createDomain":
+            		  types = getAllTypesDomain();
+            		  insert = '<form id="formInsert">'+
+	      				'<div class="form-group">'+
+		      					'<label for="recipient-name" class="col-form-label">'+$('#textItemName').text()+':</label>'+
+				            	'<input type="text" class="form-control" id="recipient-name">'+
+	  		            		'<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>'+
+				            	'<label for="types" class="col-form-label">'+$('#textItemType').text()+':</label>'+
+					            '<select id="types" class="form-control">';
+					  				for(var i=0;i<types.length;i++){
+					  						insert += '<option value='+types[i].id+'>'+types[i].value+'</option>';
+					  				}
+							  	insert += '</select>'+
+					       		'<label for="values_separated" class="col-form-label">'+$('#textValuesSeparated').text()+':</label>'+
+					        	'<input type="text" class="form-control" id="values_separated">'+
+					            '<input type="hidden" id="tipoAdd" value="addDomain">'+
+					            '<input type="hidden" id="typeAction" value="create">'+
+			  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
+					          '</div>'+
+					        '</form>';
               	    break;
             	  default:
             	}

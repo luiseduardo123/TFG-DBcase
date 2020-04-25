@@ -13,7 +13,7 @@ $(document).ready(function(){
 			$( "[functioninsert='addIsA']").click();
 		}},
 		{text: $("#textcreateDomain").text(), action: function(e){
-			alert("crear Dominio");
+			$( "[functioninsert='createDomain']").click();
 		}},
 		//entity
 		{text: $("#addNewAttribute").text(), action: function(e){
@@ -33,7 +33,11 @@ $(document).ready(function(){
 			}
 		}},
 		{text: $("#tableUnique").text(), href: '#', action: function(e){
-			alert("crear unique");
+			$( "[functioninsert='addUniqueKey']").click();
+			idSele = $("#idSelected").val();
+			if(!existDataTableUnique(idSele)){
+				fillEditConstraints(idSele);//
+			}
 		}},	
 		// relation
 		{text: $("#textAddEntitytoRelation").text(), href: '#', action: function(e){

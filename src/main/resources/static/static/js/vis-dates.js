@@ -1,8 +1,8 @@
 var nodes = new vis.DataSet([]);
 var nodoSelected;
-  // create an array with edges
-
-  var edges = new vis.DataSet([]);
+var typeDomain = new Domains();
+// create an array with edges
+ var edges = new vis.DataSet([]);
 // edges.add({from: 1, to: 3, label: 'edge', labelFrom:'fasdsarom', labelTo:'tosdsad'}) con cardinalidad
   // create a network
   var container = document.getElementById('diagram');
@@ -281,6 +281,11 @@ var nodoSelected;
   function setNodeSelected(value){
 	  nodoSelected = value;
   }
+ 
+  function existDataTableUnique(idSelected){
+	  idSelected = parseInt(idSelected);
+	  return (nodes.get(idSelected).tableUnique === undefined)
+  }
   
   function existConstraints(idSelected){
 	  idSelected = parseInt(idSelected);
@@ -298,3 +303,13 @@ var nodoSelected;
 	  return data;
   }
   
+  /* domains**/
+  
+  function getAllTypesDomain(){
+	  return typeDomain.getTypesDomains();
+  }
+  
+  function addTypeDomain(nameType, type, values_separated, typeAction){
+	  var id = nameType.replace(/ /g, "_");
+	  typeDomain.setTypesDomains(id.toLowerCase(), nameType, type, values_separated);
+  }
