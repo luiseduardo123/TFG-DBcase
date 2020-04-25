@@ -4,7 +4,6 @@
 
 
 <body>
-	 <button id="btnTest" type="button" class="btn btn-success">Generate</button>
 	 <div class="wrapper" style="height: 100%;">
         <!-- Sidebar  -->
         <nav th:replace="sidebar.html"> </nav>
@@ -44,14 +43,21 @@
 	         </div>
           	<div  style="height: 87.8%;">
 				<div class="row mr-0 changeSizeHeight col-md-6-height">
-				  <div class="col-md-6 changeSizeWidth col-md-12-height" style="overflow-x: auto;overflow-y: auto;">
-					<div id="diagram" style="width: 100%;height: 100%;">
+				  <div class="col-md-6 changeSizeWidth col-md-12-height overflow-auto">
+					<div id="diagram" class="w-100 h-100">
 					</div>
 					<button type="button" id="sidebarCollapse" class="btn" th:classappend="${theme=='dark'} ? btn-dark : btn-light" style="position: absolute;top: 0px;left: 15px;z-index: 2;">
                         <span style="writing-mode: vertical-rl;text-orientation: upright;line-height: 0px;font-size: 12px;letter-spacing: -3px;" th:text="#{add.items}"></span>
                     </button>
                   </div>
-				  <div class="col-md-6 changeSizeWidth col-md-12-height" id="testResult">.col-6 .col-md-4</div>
+				  <div class="col-md-6 changeSizeWidth col-md-12-height overflow-auto">
+					  	<div class="row mt-2">
+						  <div class="col-6 col-md-6"><p class="h4 mt-2" th:text="#{textos.logicalSchema}"></p></div>
+						  <div class="col-6 col-md-6"><button type="button" class="btn float-right ml-2" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.saveAs}"></button><button type="button" id="btnTest" class="btn float-right" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.generate}"></button></div>
+						</div>
+						<div class="w-100" id="testResult">
+						</div>
+				  </div>
 				</div>
 				<div class="row mr-0" style="height: 50%;">
 				  <div class="col-md-6">.col-12 .col-md-8</div>
@@ -106,7 +112,6 @@
             });
             
             $('.closeSide').on('click', function() {
-            	console.log("as "+this.getAttribute("alt"));
                 $('#titleModal').html(this.getAttribute("alt"));
                 $('#tipoAdd').val(this.getAttribute("functionInsert"));
             });
