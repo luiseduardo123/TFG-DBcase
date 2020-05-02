@@ -13,6 +13,7 @@
 	    	<div class="pos-f-t">
 	            <nav class="navbar navbar-dark mb-0" th:classappend="${theme=='dark'} ? bg-dark : 'bg-light'">
 	            	<div class="col-3 col-md-4">
+	            		<button type="button" id="loadFile" class="btn float-left" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.open}"></button>
 	            	</div>
 					<div class="col-6 col-md-4 text-center">
 						<span class="" th:classappend="${theme=='dark'} ? text-light : text-dark">DBCASE WEB</span>
@@ -28,12 +29,12 @@
 								    <a id="dropdownMenuLanguage" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-item dropdown-toggle text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{general.configuration}"></a>
 						              <ul aria-labelledby="dropdownMenuLanguage" class="dropdown-menu border-0 shadow" th:classappend="${theme=='dark'} ? bg-dark : bg-light" style="left: 17px;">
 						              	<h6 class="dropdown-header text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{general.theme}"></h6>
-						                <li><a href="/lang?lang=es" class="dropdown-item text-white" th:classappend="${language=='es'} ? (${theme=='dark'} ? 'text-light active' : 'active text-dark') : (${theme=='dark'} ? 'text-light' : 'text-dark')" th:text="#{general.es}"></a></li>
-						                <li><a href="/lang?lang=en" class="dropdown-item text-white" th:classappend="${language=='en'} ? (${theme=='dark'} ? 'text-light active' : 'active text-dark') : (${theme=='dark'} ? 'text-light' : 'text-dark')" th:text="#{general.en}"></a></li>
+						                <li><a href="/lang?lang=es" class="changeOptions dropdown-item text-white" th:classappend="${language=='es'} ? (${theme=='dark'} ? 'text-light active' : 'active text-dark') : (${theme=='dark'} ? 'text-light' : 'text-dark')" th:text="#{general.es}"></a></li>
+						                <li><a href="/lang?lang=en" class="changeOptions dropdown-item text-white" th:classappend="${language=='en'} ? (${theme=='dark'} ? 'text-light active' : 'active text-dark') : (${theme=='dark'} ? 'text-light' : 'text-dark')" th:text="#{general.en}"></a></li>
 						                <div class="dropdown-divider"></div>
 						                <h6 class="dropdown-header text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{general.language}"></h6>
-						                <li><a href="/theme?theme=dark" class="dropdown-item text-white" th:classappend="${theme=='dark'} ? active : 'text-dark'" th:text="#{general.dark}"></a></li>
-						                <li><a href="/theme?theme=light" class="dropdown-item text-white" th:classappend="${theme=='light'} ? active : 'text-light'" th:text="#{general.light}"></a></li>
+						                <li><a href="/theme?theme=dark" class="changeOptions dropdown-item text-white" th:classappend="${theme=='dark'} ? active : 'text-dark'" th:text="#{general.dark}"></a></li>
+						                <li><a href="/theme?theme=light" class="changeOptions dropdown-item text-white" th:classappend="${theme=='light'} ? active : 'text-light'" th:text="#{general.light}"></a></li>
 						              </ul>
 								</div>
 							</div>
@@ -53,9 +54,138 @@
 				  <div class="col-md-6 changeSizeWidth col-md-12-height overflow-auto" th:classappend="${theme=='dark'} ? 'text-white bg-dark' : 'text-dark bg-light'">
 					  	<div class="row pt-2 sticky-top" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
 						  <div class="col-6 col-md-6"><p class="h5 mt-2" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{textos.logicalSchema}"></p></div>
-						  <div class="col-6 col-md-6"><button type="button" class="btn float-right ml-2" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.saveAs}"></button><button type="button" id="btnTest" class="btn float-right" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.generate}"></button></div>
+						  <div class="col-6 col-md-6"><button id="saveAs" type="button" class="btn float-right ml-2" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.saveAs}"></button><button type="button" id="btnTest" class="btn float-right" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.generate}"></button></div>
 						</div>
 						<div class="w-100" id="testResult">
+[
+  {
+    "x": 28,
+    "y": 38,
+    "id": "0",
+    "fullOptions": {
+      "x": 28,
+      "y": 38,
+      "label": "sdsa",
+      "strong": false,
+      "shape": "box",
+      "color": "#ffcc45",
+      "scale": 20,
+      "widthConstraint": 150,
+      "heightConstraint": 25,
+      "physics": false,
+      "id": 0
+    },
+    "connections": [
+      {
+        "from": "0",
+        "to": 1,
+        "id": "ab994bfe-2c38-44f8-99be-d4d02a4b25b1"
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "id": "9db3ee46-046e-44e4-a345-79f415ca963b",
+        "label": "pepito",
+        "labelFrom": "0",
+        "labelTo": "1"
+      }
+    ]
+  },
+  {
+    "x": -124,
+    "y": -61,
+    "id": "1",
+    "fullOptions": {
+      "x": -124,
+      "y": -61,
+      "label": "cdcd",
+      "dataAttribute": {
+        "primaryKey": false,
+        "composite": false,
+        "notNull": false,
+        "unique": false,
+        "multivalued": false,
+        "domain": "bit",
+        "size": ""
+      },
+      "shape": "ellipse",
+      "color": "#4de4fc",
+      "scale": 20,
+      "widthConstraint": 80,
+      "heightConstraint": 25,
+      "physics": false,
+      "id": 1
+    },
+    "connections": [
+      {
+        "from": "0",
+        "to": 1,
+        "id": "ab994bfe-2c38-44f8-99be-d4d02a4b25b1"
+      }
+    ]
+  },
+  {
+    "x": 0,
+    "y": -116,
+    "id": "2",
+    "fullOptions": {
+      "x": 0,
+      "y": -116,
+      "label": "es",
+      "shape": "diamond",
+      "color": "#ff554b",
+      "scale": 20,
+      "physics": false,
+      "id": 2
+    },
+    "connections": [
+      {
+        "from": 2,
+        "to": 0,
+        "id": "9db3ee46-046e-44e4-a345-79f415ca963b",
+        "label": "pepito",
+        "labelFrom": "0",
+        "labelTo": "1"
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "label": "das",
+        "labelFrom": "0",
+        "labelTo": "1",
+        "id": "bca8c994-c163-4aa9-94a3-209121e80de3"
+      }
+    ]
+  },
+  {
+    "x": 161,
+    "y": -73,
+    "id": "3",
+    "fullOptions": {
+      "label": "dsadsa",
+      "strong": false,
+      "shape": "box",
+      "color": "#ffcc45",
+      "scale": 20,
+      "widthConstraint": 150,
+      "heightConstraint": 25,
+      "physics": false,
+      "id": 3,
+      "x": 161,
+      "y": -73
+    },
+    "connections": [
+      {
+        "from": 2,
+        "to": 3,
+        "label": "das",
+        "labelFrom": "0",
+        "labelTo": "1",
+        "id": "bca8c994-c163-4aa9-94a3-209121e80de3"
+      }
+    ]
+  }
+]
 						</div>
 				  </div>
 				</div>
@@ -157,7 +287,7 @@
             		  insert = '<form id="formInsert">'+
             		  					'<div class="row">'+
             		  					  '<div class="col-10">'+
-            		          				'<div class="form-group" id="inputList" style="height: 250px;overflow: auto;">'+
+            		          				'<div class="form-group overflow-auto" id="inputList" style="height: 250px;">'+
 				            		            '<input type="text" name="listText[]" class="form-control" id="list0">'+
 				            		            '<input type="hidden" id="tipoAdd" value="addConstrainst">'+
 				            		            '<input type="hidden" id="typeAction" value="create">'+
@@ -216,11 +346,16 @@
 						  insert += '</select>'+
 						            '<label for="recipient-" class="col-form-label">'+$('#textItemName').text()+':</label>'+
 						            '<input type="text" class="form-control" id="recipient-name">'+
-	            		            '<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>'+
-						            '<div class="form-inline">'+  
-	            		            	'<label for="primaryKey"><input type="checkbox" class="mr-1" id="primaryKey">'+$('#textPrimaryKey').text()+'</label>'+
-	            		          	'</div>'+
-	            		          	'<div class="form-inline">'+
+	            		            '<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>';
+							var dNone = "";
+	            		            if(nodo_select){
+	            		            	if(getTypeItem(nodo_select) == "diamond")
+	            		            		dNone = "d-none";
+	            		            }
+	            		  insert += '<div class="form-inline '+dNone+'">'+  
+            		            	'<label for="primaryKey"><input type="checkbox" class="mr-1" id="primaryKey">'+$('#textPrimaryKey').text()+'</label>'+
+            		          	'</div>';
+	            		  insert += '<div class="form-inline">'+
             		            		'<label for="composite"><input type="checkbox" class="mr-1" id="composite">'+$('#textComposite').text()+'</label>'+
             		          		'</div>'+
 	            		          	'<div class="form-inline">'+
@@ -235,11 +370,15 @@
 									'<label for="domain" class="col-form-label">'+$('#textDomain').text()+':</label>'+
 									'<select id="domain" class="form-control">';
 							  				for(var i=0;i<types.length;i++){
-							  						insert += '<option value='+types[i].id+'>'+types[i].value+'</option>';
+							  					if(types[i].value == 'VARCHAR')
+							  						select = "selected";
+							  					else
+							  						select = "";
+							  					insert += '<option value='+types[i].id+' '+select+'>'+types[i].value+'</option>';
 							  				}
 									insert += '</select>'+
 						  			'<label for="size" class="col-form-label">'+$('#textSize').text()+':</label>'+
-						            '<input type="number" class="form-control" id="size">'+
+						            '<input type="number" class="form-control" id="size" value=20>'+
 						            '<input type="hidden" id="tipoAdd" value="addAttribute">'+
 						            '<input type="hidden" id="typeAction" value="create">'+
 				  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
@@ -262,13 +401,13 @@
 						  insert += '</select>'+
 						            '<label for="recipient-" class="col-form-label">'+$('#textCardinality').text()+':</label>'+
 	            		            '<div class="form-inline">'+
-							        	'<input class="" type="radio" name="cardinality" id="max1" value="max1" checked>'+
+							        	'<input class="" type="radio" name="cardinality" id="max1" value="max1">'+
 							         	'<label class="form-check-label" for="max1">'+
 							         		'Max 1'+
 							         	'</label>'+
 							        '</div>'+
 							       	'<div class="form-inline">'+
-							        	'<input class="" type="radio" name="cardinality" id="maxN" value="maxN">'+
+							        	'<input class="" type="radio" name="cardinality" id="maxN" value="maxN" checked>'+
 							        	'<label class="form-check-label" for="maxN">'+
 							        		'Max N'+
 							         	'</label>'+
@@ -332,10 +471,59 @@
 					          '</div>'+
 					        '</form>';
               	    break;
+            	  	case "addUniqueKey":
+            	  		nodo = allAttributeOfEntity(nodo_select);
+            	  		if(nodo.length>0){
+		            		  insert = '<form id="formInsert">'+
+		            		  				'<div class="row">'+
+		            		  					'<div class="col-10">'+
+		            		          				'<div class="form-group overflow-auto" id="inputList" style="height: 250px;">'+
+						            		            '<input type="text" name="listText[]" class="form-control" id="list0" value="Unique(...)">'+
+						            		            '<input type="hidden" id="tipoAdd" value="addTableUnique">'+
+						            		            '<input type="hidden" id="typeAction" value="create">'+
+									  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
+					            		        	'</div>'+
+					            		        '</div>'+
+					            		        '<div class="col-2 pl-0">'+
+					            		          	'<button type="button" class="btn btn-lg btn-block btn-dark" id="addList">+</button>'+
+					            		        	'<button type="button" class="btn btn-lg btn-block btn-dark" id="removeList">-</button>'+
+					            		    	'</div>'+
+					            		    	'<div class="col-12">';
+					            		    	for(var i=0;i<nodo.length;i++){// seguir aqui
+					            		    		insert += '<a href="#" id="atribute_'+nodo[i].id+'" class="badge badge-dark mr-1">'+nodo[i].label+'</a>';
+								  				}
+					            		    	insert += '</div>'+
+					            			'</div>'+
+					            		'</form>';
+	            	  		}else{
+	               			 insert = '<p class="text-center">'+$('#textNotAttribute').text()+'</p>';
+	               		 }
+            	    break;
+            	  	case "downloadFile":
+		            		  insert = '<form id="formInsert">'+
+		            		  				'<div class="row">'+
+		            		  					'<div class="col-12 text-center">'+
+		            		          					'<a id="urlFile" href="" download><button type="button" class="btn btn-dark">'+$('#textDownload').text()+'</button></a>'+
+					            		        	'</div>'+
+					            		        '</div>'+
+					            		'</form>';
+            	    break;
+            	  	case "loadFile":
+            	  		insert = '<form id="formInsert" method="POST" enctype="multipart/form-data" action="/readFile">'+
+	            			'<input type="file" class="form-control-file d-none" name="file" id="file">'+
+			                	'<div class="upload-area border"  style="height: 140px;" id="uploadfile">'+
+			                    	'<p class="h5 text-center mt-5" id="textoFileDrag">Drag and Drop file here Or Click to select file</p>'+
+			                   	'</div>'+
+		                   	'</form>';
+      	    		break;
             	  default:
             	}
             	setNodeSelected(null);
             	$("#formModal").html(insert);
+            	//** hacer aqui que vuelva aparcer los botones
+            	$('#modalAddItem').on('hide.bs.modal', function (event) {
+            		$("#formModalButton").show();
+            	});
             	
             	switch($(this).attr("functionInsert")) {
             		case "addEntitytoRelation":

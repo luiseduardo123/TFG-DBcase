@@ -1,6 +1,6 @@
 <nav id="sidebar" class="active" th:classappend="${theme=='dark'} ? bg-dark : bg-light" style="z-index:1;">
           <div class="sidebar-header" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
-              <h4 class="text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{add.items}"></h4>
+              <p class="h4 text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{add.items}"></p>
           </div>
 	<div class="row">
 	  <div class="col-md-12 mt-4">
@@ -53,6 +53,16 @@
 	<div class="col-md-12 mt-4 d-none">
 	  	<div class="text-center">
 		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addUniqueKey" src="static/images/attribute.png" class="rounded closeSide insertarDatos" th:alt="#{textos.uniqueKey}">
+		</div>
+	</div>
+	<div class="col-md-12 mt-4 d-none">
+	  	<div class="text-center">
+		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="downloadFile" src="static/images/attribute.png" class="rounded closeSide insertarDatos" th:alt="#{textos.downloadFile}">
+		</div>
+	</div>
+	<div class="col-md-12 mt-4 d-none">
+	  	<div class="text-center">
+		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="loadFile" src="static/images/attribute.png" class="rounded closeSide insertarDatos" th:alt="#{textos.loadFile}">
 		</div>
 	</div>
 	</div>

@@ -1,23 +1,31 @@
 package com.tfg.ucm.DBCaseWeb;
 
 import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.*;
-import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.json.JsonParserFactory;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,10 +34,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -47,7 +57,13 @@ import modelo.transfers.TransferRelacion;
 @SpringBootApplication
 @RestController
 public class GoogleserviceApplication {
-	//test
+	
+	/*
+	 * Return traductions
+	 */
+	@Autowired
+	private	MessageSource messageSource;
+	
    public static void main(String[] args) {
       SpringApplication.run(GoogleserviceApplication.class, args);
    }
@@ -566,5 +582,57 @@ public class GoogleserviceApplication {
    @GetMapping("/logout")
    public RedirectView redirectWithUsingRedirectView(RedirectAttributes attributes) {
        return new RedirectView("/");
+   }
+   
+   /**
+    * Download file
+    * @return
+    * @throws IOException
+    */
+   
+   @RequestMapping(value = "/writeFile", method = RequestMethod.POST)
+   public String downloadFile(@RequestBody String dataJson, Principal principal) throws IOException  {
+	   	Date now = new Date();
+	   	Path rootPath = Paths.get("uploads").resolve(now.getTime()+""+principal.getName()+".dbw");
+		Path rootAbsolutPath = rootPath.toAbsolutePath();
+		File fileData = new File(rootAbsolutPath.toString());
+		fileData.createNewFile();
+	    FileOutputStream fout = new FileOutputStream(fileData);
+	    fout.write(dataJson.getBytes());
+	    fout.close();
+	    
+	   return now.getTime()+""+principal.getName()+".dbw";
+	}
+   
+   /**
+    * FIle upload read 
+    * @param file
+    * @return
+    * @throws IOException
+    */
+   
+   @RequestMapping(value = "/readFile", method = RequestMethod.POST)
+   public String fileUpload(@RequestParam("file") MultipartFile file) throws IOException {
+	   String fileRead = "";	   
+	   Pattern pat = Pattern.compile(".*dbw");
+	   HashMap<Integer, String> result = new HashMap<Integer, String>();
+	  
+	   if(!file.isEmpty()) {
+	  		Matcher mat = pat.matcher(file.getOriginalFilename());
+		   if (mat.matches()) {
+			   byte[] bytes = file.getBytes();
+			   fileRead = new String(bytes, StandardCharsets.UTF_8);
+			   result.put(1, fileRead);
+		   } else {
+			   result.put(0, messageSource.getMessage("textos.extensionFail", null, LocaleContextHolder.getLocale()));
+		   }
+	  }else{
+		  result.put(0, messageSource.getMessage("textos.fileInvalid", null, LocaleContextHolder.getLocale()));
+	  }
+
+	   ObjectMapper objectMapper = new ObjectMapper();
+	   String json = objectMapper.writeValueAsString(result);
+	   
+      return json;
    }
 }

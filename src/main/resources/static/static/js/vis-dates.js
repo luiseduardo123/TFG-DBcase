@@ -48,7 +48,6 @@ var typeDomain = new Domains();
 	  nodes.update(data_element);
   }
   
-  
   function addRelation(nombre, action, idSelected){
 	  var id_node = nodes.length;
 	  var data_element = {label: nombre, shape: 'diamond', color:'#ff554b', scale:20, physics:false};
@@ -88,7 +87,7 @@ var typeDomain = new Domains();
 	  }else{
 		  data_element.id = id_node++;
 		  nodes.add(data_element);
-		  edges.add({from: idEntity, to: id_node-1, color:{color:'blue'}});
+		  edges.add({from: parseInt(idEntity), to: parseInt(id_node)-1, color:{color:'blue'}});
 	  }
   }
   
@@ -99,16 +98,16 @@ var typeDomain = new Domains();
 	  var exist = false;
 	  switch(cardinality){
 	  	case 'max1':
-	  		left = '0';
-	  		right = '1';
+	  		left = '1';
+	  		right = '0';
 	  	break;
 	  	case 'maxN':
-		  	left = '0';
-	  		right = 'N';
+		  	left = 'N';
+	  		right = '0';
 	  	break;
 	  	case 'minMax':
-		  	left = minCardinality;
-	  		right = maxCardinality;
+		  	left = maxCardinality;
+	  		right = minCardinality;
 	  	break;
 	  	default:
 	  }
@@ -302,6 +301,18 @@ var typeDomain = new Domains();
 	  });
 	  return data;
   }
+
+  function allAttributeOfEntity(nodo_select){
+	  var data = [];
+	  nodos = network.getConnectedEdges(parseInt(nodo_select));
+	  nodos.forEach(function(edg) {
+		  	idNodo = edges.get(edg).to;
+		  	roleName = edges.get(edg).label;
+		  	if(nodes.get(idNodo).shape == "ellipse")
+		  		data.push({id:idNodo, label:nodes.get(idNodo).label});				  
+	  });
+	  return data;
+  }
   
   /* domains**/
   
@@ -312,4 +323,8 @@ var typeDomain = new Domains();
   function addTypeDomain(nameType, type, values_separated, typeAction){
 	  var id = nameType.replace(/ /g, "_");
 	  typeDomain.setTypesDomains(id.toLowerCase(), nameType, type, values_separated);
+  }
+  
+  function getTypeItem(idItem){
+	  return nodes.get(parseInt(idItem)).shape;
   }
