@@ -14860,7 +14860,8 @@ var Edge = function () {
         var saved = this.options.label;
         this.options.label = this.options.labelFrom;
         this.updateLabelModule();
-        this._drawLabel(0.2, ctx, viaNode); // TODO Adjust offset based on node & label sizes
+        console.log(this.options.labelFrom);
+        this._drawLabel(0.3, ctx, viaNode); // TODO Adjust offset based on node & label sizes
         this.options.label = saved;
         this.updateLabelModule();
       }

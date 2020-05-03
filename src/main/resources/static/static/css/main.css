@@ -526,3 +526,9 @@ iframe {
     padding-right: 15px;
   }
 }
+
+@media (max-width: 768px) {
+    .paddingLeft{
+		padding-left: 30px;
+	}
+}

@@ -1,6 +1,6 @@
-<nav id="sidebar" class="active" th:classappend="${theme=='dark'} ? bg-dark : bg-light" style="z-index:1;">
+<nav id="sidebar" class="" th:classappend="${theme=='dark'} ? bg-dark : bg-light" style="z-index:10000;">
           <div class="sidebar-header" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
-              <p class="h4 text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{add.items}"></p>
+              <p class="h5 text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{add.items}"></p>
           </div>
 	<div class="row">
 	  <div class="col-md-12 mt-4">
