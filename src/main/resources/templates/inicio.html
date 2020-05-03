@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="head.html"> </head>
-
-
 <body>
 	 <div class="wrapper" style="height: 100%;">
         <!-- Sidebar  -->
@@ -57,135 +55,6 @@
 						  <div class="col-6 col-md-6"><button id="saveAs" type="button" class="btn float-right ml-2" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.saveAs}"></button><button type="button" id="btnTest" class="btn float-right" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.generate}"></button></div>
 						</div>
 						<div class="w-100" id="testResult">
-[
-  {
-    "x": 28,
-    "y": 38,
-    "id": "0",
-    "fullOptions": {
-      "x": 28,
-      "y": 38,
-      "label": "sdsa",
-      "strong": false,
-      "shape": "box",
-      "color": "#ffcc45",
-      "scale": 20,
-      "widthConstraint": 150,
-      "heightConstraint": 25,
-      "physics": false,
-      "id": 0
-    },
-    "connections": [
-      {
-        "from": "0",
-        "to": 1,
-        "id": "ab994bfe-2c38-44f8-99be-d4d02a4b25b1"
-      },
-      {
-        "from": 2,
-        "to": 0,
-        "id": "9db3ee46-046e-44e4-a345-79f415ca963b",
-        "label": "pepito",
-        "labelFrom": "0",
-        "labelTo": "1"
-      }
-    ]
-  },
-  {
-    "x": -124,
-    "y": -61,
-    "id": "1",
-    "fullOptions": {
-      "x": -124,
-      "y": -61,
-      "label": "cdcd",
-      "dataAttribute": {
-        "primaryKey": false,
-        "composite": false,
-        "notNull": false,
-        "unique": false,
-        "multivalued": false,
-        "domain": "bit",
-        "size": ""
-      },
-      "shape": "ellipse",
-      "color": "#4de4fc",
-      "scale": 20,
-      "widthConstraint": 80,
-      "heightConstraint": 25,
-      "physics": false,
-      "id": 1
-    },
-    "connections": [
-      {
-        "from": "0",
-        "to": 1,
-        "id": "ab994bfe-2c38-44f8-99be-d4d02a4b25b1"
-      }
-    ]
-  },
-  {
-    "x": 0,
-    "y": -116,
-    "id": "2",
-    "fullOptions": {
-      "x": 0,
-      "y": -116,
-      "label": "es",
-      "shape": "diamond",
-      "color": "#ff554b",
-      "scale": 20,
-      "physics": false,
-      "id": 2
-    },
-    "connections": [
-      {
-        "from": 2,
-        "to": 0,
-        "id": "9db3ee46-046e-44e4-a345-79f415ca963b",
-        "label": "pepito",
-        "labelFrom": "0",
-        "labelTo": "1"
-      },
-      {
-        "from": 2,
-        "to": 3,
-        "label": "das",
-        "labelFrom": "0",
-        "labelTo": "1",
-        "id": "bca8c994-c163-4aa9-94a3-209121e80de3"
-      }
-    ]
-  },
-  {
-    "x": 161,
-    "y": -73,
-    "id": "3",
-    "fullOptions": {
-      "label": "dsadsa",
-      "strong": false,
-      "shape": "box",
-      "color": "#ffcc45",
-      "scale": 20,
-      "widthConstraint": 150,
-      "heightConstraint": 25,
-      "physics": false,
-      "id": 3,
-      "x": 161,
-      "y": -73
-    },
-    "connections": [
-      {
-        "from": 2,
-        "to": 3,
-        "label": "das",
-        "labelFrom": "0",
-        "labelTo": "1",
-        "id": "bca8c994-c163-4aa9-94a3-209121e80de3"
-      }
-    ]
-  }
-]
 						</div>
 				  </div>
 				</div>
@@ -201,7 +70,6 @@
     <script type="text/javascript">
         $(document).ready(function () {
         	
-
        	 	 $('#btnTest').on('click', function () {
        		  //var url = "<c:url value="/generateData"/>";
        		  var f= 2;
@@ -515,7 +383,7 @@
             	  		insert = '<form id="formInsert" method="POST" enctype="multipart/form-data" action="/readFile">'+
 	            			'<input type="file" class="form-control-file d-none" name="file" id="file">'+
 			                	'<div class="upload-area border"  style="height: 140px;" id="uploadfile">'+
-			                    	'<p class="h5 text-center mt-5" id="textoFileDrag">Drag and Drop file here Or Click to select file</p>'+
+			                    	'<p class="h5 text-center mt-5" id="textoFileDrag">'+$("#textDragDropText").text()+'</p>'+
 			                   	'</div>'+
 		                   	'</form>';
       	    		break;

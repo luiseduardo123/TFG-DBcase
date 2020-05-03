@@ -14861,7 +14861,7 @@ var Edge = function () {
         this.options.label = this.options.labelFrom;
         this.updateLabelModule();
         console.log(this.options.labelFrom);
-        this._drawLabel(0.3, ctx, viaNode); // TODO Adjust offset based on node & label sizes
+        this._drawLabel(0.2, ctx, viaNode); // TODO Adjust offset based on node & label sizes
         this.options.label = saved;
         this.updateLabelModule();
       }
@@ -14870,7 +14870,7 @@ var Edge = function () {
         var saved = this.options.label;
         this.options.label = this.options.labelTo;
         this.updateLabelModule();
-        this._drawLabel(0.8, ctx, viaNode); // TODO Adjust offset based on node & label sizes
+        this._drawLabel(0.7, ctx, viaNode); // TODO Adjust offset based on node & label sizes
         this.options.label = saved;
         this.updateLabelModule();
       }

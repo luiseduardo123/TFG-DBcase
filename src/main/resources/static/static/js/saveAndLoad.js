@@ -121,12 +121,12 @@ function uploadData(fd){
         		$("#textoFileDrag").text(result[0]);
         	}else{
         		importNetwork("file", result[1]);
-        		$("#textoFileDrag").text("guay");
+        		$("#textoFileDrag").text(result[1]);
             	$("[aria-label='Close']").click();
         	}        	
         },
         error: function (xhr, ajaxOptions, thrownError) {
-        	console.log("no guay");
+        	$("#textoFileDrag").text($("#textFileInvalid").text());
         }
     });
 }
@@ -155,14 +155,13 @@ $(document).ready(function () {
         $("html").on("dragover", function(e) {
             e.preventDefault();
             e.stopPropagation();
-            $("#textoFileDrag").text("Drag here");
+            $("#textoFileDrag").text($("#textDragHere").text());
         });
 
         $("html").on("drop", function(e) { e.preventDefault(); e.stopPropagation(); });
 
         // Drag enter
         $('.upload-area').on('dragenter', function (e) {
-        	console.log("sdads");
             e.stopPropagation();
             e.preventDefault();
         });
@@ -181,7 +180,6 @@ $(document).ready(function () {
             var file = e.originalEvent.dataTransfer.files;
             var fd = new FormData();
             fd.append('file', file[0]);
-            
             uploadData(fd);
         });
 
@@ -194,12 +192,10 @@ $(document).ready(function () {
         $("#file").change(function(){
             var fd = new FormData();
             var files = $('#file')[0].files[0];
-            console.log(files);
             fd.append('file',files);
             uploadData(fd);
         });
         
-       
 	});
 	
 	 // preventing page from redirecting
