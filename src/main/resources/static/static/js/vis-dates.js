@@ -2,29 +2,39 @@ var nodes = new vis.DataSet([]);
 var nodoSelected;
 var typeDomain = new Domains();
 // create an array with edges
- var edges = new vis.DataSet([]);
-// edges.add({from: 1, to: 3, label: 'edge', labelFrom:'fasdsarom', labelTo:'tosdsad'}) con cardinalidad
+var edges = new vis.DataSet([]);
+ 
   // create a network
-  var container = document.getElementById('diagram');
-  var data = {
-    nodes: nodes,
+var container = document.getElementById('diagram');
+var data = {
+	nodes: nodes,
     edges: edges
-  };
-  var options = {
-		  height: '100%',
-		  width: '100%',
-    nodes: {
-      shape: 'circle',
-      font: {
-          multi: 'md',
-      }
-    },
-    interaction: {
-    	navigationButtons: true,
-	    keyboard: true
-	}
-  };
-  var network = new vis.Network(container, data, options);
+};
+
+var options = {
+		  interaction:{
+		    dragNodes:true,
+		    dragView: true,
+		    hideEdgesOnDrag: false,
+		    hideEdgesOnZoom: false,
+		    hideNodesOnDrag: false,
+		    hover: false,
+		    hoverConnectedEdges: true,
+		    keyboard: {
+		      enabled: false,
+		      speed: {x: 10, y: 10, zoom: 0.02},
+		      bindToWindow: true
+		    },
+		    multiselect: false,
+		    navigationButtons: true,
+		    selectable: true,
+		    selectConnectedEdges: true,
+		    tooltipDelay: 300,
+		    zoomView: true
+		  }
+		};
+  
+var network = new vis.Network(container, data, options);
   
   function addEntity(nombre, weakEntity,action, idSelected){
 	  var id_node = nodes.length;
@@ -74,10 +84,9 @@ var typeDomain = new Domains();
 		  word_pk = name+'\n'+word;
 	  }else{
 		  word_pk = name;
-		  if(notNll){
+		  if(!notNll){
 			  word_pk +="*";
-		  }
-		  
+		  } 
 	  }
 	  
 	  var data_element = {label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25,physics:false};

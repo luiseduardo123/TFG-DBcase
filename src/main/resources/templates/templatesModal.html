@@ -1,0 +1,32 @@
+<div class="d-none">
+	<div class="d-none" id="prueba1" type="text/x-jquery-tmpl">
+		<form id="formInsert">
+     		<div class="row">
+     			<div class="col-10">
+     				<div class="form-group overflow-auto" id="inputList" style="height: 250px;">
+         		    	<input type="text" name="listText[]" class="form-control" id="list0">
+         		        <input type="hidden" id="tipoAdd" value="addConstrainst">
+         		        <input type="hidden" id="typeAction" value="create">
+  		          		<input type="hidden" id="idSelected" value="${nodo_select}">
+        		    </div>
+        		</div>
+        		<div class="col-2 pl-0">'+
+        			<button type="button" class="btn btn-lg btn-block btn-dark" id="addList">+</button>
+        		    <button type="button" class="btn btn-lg btn-block btn-dark" id="removeList">-</button>
+        		</div>
+        	</div>
+        </form>
+	</div>
+</div>
+<script>
+
+$(document).ready(function(){
+	var movies = {
+			  titulo: 'Prueba',
+			  descripcion: 'Esto podría ser una descripción de un producto o lo que se te ocurra'
+			};
+    $('#btnTest').on('click', function(){
+      $('#testResult').html($('#prueba1').tmpl(movies));
+    });
+  });
+</script>
