@@ -126,7 +126,7 @@ var network = new vis.Network(container, data, options);
 		  center = roleName;
 	  
 	  var idEdge = existEdge(idSelected, idTo);
-	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: center, labelFrom:left, labelTo:right};
+	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: center, labelFrom:right, labelTo:left};
 	  if(idEdge != null){
 		  data_element.id = idEdge;
 		  edges.update(data_element);
