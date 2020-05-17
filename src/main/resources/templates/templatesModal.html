@@ -1,5 +1,5 @@
 <div class="d-none">
-	<div class="d-none" id="prueba1" type="text/x-jquery-tmpl">
+	<div class="d-none" id="templateAddConstrainst" type="text/x-jquery-tmpl">
 		<form id="formInsert">
      		<div class="row">
      			<div class="col-10">
@@ -7,26 +7,240 @@
          		    	<input type="text" name="listText[]" class="form-control" id="list0">
          		        <input type="hidden" id="tipoAdd" value="addConstrainst">
          		        <input type="hidden" id="typeAction" value="create">
-  		          		<input type="hidden" id="idSelected" value="${nodo_select}">
+  		          		<input type="hidden" id="idSelected" value="${temp_node_select}">
         		    </div>
         		</div>
-        		<div class="col-2 pl-0">'+
+        		<div class="col-2 pl-0">
         			<button type="button" class="btn btn-lg btn-block btn-dark" id="addList">+</button>
         		    <button type="button" class="btn btn-lg btn-block btn-dark" id="removeList">-</button>
         		</div>
         	</div>
         </form>
+	</div>	
+	
+	<div class="d-none" id="templateAddEntity" type="text/x-jquery-tmpl">
+		<form id="formInsert">
+        	<div class="form-group">
+				<label for="recipient-name" class="col-form-label" th:text="#{item.nombre}"></label>
+		    	<input type="text" class="form-control" id="recipient-name">
+		        <div class="invalid-feedback" th:text="#{textos.errorNameExist}"></div>
+		           	<input type="hidden" id="tipoAdd" value="addEntity">
+		           	<input type="hidden" id="typeAction" value="create">
+				  	<input type="hidden" id="idSelected" value="${temp_node_select}">
+		    </div>
+		    <div class="form-inline">
+		      	<label for="weak-entity"><input type="checkbox" class="mr-1" id="weak-entity" th:text="#{textos.isAEntityWeak}"></label>
+		    </div>
+		</form>
 	</div>
+	
+	<div class="d-none" id="templateAddRelation" type="text/x-jquery-tmpl">
+		<form id="formInsert">
+			<div class="form-group">
+				<label for="recipient-name" class="col-form-label" th:text="#{item.nombre}"></label>
+			  	<input type="text" class="form-control" id="recipient-name">
+	  			<div class="invalid-feedback" th:text="#{textos.errorNameExist}"></div>
+  		    	<input type="hidden" id="tipoAdd" value="addRelation">
+  		        <input type="hidden" id="typeAction" value="create">
+  		        <input type="hidden" id="idSelected" value="${temp_node_select}">
+	  	    </div>
+		</form>
+	</div>
+	
+	<div class="d-none" id="templateDownloadFile" type="text/x-jquery-tmpl">
+		<form id="formInsert">
+	  		<div class="row">
+	  			<div class="col-12 text-center">
+	          		<a id="urlFile" href="" download><button type="button" class="btn btn-dark" th:text="#{textos.download}"></button></a>
+  		    	</div>
+  			</div>
+  		</form>
+	</div>
+	
+	<div class="d-none" id="templateAddLoadFile" type="text/x-jquery-tmpl">
+		<form id="formInsert" method="POST" enctype="multipart/form-data" action="/readFile">
+   			<input type="file" class="form-control-file d-none" name="file" id="file">
+         	<div class="upload-area border"  style="height: 140px;" id="uploadfile">
+            	<p class="h5 text-center mt-5" id="textoFileDrag" th:text="#{textos.dragDropText}"></p>
+            </div>
+        </form>
+	</div>
+	
+	<div class="d-none" id="templateAddAtribute" type="text/x-jquery-tmpl">
+		{{if temp_node_length==0 }}
+	        <p class="text-center" th:text="#{textos.notEntitysRelation}"></p>
+	    {{else}}
+	    	<form id="formInsert">
+				<div class="form-group">
+					<label for="element" class="col-form-label" th:text="#{textos.elements}"></label>
+					<select id="element" class="form-control">
+						{{each(i,v) temp_nodes}}
+							{{if v.id == temp_node_select }}
+							    <option value="${v.id}" selected>${v.label}</option>
+							{{else}}
+								<option value="${v.id}">${v.label}</option>
+							{{/if}}
+						{{/each}}
+		  			</select>
+		  			<label for="recipient-" class="col-form-label" th:text="#{item.nombre}"></label>
+					<input type="text" class="form-control" id="recipient-name">
+	            	<div class="invalid-feedback" th:text="#{textos.errorNameExist}"></div>
+						{{if temp_node_select }}
+							{{if temp_type_item == "diamond" }}
+								<div class="form-inline d-none">
+			            			<label for="primaryKey"><input type="checkbox" class="mr-1" id="primaryKey" th:text="#{textos.primaryKey}"></label>
+			            		</div>
+			            	{{else}}
+			            		<div class="form-inline">
+			            			<label for="primaryKey"><input type="checkbox" class="mr-1" id="primaryKey" th:text="#{textos.primaryKey}"></label>
+			            		</div>
+							{{/if}}
+						{{else}}
+							<div class="form-inline">
+		            			<label for="primaryKey"><input type="checkbox" class="mr-1" id="primaryKey" th:text="#{textos.primaryKey}"></label>
+		            		</div>
+						{{/if}}
+					<div class="form-inline">
+            			<label for="composite"><input type="checkbox" class="mr-1" id="composite" th:text="#{textos.composite}"></label>
+            		</div>
+	            	<div class="form-inline">
+	        			<label for="notNull"><input type="checkbox" class="mr-1" id="notNull" th:text="#{textos.notNull}"></label>
+	        		</div>
+	            	<div class="form-inline">
+		    			<label for="unique"><input type="checkbox" class="mr-1" id="unique" th:text="#{textos.unique}"></label>
+		    		</div>
+		        	<div class="form-inline">
+						<label for="multivalued"><input type="checkbox" class="mr-1" id="multivalued" th:text="#{textos.multivalued}"></label>
+					</div>
+					<label for="domain" class="col-form-label" th:text="#{textos.domain}"></label>
+						<select id="domain" class="form-control">
+							{{each(i,v) temp_types}}
+								{{if v.value == "VARCHAR" }}
+								    <option value='${v.id}' selected>${v.value}</option>
+								{{else}}
+									<option value='${v.id}'>${v.value}</option>
+								{{/if}}
+							{{/each}}
+						</select>
+					<label for="size" class="col-form-label" th:text="#{textos.size}"></label>
+					<input type="number" class="form-control" id="size" value=20>
+					<input type="hidden" id="tipoAdd" value="addAttribute">
+					<input type="hidden" id="typeAction" value="create">
+				  	<input type="hidden" id="idSelected" value="${temp_node_select}">
+		  		</div>
+			</form>
+	    {{/if}}
+	</div>
+	
+	<div class="d-none" id="templateAddEntitytoRelation" type="text/x-jquery-tmpl">
+		{{if temp_node_length==0 }}
+	        <p class="text-center" th:text="#{textos.notEntitys}"></p>
+	    {{else}}
+	    	<form id="formInsert">
+				<div class="form-group">
+				<label for="element" class="col-form-label" th:text="#{item.entity}"></label>
+				<select id="element" class="form-control">
+					{{each(i,v) temp_nodes}}
+						<option value='${v.id}'>${v.label}</option>
+					{{/each}}
+				</select>
+				<label for="recipient-" class="col-form-label" th:text="#{textos.cardinality}"></label>
+	            	<div class="form-inline">
+						<input class="" type="radio" name="cardinality" id="max1" value="max1">
+						<label class="form-check-label" for="max1">
+							Max 1
+						</label>
+					</div>
+					<div class="form-inline">
+						<input class="" type="radio" name="cardinality" id="maxN" value="maxN" checked>
+						<label class="form-check-label" for="maxN">
+							Max N
+						</label>
+					</div>
+					<div class="form-inline">
+						<input class="" type="radio" name="cardinality" id="minMax" value="minMax">
+						<label for="minMax" class="row form-check-label col-11 pl-3 justify-content-start">
+							Min <input type="number" id="minCardinality" class="form-control col-2 ml-1 mr-1" disabled>
+							Max <input type="number" id="maxCardinality" class="form-control col-2 ml-1" disabled>
+						</label>
+					</div>
+					<label for="domain" class="col-form-label" th:text="#{textos.roleName}"></label>
+					<input type="text" class="form-control" id="roleName">
+					<input type="hidden" id="tipoAdd" value="addEntitytoRelation">
+					<input type="hidden" id="typeAction" value="create">
+				  	<input type="hidden" id="idSelected" value="${temp_node_select}">
+				</div>
+			</form>
+	    {{/if}}
+	</div>
+	
+	<div class="d-none" id="templateRemoveEntitytoRelation" type="text/x-jquery-tmpl">
+		{{if temp_node_length==0 }}
+	        <p class="text-center" th:text="#{textos.notEntitys}"></p>
+	    {{else}}
+	    	<form id="formInsert">
+    			<div class="form-group">
+            		<label for="element" class="col-form-label" th:text="#{textos.quitTheEntity}"></label>
+            		<select id="element" class="form-control">
+            			{{each(i,v) temp_nodes}}
+							<option value='${v.id}'>${v.label} - ${v.role}</option>
+						{{/each}}
+  					</select>
+            		<input type="hidden" id="tipoAdd" value="removeEntitytoRelation">
+            		<input type="hidden" id="typeAction" value="create">
+		          	<input type="hidden" id="idSelected" value="${temp_node_select}">
+          		</div>
+        	</form>
+	    {{/if}}
+	</div>
+	
+	<div class="d-none" id="templateCreateDomain" type="text/x-jquery-tmpl">
+		<form id="formInsert">
+	    	<div class="form-group">
+		    	<label for="recipient-name" class="col-form-label" th:text="#{item.nombre}"></label>
+				<input type="text" class="form-control" id="recipient-name">
+	  		    <div class="invalid-feedback" th:text="#{textos.errorNameExist}"></div>
+				<label for="types" class="col-form-label" th:text="#{item.type}"></label>
+				<select id="types" class="form-control">
+					{{each(i,v) temp_types}}
+						<option value='${v.id}'>${v.value}</option>
+					{{/each}}
+				</select>
+				<label for="values_separated" class="col-form-label" th:text="#{textos.valuesSeparated}"></label>
+	        	<input type="text" class="form-control" id="values_separated">
+	            <input type="hidden" id="tipoAdd" value="addDomain">
+	            <input type="hidden" id="typeAction" value="create">
+ 		        <input type="hidden" id="idSelected" value="${temp_node_select}">
+		    </div>
+		</form>
+	</div>
+	
+	<div class="d-none" id="templateAddUniqueKey" type="text/x-jquery-tmpl">
+		{{if temp_node_length==0 }}
+	        <p class="text-center" th:text="#{textos.notAttribute}"></p>
+	    {{else}}
+			<form id="formInsert">
+		    	<div class="row">
+		        	<div class="col-10">
+		            	<div class="form-group overflow-auto" id="inputList" style="height: 250px;">
+							<input type="text" name="listText[]" class="form-control" id="list0" value="Unique(...)">
+           		            <input type="hidden" id="tipoAdd" value="addTableUnique">
+           		            <input type="hidden" id="typeAction" value="create">
+		  		          	<input type="hidden" id="idSelected" value="${temp_node_select}">
+					    </div>
+					</div>
+					<div class="col-2 pl-0">
+						<button type="button" class="btn btn-lg btn-block btn-dark" id="addList">+</button>
+					    <button type="button" class="btn btn-lg btn-block btn-dark" id="removeList">-</button>
+					</div>
+					<div class="col-12">
+						{{each(i,v) temp_nodes}}
+							<a href="#" id="atribute_${v.id}" class="badge badge-dark mr-1">${v.label}</a>
+						{{/each}}
+					</div>
+				</div>
+			</form>
+		{{/if}}
+	</div>
+	
 </div>
-<script>
-
-$(document).ready(function(){
-	var movies = {
-			  titulo: 'Prueba',
-			  descripcion: 'Esto podría ser una descripción de un producto o lo que se te ocurra'
-			};
-    $('#btnTest').on('click', function(){
-      $('#testResult').html($('#prueba1').tmpl(movies));
-    });
-  });
-</script>

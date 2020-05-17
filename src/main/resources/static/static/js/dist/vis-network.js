@@ -5,7 +5,7 @@
  * A dynamic, browser-based visualization library.
  *
  * @version 0.0.0-no-version
- * @date    2020-05-16T17:18:15.438Z
+ * @date    2020-05-16T22:33:14.329Z
  *
  * @copyright (c) 2011-2017 Almende B.V, http://almende.com
  * @copyright (c) 2017-2019 visjs contributors, https://github.com/visjs
@@ -26923,9 +26923,6 @@
 	      this.resize(ctx, selected, hover);
 	      this.left = x - this.width * 0.5;
 	      this.top = y - this.height * 0.5;
-	      console.log("c");
-	      console.log(this);
-	      console.log("c");
 	      this.initContextForDraw(ctx, values);
 	      drawDiamond(ctx, this.left, this.top, this.radius);
 	      this.performFill(ctx, values);

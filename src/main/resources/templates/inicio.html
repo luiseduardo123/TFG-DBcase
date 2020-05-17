@@ -120,7 +120,7 @@
             	addIsA();
             });
       
-            $('#insertModal').on('click', function() {
+            $('#insertModal').on('click', function() {         
             	switch($('#tipoAdd').val()) {
 	            	case "addConstrainst":
 	            		addConstrainst($('input[name=listText\\[\\]]').serializeArray(),$('#idSelected').val(), $('#typeAction').val());
@@ -129,6 +129,7 @@
 		          		addEntity($('#recipient-name').val(), $('#weak-entity').prop('checked'),$('#typeAction').val(),$('#idSelected').val());
 		          	    break;
 		          	case "addRelation":
+		          		console.log($('#recipient-name').val()+" "+$('#typeAction').val()+" "+$('#idSelected').val());
 		          		addRelation($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val());
 		          	    break;
 		          	case "addAttribute":
@@ -147,7 +148,7 @@
 		            	break;
 		          	  default:
 		          	}
-            	clean();
+            	//clean();
             });
             
             $('.insertarDatos').on('click', function() {
@@ -155,242 +156,91 @@
             	var nodo_select = getNodeSelected();
             	switch($(this).attr("functionInsert")) {
             	  case "addConstrainst":
-            		  insert = '<form id="formInsert">'+
-            		  					'<div class="row">'+
-            		  					  '<div class="col-10">'+
-            		          				'<div class="form-group overflow-auto" id="inputList" style="height: 250px;">'+
-				            		            '<input type="text" name="listText[]" class="form-control" id="list0">'+
-				            		            '<input type="hidden" id="tipoAdd" value="addConstrainst">'+
-				            		            '<input type="hidden" id="typeAction" value="create">'+
-							  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
-			            		          	'</div>'+
-			            		          '</div>'+
-			            		          '<div class="col-2 pl-0">'+
-			            		          	'<button type="button" class="btn btn-lg btn-block btn-dark" id="addList">+</button>'+
-			            		          	'<button type="button" class="btn btn-lg btn-block btn-dark" id="removeList">-</button>'+
-			            		          '</div>'+
-			            		        '</div>'+
-			            		        '</form>';
+            		  var dataType = {
+            			  temp_node_select: nodo_select
+            			};
+            		  $('#formModal').html($('#templateAddConstrainst').tmpl(dataType));
             	    break;
             	  case "addEntity":
-            		  insert = '<form id="formInsert">'+
-            		          				'<div class="form-group">'+
-			            		            '<label for="recipient-name" class="col-form-label">'+$('#textItemName').text()+':</label>'+
-			            		            '<input type="text" class="form-control" id="recipient-name">'+
-			            		            '<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>'+
-			            		            '<input type="hidden" id="tipoAdd" value="addEntity">'+
-			            		            '<input type="hidden" id="typeAction" value="create">'+
-						  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
-			            		          '</div>'+
-			            		          '<div class="form-inline">'+
-			            		            '<label for="weak-entity"><input type="checkbox" class="mr-1" id="weak-entity">Is a weak entity.</label>'+
-			            		          '</div>'+
-			            		        '</form>';
+            		  var dataType = {
+            				temp_node_select: nodo_select
+            			};
+            		  $('#formModal').html($('#templateAddEntity').tmpl(dataType));
             	    break;
             	  case "addRelation":
-            		  insert = '<form id="formInsert">'+
-			        				'<div class="form-group">'+
-			  		            '<label for="recipient-name" class="col-form-label">'+$('#textItemName').text()+':</label>'+
-			  		            '<input type="text" class="form-control" id="recipient-name">'+
-			  		          	'<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>'+
-			  		            '<input type="hidden" id="tipoAdd" value="addRelation">'+
-			  		          	'<input type="hidden" id="typeAction" value="create">'+
-			  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
-			  		          '</div>'+
-			  		        '</form>';
+            		  var dataType = {
+          					temp_node_select: nodo_select
+          			  };
+          		  	  $('#formModal').html($('#templateAddRelation').tmpl(dataType));
             	    break;
             	  case "addAtribute":
             		  nodo = getAllNodes(["box","diamond"]);
             		  types = getAllTypesDomain();
-            		  if(nodo.length>0){
-	            		  insert = '<form id="formInsert">'+
-				      				'<div class="form-group">'+
-						            '<label for="element" class="col-form-label">'+$('#textElements').text()+':</label>'+
-						            '<select id="element" class="form-control">';
-						  				for(var i=0;i<nodo.length;i++){
-						  						if(nodo[i].id == nodo_select)
-						  							var select = "selected";
-						  						else
-						  							var select = "";
-						  						insert += '<option value='+nodo[i].id+' '+select+'>'+nodo[i].label+'</option>';
-						  				}
-						  insert += '</select>'+
-						            '<label for="recipient-" class="col-form-label">'+$('#textItemName').text()+':</label>'+
-						            '<input type="text" class="form-control" id="recipient-name">'+
-	            		            '<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>';
-							var dNone = "";
-	            		            if(nodo_select){
-	            		            	if(getTypeItem(nodo_select) == "diamond")
-	            		            		dNone = "d-none";
-	            		            }
-	            		  insert += '<div class="form-inline '+dNone+'">'+  
-            		            	'<label for="primaryKey"><input type="checkbox" class="mr-1" id="primaryKey">'+$('#textPrimaryKey').text()+'</label>'+
-            		          	'</div>';
-	            		  insert += '<div class="form-inline">'+
-            		            		'<label for="composite"><input type="checkbox" class="mr-1" id="composite">'+$('#textComposite').text()+'</label>'+
-            		          		'</div>'+
-	            		          	'<div class="form-inline">'+
-	        		            		'<label for="notNull"><input type="checkbox" class="mr-1" id="notNull">'+$('#textNotNull').text()+'</label>'+
-	        		          		'</div>'+
-	            		          	'<div class="form-inline">'+
-		    		            		'<label for="unique"><input type="checkbox" class="mr-1" id="unique">'+$('#textUnique').text()+'</label>'+
-		    		          		'</div>'+
-		        		          	'<div class="form-inline">'+
-					            		'<label for="multivalued"><input type="checkbox" class="mr-1" id="multivalued">'+$('#textMultivalued').text()+'</label>'+
-					          		'</div>'+
-									'<label for="domain" class="col-form-label">'+$('#textDomain').text()+':</label>'+
-									'<select id="domain" class="form-control">';
-							  				for(var i=0;i<types.length;i++){
-							  					if(types[i].value == 'VARCHAR')
-							  						select = "selected";
-							  					else
-							  						select = "";
-							  					insert += '<option value='+types[i].id+' '+select+'>'+types[i].value+'</option>';
-							  				}
-									insert += '</select>'+
-						  			'<label for="size" class="col-form-label">'+$('#textSize').text()+':</label>'+
-						            '<input type="number" class="form-control" id="size" value=20>'+
-						            '<input type="hidden" id="tipoAdd" value="addAttribute">'+
-						            '<input type="hidden" id="typeAction" value="create">'+
-				  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
-						          '</div>'+
-						        '</form>';
-            		 }else{
-            			 insert = '<p class="text-center">'+$('#textNotEntitysRelation').text()+'</p>';
-            		 }
+            		  
+            		  var dataType = {
+            				temp_node_length: nodo.length,
+            				temp_nodes: nodo,
+            				temp_types: types,
+           					temp_node_select: nodo_select,
+           					temp_type_item: getTypeItem(nodo_select)
+           			  };
+            		  
+            		  $('#formModal').html($('#templateAddAtribute').tmpl(dataType));
               	    break;
             	  case "addEntitytoRelation":
             		  nodo = getAllNodes(["box"]);
-            		  if(nodo.length>0){
-	            		  insert = '<form id="formInsert">'+
-				      				'<div class="form-group">'+
-						            '<label for="element" class="col-form-label">'+$('#textItemEntity').text()+':</label>'+
-						            '<select id="element" class="form-control">';
-					           		for(var i=0;i<nodo.length;i++){
-					  					insert += '<option value='+nodo[i].id+'>'+nodo[i].label+'</option>';
-					  				}
-						  insert += '</select>'+
-						            '<label for="recipient-" class="col-form-label">'+$('#textCardinality').text()+':</label>'+
-	            		            '<div class="form-inline">'+
-							        	'<input class="" type="radio" name="cardinality" id="max1" value="max1">'+
-							         	'<label class="form-check-label" for="max1">'+
-							         		'Max 1'+
-							         	'</label>'+
-							        '</div>'+
-							       	'<div class="form-inline">'+
-							        	'<input class="" type="radio" name="cardinality" id="maxN" value="maxN" checked>'+
-							        	'<label class="form-check-label" for="maxN">'+
-							        		'Max N'+
-							         	'</label>'+
-							        '</div>'+
-							        '<div class="form-inline">'+
-							        	'<input class="" type="radio" name="cardinality" id="minMax" value="minMax">'+
-							        	'<label for="minMax" class="row form-check-label col-11 pl-3 justify-content-start">'+
-							        		'Min <input type="number" id="minCardinality" class="form-control col-2 ml-1 mr-1" disabled>'+
-							        		'Max <input type="number" id="maxCardinality" class="form-control col-2 ml-1" disabled>'+
-							        	'</label>'+
-							        '</div>'+
-									'<label for="domain" class="col-form-label">'+$('#textRoleName').text()+':</label>'+
-									'<input type="text" class="form-control" id="roleName">'+
-						            '<input type="hidden" id="tipoAdd" value="addEntitytoRelation">'+
-						            '<input type="hidden" id="typeAction" value="create">'+
-				  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
-						          '</div>'+
-						        '</form>';
-            		 }else{
-            			 insert = '<p class="text-center">'+$('#textNotEntitys').text()+'</p>';
-            		 }
+            		  var dataType = {
+              				temp_node_length: nodo.length,
+              				temp_nodes: nodo,
+             				temp_node_select: nodo_select
+             			  };
+              		  
+              		  $('#formModal').html($('#templateAddEntitytoRelation').tmpl(dataType));
+              		  
               	    break;
             	  case "removeEntitytoRelation":
             		  nodo = allEntitysToRelation(nodo_select);
-            		  if(nodo.length>0){
-	            		  insert = '<form id="formInsert">'+
-				      				'<div class="form-group">'+
-						            '<label for="element" class="col-form-label">'+$('#textQuitTheEntity').text()+':</label>'+
-						            '<select id="element" class="form-control">';
-					           		for(var i=0;i<nodo.length;i++){
-					  					insert += '<option value='+nodo[i].id+'>'+nodo[i].label+' - '+nodo[i].role+'</option>';
-					  				}
-						  insert += '</select>'+
-						            '<input type="hidden" id="tipoAdd" value="removeEntitytoRelation">'+
-						            '<input type="hidden" id="typeAction" value="create">'+
-				  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
-						          '</div>'+
-						        '</form>';
-            		 }else{
-            			 insert = '<p class="text-center">'+$('#textNotEntitys').text()+'</p>';
-            		 }
+            		  var dataType = {
+                				temp_node_length: nodo.length,
+                				temp_nodes: nodo,
+               					temp_node_select: nodo_select
+               			  };
+                		  
+                	  $('#formModal').html($('#templateRemoveEntitytoRelation').tmpl(dataType));
               	    break;
             	  case "createDomain":
-            		  types = getAllTypesDomain();
-            		  insert = '<form id="formInsert">'+
-	      				'<div class="form-group">'+
-		      					'<label for="recipient-name" class="col-form-label">'+$('#textItemName').text()+':</label>'+
-				            	'<input type="text" class="form-control" id="recipient-name">'+
-	  		            		'<div class="invalid-feedback">'+$('#textErrorNameExist').text()+'</div>'+
-				            	'<label for="types" class="col-form-label">'+$('#textItemType').text()+':</label>'+
-					            '<select id="types" class="form-control">';
-					  				for(var i=0;i<types.length;i++){
-					  						insert += '<option value='+types[i].id+'>'+types[i].value+'</option>';
-					  				}
-							  	insert += '</select>'+
-					       		'<label for="values_separated" class="col-form-label">'+$('#textValuesSeparated').text()+':</label>'+
-					        	'<input type="text" class="form-control" id="values_separated">'+
-					            '<input type="hidden" id="tipoAdd" value="addDomain">'+
-					            '<input type="hidden" id="typeAction" value="create">'+
-			  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
-					          '</div>'+
-					        '</form>';
+            		  	types = getAllTypesDomain();
+            		  	var dataType = {
+            				  	temp_types: types,
+	           				  	temp_node_select: nodo_select
+             			};
+ 
+              	  	  $('#formModal').html($('#templateCreateDomain').tmpl(dataType));
               	    break;
             	  	case "addUniqueKey":
             	  		nodo = allAttributeOfEntity(nodo_select);
-            	  		if(nodo.length>0){
-		            		  insert = '<form id="formInsert">'+
-		            		  				'<div class="row">'+
-		            		  					'<div class="col-10">'+
-		            		          				'<div class="form-group overflow-auto" id="inputList" style="height: 250px;">'+
-						            		            '<input type="text" name="listText[]" class="form-control" id="list0" value="Unique(...)">'+
-						            		            '<input type="hidden" id="tipoAdd" value="addTableUnique">'+
-						            		            '<input type="hidden" id="typeAction" value="create">'+
-									  		          	'<input type="hidden" id="idSelected" value="'+nodo_select+'">'+
-					            		        	'</div>'+
-					            		        '</div>'+
-					            		        '<div class="col-2 pl-0">'+
-					            		          	'<button type="button" class="btn btn-lg btn-block btn-dark" id="addList">+</button>'+
-					            		        	'<button type="button" class="btn btn-lg btn-block btn-dark" id="removeList">-</button>'+
-					            		    	'</div>'+
-					            		    	'<div class="col-12">';
-					            		    	for(var i=0;i<nodo.length;i++){// seguir aqui
-					            		    		insert += '<a href="#" id="atribute_'+nodo[i].id+'" class="badge badge-dark mr-1">'+nodo[i].label+'</a>';
-								  				}
-					            		    	insert += '</div>'+
-					            			'</div>'+
-					            		'</form>';
-	            	  		}else{
-	               			 insert = '<p class="text-center">'+$('#textNotAttribute').text()+'</p>';
-	               		 }
+            	  		var dataType = {
+           	  				temp_node_length: nodo.length,
+               				temp_nodes: nodo,
+              				temp_node_select: nodo_select
+             			};
+            	  		$('#formModal').html($('#templateAddUniqueKey').tmpl(dataType));
             	    break;
             	  	case "downloadFile":
-		            		  insert = '<form id="formInsert">'+
-		            		  				'<div class="row">'+
-		            		  					'<div class="col-12 text-center">'+
-		            		          					'<a id="urlFile" href="" download><button type="button" class="btn btn-dark">'+$('#textDownload').text()+'</button></a>'+
-					            		        	'</div>'+
-					            		        '</div>'+
-					            		'</form>';
+            	  		var dataType = {
+              					temp_node_select: nodo_select
+              			  };
+              		  	  $('#formModal').html($('#templateDownloadFile').tmpl(dataType));
             	    break;
             	  	case "loadFile":
-            	  		insert = '<form id="formInsert" method="POST" enctype="multipart/form-data" action="/readFile">'+
-	            			'<input type="file" class="form-control-file d-none" name="file" id="file">'+
-			                	'<div class="upload-area border"  style="height: 140px;" id="uploadfile">'+
-			                    	'<p class="h5 text-center mt-5" id="textoFileDrag">'+$("#textDragDropText").text()+'</p>'+
-			                   	'</div>'+
-		                   	'</form>';
+            	  		var dataType = {
+          					temp_node_select: nodo_select
+          			  };
+          		  	  $('#formModal').html($('#templateAddLoadFile').tmpl(dataType));
       	    		break;
             	  default:
             	}
             	setNodeSelected(null);
-            	$("#formModal").html(insert);
             	//** hacer aqui que vuelva aparcer los botones
             	$('#modalAddItem').on('hide.bs.modal', function (event) {
             		$("#formModalButton").show();
