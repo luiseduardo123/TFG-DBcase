@@ -693,6 +693,7 @@ public class ServiciosRelaciones {
 	 */
 	public void anadirEntidadARelacion(Vector v){
 		// Sacamos los componentes del vector que sabemos que son correctos
+
 		TransferRelacion tr = (TransferRelacion) v.get(0);
 		TransferEntidad te = (TransferEntidad) v.get(1);
 		String aux = (String)v.get(4);
@@ -753,7 +754,6 @@ public class ServiciosRelaciones {
 		DAORelaciones daoRelaciones = new DAORelaciones(this.controlador.getPath());
 		if (!daoRelaciones.modificarRelacion(tr))
 			controlador.mensajeDesde_SR(TC.SR_AnadirEntidadARelacion_ERROR_DAORelaciones, v);
-		else controlador.mensajeDesde_SR(TC.SR_AnadirEntidadARelacion_HECHO, v);
 		return;
 	}
 	

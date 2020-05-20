@@ -75,8 +75,8 @@ public class ValidadorBD extends GeneradorEsquema{
 		// Mostrar el texto
 		construyeErroresWarnings();
 		if (!valido) 
-			if(modelo)controlador.mensajeDesde_SS(TC.SS_ValidacionM,mensaje);
-			else controlador.mensajeDesde_SS(TC.SS_ValidacionC,mensaje);
+			//if(modelo)controlador.mensajeDesde_SS(TC.SS_ValidacionM,mensaje);
+			//else controlador.mensajeDesde_SS(TC.SS_ValidacionC,mensaje);
 		warning.append(mensaje);
 		return valido;
 	}

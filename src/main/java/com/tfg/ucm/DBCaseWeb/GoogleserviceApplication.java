@@ -142,6 +142,16 @@ public class GoogleserviceApplication {
 			e.printStackTrace();
 		}
 		
+		// NO SE ESTA PASANDO CADENA LIMPIA.
+		for (int k = 0; k < nodes.size(); k++) {  
+			if(nodes.get(k).getLabel().contains("\n")) {
+				String auxText= nodes.get(k).getLabel();
+				String nameCleaned[]= auxText.split("\n");
+				nodes.get(k).setLabel(nameCleaned[0]); 
+			}
+			
+		}
+		
 		for (int i = 0; i < nodes.size(); i++) {
 			switch (nodes.get(i).getShape()) {
 				case "box":
@@ -159,7 +169,9 @@ public class GoogleserviceApplication {
 					
 				case "ellipse":
 					TransferAtributo attributeTransf = new TransferAtributo(c);
+					 
 					attributeTransf.setNombre(nodes.get(i).getLabel()); 
+					
 					double x = 1.0;
 					double y = 1.0;
 					attributeTransf.setPosicion(new Point2D.Double(x,y));

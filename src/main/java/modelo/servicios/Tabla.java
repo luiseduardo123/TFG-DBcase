@@ -229,7 +229,7 @@ public class Tabla {
 	}
 	public String modeloRelacionalDeTabla(boolean p){
 		String mr="";
-		if(p)mr+="<p>";
+		if(p) mr+="<p>";
 		mr+=this.ponGuionesBajos(nombreTabla)+" (";
 		Vector<String[]>definitivo= new Vector<String[]>();
 		//dejamos los elementos en las 3 listas sin duplicados.

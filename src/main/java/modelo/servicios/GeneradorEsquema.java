@@ -168,7 +168,7 @@ public class GeneradorEsquema {
 						String[] clave = new String[5];
 						clave[3]="0";
 						clave[4]=eya.getPrincipioRango()==0?"0":"1";
-						if (!eya.getRol().equals("")) clave[0] = eya.getRol() + "_" + previasPrimarias.get(q)[0];
+						if (!eya.getRol().trim().equals("")) clave[0] = eya.getRol() + "_" + previasPrimarias.get(q)[0];
 						else clave[0] = previasPrimarias.get(q)[0];
 						clave[1] = previasPrimarias.get(q)[1];
 						clave[2] = previasPrimarias.get(q)[2];
