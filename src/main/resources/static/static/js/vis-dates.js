@@ -36,8 +36,16 @@ var options = {
   
 var network = new vis.Network(container, data, options);
   
+  function getIdElement(){
+	  var dataIds = nodes.getIds();
+	  if(dataIds.length==0)
+		  var nextId = -1;
+	  else
+		  var nextId = dataIds[dataIds.length-1];
+	  return ++nextId;
+  }
   function addEntity(nombre, weakEntity,action, idSelected){
-	  var id_node = nodes.length;
+	  var id_node = getIdElement();
 	  var data_element = {label: nombre, strong: weakEntity, shape: 'box', color:'#ffcc45', scale:20, widthConstraint:150, heightConstraint:25,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
@@ -51,15 +59,22 @@ var network = new vis.Network(container, data, options);
   function addConstrainst(values, idSelected, action){
 	  var valuesFilter = [];
 	  for(var i=0;i<values.length;i++){
-		  valuesFilter.push(values[i].value);
+		 if(values[i].value!="" && values[i].value!="${temp_value}")
+			  valuesFilter.push(values[i].value);
 	  }
 	  var data_element = {constraints: valuesFilter};
 	  data_element.id = parseInt(idSelected);
 	  nodes.update(data_element);
   }
+ 
+  function addTableUnique(values, idSelected, action){
+	  var data_element = {tableUnique: JSON.stringify(values)};
+	  data_element.id = parseInt(idSelected);
+	  nodes.update(data_element);
+  }
   
   function addRelation(nombre, action, idSelected){
-	  var id_node = nodes.length;
+	  var id_node = getIdElement();
 	  var data_element = {label: nombre, shape: 'diamond', color:'#ff554b', scale:20, physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
@@ -71,12 +86,12 @@ var network = new vis.Network(container, data, options);
   }
   
   function addIsA(){
-	  var id_node = nodes.length;
+	  var id_node = getIdElement();
 	  nodes.add({id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20, physics:false});
   }
   
   function addAttribute(name, action, idSelected, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
-	  var id_node = nodes.length;
+	  var id_node = getIdElement();
 	  var word_pk = name;
 	  if(pk){
 		  var word = name;
@@ -89,7 +104,7 @@ var network = new vis.Network(container, data, options);
 		  } 
 	  }
 	  
-	  var data_element = {label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25,physics:false};
+	  var data_element = {labelBackend:name, label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
@@ -227,13 +242,44 @@ var network = new vis.Network(container, data, options);
   function fillEditConstraints(idNodo){
 	  idNodo = parseInt(idNodo);
 	  valuesConstraints = nodes.get(idNodo).constraints;
+	  console.log("const");
 	  for(var i=0;i<valuesConstraints.length;i++){
 		  if(i!=0){
-			  $("#inputList").append('<input type="text" name="listText[]" class="form-control" id="list'+i+'" value="'+valuesConstraints[i]+'">');
+			  	var nextValue = parseInt($("#totalInputs").val())+1;
+		  		var dataType = {
+						temp_unique: nextValue,
+						temp_value: valuesConstraints[i]
+					};
+		  		$("#totalInputs").val(nextValue);
+				$("#inputList").append($('#templateSelectAddConstrainst').tmpl(dataType));
+				$('#insertModal').prop('disabled', false);
 		  }else{
 			  $("#list0").val(valuesConstraints[i]);
 		  }
 	  }
+  }
+  
+  function fillEditTableUnique(idNodo){
+	  idNodo = parseInt(idNodo);
+	  valuesUnique = JSON.parse(nodes.get(idNodo).tableUnique);
+	  var nodo = allAttributeOfEntity(parseInt($("#idSelected").val()));
+	  for(var i=0;i<valuesUnique.length;i++){
+		  if(i!=0){
+				var nextValue = parseInt($("#totalInputs").val())+1;
+		  		var dataType = {
+						temp_nodes: nodo,
+						temp_unique: nextValue,
+						temp_value: ""
+					};
+		  		$("#totalInputs").val(nextValue);
+				$("#inputList").append($('#templateSelectTableUnique').tmpl(dataType));	
+		  }
+		  for(var e=0;e<valuesUnique[i].length;e++){
+				$("#listTextUnique"+i+" option[value='" + valuesUnique[i][e] + "']").prop("selected", true);
+		  }
+	  }
+	  $('.select-multiple').select2();
+	  $('#insertModal').prop('disabled', false);
   }
   
   function fillEditRelation(idNodo){
@@ -318,7 +364,7 @@ var network = new vis.Network(container, data, options);
 		  	idNodo = edges.get(edg).to;
 		  	roleName = edges.get(edg).label;
 		  	if(nodes.get(idNodo).shape == "ellipse")
-		  		data.push({id:idNodo, label:nodes.get(idNodo).label});				  
+		  		data.push({id:idNodo, label:nodes.get(idNodo).labelBackend});				  
 	  });
 	  return data;
   }

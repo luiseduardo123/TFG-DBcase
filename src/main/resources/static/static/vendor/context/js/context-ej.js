@@ -36,7 +36,7 @@ $(document).ready(function(){
 			$( "[functioninsert='addUniqueKey']").click();
 			idSele = $("#idSelected").val();
 			if(!existDataTableUnique(idSele)){
-				fillEditConstraints(idSele);//
+				fillEditTableUnique(idSele);//
 			}
 		}},	
 		// relation

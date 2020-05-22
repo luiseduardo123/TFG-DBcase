@@ -1,16 +1,41 @@
+function groupByArray(xs) {
+	  var resultado = xs.reduce(function(rv, x) {
+	    (rv[x.name] = rv[x.name] || []).push(x.value);
+	    return rv;
+	  }, {});
+	  
+	  return Object.values(resultado);
+	}
+
 function editList(){
-	$("#addList").click(function(){
-		let numList = $("#inputList").find('input.form-control').length;
-		$("#inputList").append('<input type="text" name="listText[]" class="form-control" id="list'+numList+'">');
+	
+	$("#addListUnique").click(function(){
+		var nodo = allAttributeOfEntity(parseInt($("#idSelected").val()));
+		var nextValue = parseInt($("#totalInputs").val())+1;
+  		var dataType = {
+				temp_nodes: nodo,
+				temp_unique: nextValue,
+				temp_value: ""
+			};
+  		$("#totalInputs").val(nextValue);
+		$("#inputList").append($('#templateSelectTableUnique').tmpl(dataType));
+		$('.select-multiple').select2();
 	});
 
-	//	$('input[name=listText\\[\\]]').serializeArray();
-
-	$("#removeList").click(function(){
-		let numList = $("#inputList").find('input.form-control').length;
-		if((numList-1)>0)
-			$("#list"+(numList-1)).remove();
-	});
+	 $(document).on( 'click', '.removeList', function(){
+		 $("#uniqueField"+$(this).val()).remove();
+	 } );
+	 
+	 $("#addListSelectConst").click(function(){
+			var nextValue = parseInt($("#totalInputs").val())+1;
+	  		var dataType = {
+					temp_unique: nextValue,
+					temp_value: ""
+				};
+	  		$("#totalInputs").val(nextValue);
+			$("#inputList").append($('#templateSelectAddConstrainst').tmpl(dataType));
+		});
+	 
 }
 
 function eventsEntityToRelation(){
@@ -42,9 +67,5 @@ function eventsRemoveEntityToRelation(){
 	});
 }
 
-
-
 (function ($) {
-	
-	
 })(jQuery);

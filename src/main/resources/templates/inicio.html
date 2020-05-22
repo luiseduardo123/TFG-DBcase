@@ -148,6 +148,9 @@ h2{
 		            	break;
 		          	case "addDomain":
 		          		addTypeDomain($('#recipient-name').val(), $('#types').val(), $('#values_separated').val(), $('#typeAction').val());
+		            	break;
+		          	case "addTableUnique":
+		          		addTableUnique(groupByArray($('#formInsert').serializeArray()),$('#idSelected').val(), $('#typeAction').val());
 		            	break;	
 		          	case "addIsA":
 		            	break;
@@ -230,6 +233,11 @@ h2{
               				temp_node_select: nodo_select
              			};
             	  		$('#formModal').html($('#templateAddUniqueKey').tmpl(dataType));
+            	  		$('.select-multiple').select2();
+            	  		
+            	  		$(".select-multiple").change(function() {				            		
+            	  			$('#insertModal').prop('disabled', false);
+                   		});
             	    break;
             	  	case "downloadFile":
             	  		var dataType = {
@@ -247,10 +255,14 @@ h2{
             	}
             	setNodeSelected(null);
             	//** hacer aqui que vuelva aparcer los botones
-            	$('#modalAddItem').on('hide.bs.modal', function (event) {
+            	$('#modalAddItem').on('hide.bs.modal', function (event) {            	
             		$("#formModalButton").show();
             		$('#sidebar').removeClass('active');
-            		
+            	});
+            	
+            	$('#modalAddItem').on('hidden.bs.modal', function (event) {
+            		console.log("limpiar model");
+            		$('#formModal').html("");
             	});
             	
             	switch($(this).attr("functionInsert")) {
