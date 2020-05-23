@@ -42,9 +42,11 @@ $(document).ready(function(){
 		// relation
 		{text: $("#textAddEntitytoRelation").text(), href: '#', action: function(e){
 			$( "[functioninsert='addEntitytoRelation']").click();
+			$('#insertModal').prop('disabled', false);
 		}},
 		{text: $("#textRemoveEntitytoRelation").text(), href: '#', action: function(e){
 			$( "[functioninsert='removeEntitytoRelation']").click();
+			$('#insertModal').prop('disabled', false);
 		}},
 		{text: $("#textEditCardOrRol").text(), href: '#', action: function(e){
 			alert("textEditCardOrRol");
@@ -80,7 +82,8 @@ $(document).ready(function(){
 		}},
 		//IsA
 		{text: $("#textAddParentEntity").text(), href: '#', action: function(e){
-			alert("textAddParentEntity"); // solo si es compuesto
+			$( "[functioninsert='addEntityParent']").click();
+			$('#insertModal').prop('disabled', false);
 		}},
 		{text: $("#textRemoveParentEntity").text(), href: '#', action: function(e){
 			alert("textRemoveParentEntity"); // solo si es compuesto

@@ -150,6 +150,21 @@ var network = new vis.Network(container, data, options);
 	  }
   }
   
+  function addEntityParent(idTo, action, idSelected){  
+	  var idParent = nodes.get(parseInt(idSelected)).parent;
+	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo)};
+	  
+	  if(idParent != null){
+		  var idEdge = existEdge(parseInt(idSelected), idParent);
+		  data_element.id = idEdge;
+		  edges.update(data_element);
+	  }else{
+		  edges.add(data_element);
+	  }
+	  
+	  nodes.update({id: parseInt(idSelected), parent: parseInt(idTo)});
+  }
+  
   function removeEntitytoRelation(idEdge, action, idSelected){
 	  edges.remove(idEdge);
   }
@@ -172,12 +187,6 @@ var network = new vis.Network(container, data, options);
 		  });
 	  }
 	  return data;
-  }
-  
-  function clean(){
-	  $( "#formInsert input" ).each(function() {
-	    $( this ).val( "" );
-	  });
   }
   
   /*

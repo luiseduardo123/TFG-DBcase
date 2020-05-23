@@ -100,30 +100,6 @@ h2{
 
                  });
             });
-        	
-        	 $('.vis-zoomExtends').on('click', function () {
-        		 $('.changeSizeWidth').toggleClass('col-md-6');
-                 $('.changeSizeWidth').toggleClass('col-md-12');
-                 $('.changeSizeWidth').toggleClass('col-md-6-height');
-                 $('.changeSizeWidth').toggleClass('col-md-12-height');
-                 $('.changeSizeHeight').toggleClass('col-md-6-height');
-                 $('.changeSizeHeight').toggleClass('col-md-24-height');
-             });
-        	 
-     //       $('#sidebarCollapse, .closeSide').on('click', function () {
-    	 	$('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-            });
-            
-            $('.closeSide').on('click', function() {
-                $('#titleModal').html(this.getAttribute("alt"));
-                $('#tipoAdd').val(this.getAttribute("functionInsert"));
-             //   $('#sidebar').removeClass('active');
-            });
-            
-            $('#addIsA').on('click', function() {
-            	addIsA();
-            });
       
             $('#insertModal').on('click', function() {         
             	switch($('#tipoAdd').val()) {
@@ -143,6 +119,9 @@ h2{
 		          	case "addEntitytoRelation":
 		          		addEntitytoRelation($('#element').val(), $('[name=cardinality]:checked').val(), $('#roleName').val(), $('#minCardinality').val(), $('#maxCardinality').val(), $('#typeAction').val(),$('#idSelected').val());
 		            	break;
+		          	case "addEntityParent":
+		          		addEntityParent($('#element').val(), $('#typeAction').val(), $('#idSelected').val());
+		            	break;
 		          	case "removeEntitytoRelation":
 		          		removeEntitytoRelation($('#element').val(), $('#typeAction').val(),$('#idSelected').val());
 		            	break;
@@ -156,7 +135,6 @@ h2{
 		            	break;
 		          	  default:
 		          	}
-            	//clean();
             });
             
             $('.insertarDatos').on('click', function() {
@@ -168,18 +146,22 @@ h2{
             			  temp_node_select: nodo_select
             			};
             		  $('#formModal').html($('#templateAddConstrainst').tmpl(dataType));
+            		  editList();
+            		  eventsAddConstrainst();
             	    break;
             	  case "addEntity":
             		  var dataType = {
             				temp_node_select: nodo_select
             			};
             		  $('#formModal').html($('#templateAddEntity').tmpl(dataType));
+            		  eventAddEventRecipient();
             	    break;
             	  case "addRelation":
             		  var dataType = {
           					temp_node_select: nodo_select
           			  };
           		  	  $('#formModal').html($('#templateAddRelation').tmpl(dataType));
+          		  	  eventAddEventRecipient();
             	    break;
             	  case "addAtribute":
             		  nodo = getAllNodes(["box","diamond"]);
@@ -194,6 +176,8 @@ h2{
            			  };
             		  
             		  $('#formModal').html($('#templateAddAtribute').tmpl(dataType));
+            		  eventAddEventRecipient();
+            		  eventEventPrimaryKeyAttribute();
               	    break;
             	  case "addEntitytoRelation":
             		  nodo = getAllNodes(["box"]);
@@ -204,7 +188,17 @@ h2{
              			  };
               		  
               		  $('#formModal').html($('#templateAddEntitytoRelation').tmpl(dataType));
+              		  eventsEntityToRelation();
+              	    break;
+            	  case "addEntityParent":
+            		  nodo = getAllNodes(["box"]);
+            		  var dataType = {
+              				temp_node_length: nodo.length,
+              				temp_nodes: nodo,
+             				temp_node_select: nodo_select
+             			  };
               		  
+              		  $('#formModal').html($('#templateAddEntityParent').tmpl(dataType));
               	    break;
             	  case "removeEntitytoRelation":
             		  nodo = allEntitysToRelation(nodo_select);
@@ -215,6 +209,7 @@ h2{
                			  };
                 		  
                 	  $('#formModal').html($('#templateRemoveEntitytoRelation').tmpl(dataType));
+                	  eventsRemoveEntityToRelation();
               	    break;
             	  case "createDomain":
             		  	types = getAllTypesDomain();
@@ -224,6 +219,7 @@ h2{
              			};
  
               	  	  $('#formModal').html($('#templateCreateDomain').tmpl(dataType));
+              	  	  eventAddEventRecipient();
               	    break;
             	  	case "addUniqueKey":
             	  		nodo = allAttributeOfEntity(nodo_select);
@@ -234,10 +230,7 @@ h2{
              			};
             	  		$('#formModal').html($('#templateAddUniqueKey').tmpl(dataType));
             	  		$('.select-multiple').select2();
-            	  		
-            	  		$(".select-multiple").change(function() {				            		
-            	  			$('#insertModal').prop('disabled', false);
-                   		});
+            	  		editList();
             	    break;
             	  	case "downloadFile":
             	  		var dataType = {
@@ -254,70 +247,6 @@ h2{
             	  default:
             	}
             	setNodeSelected(null);
-            	//** hacer aqui que vuelva aparcer los botones
-            	$('#modalAddItem').on('hide.bs.modal', function (event) {            	
-            		$("#formModalButton").show();
-            		$('#sidebar').removeClass('active');
-            	});
-            	
-            	$('#modalAddItem').on('hidden.bs.modal', function (event) {
-            		console.log("limpiar model");
-            		$('#formModal').html("");
-            	});
-            	
-            	switch($(this).attr("functionInsert")) {
-            		case "addEntitytoRelation":
-            			eventsEntityToRelation();
-            		break;
-            		case "removeEntitytoRelation":
-            			eventsRemoveEntityToRelation();
-            		break;
-              	 	default:
-            	}
-            	editList();
-            	$("#primaryKey, #composite").change(function() {
-            		if(($("#primaryKey").prop('checked') && $("#composite").prop('checked')) || 
-            		   ($("#primaryKey").prop('checked') && !$("#composite").prop('checked'))){
-            			$("[for='notNull'],[for='unique'],[for='multivalued']").toggle(false);            			
-            		}
-					if(!$("#primaryKey").prop('checked') && $("#composite").prop('checked')){
-						$("[for='notNull'],[for='unique']").toggle(false);
-						$("[for='multivalued']").toggle(true);
-					}
-					if(!$("#primaryKey").prop('checked') && !$("#composite").prop('checked')){
-						$("[for='notNull'],[for='unique'],[for='multivalued']").toggle(true);  
-					}						            		
-           		});
-            	
-            	/*
-            	Verifica que el campo no añada elementos con nombre de campos repetidos
-            	*/
-            	$( "#recipient-name" ).on( "blur keyup", function(){
-            		  var nameValue = $( "#recipient-name" ).val();
-            		  var tipoAdd = $( "#tipoAdd" ).val();
-           			  if(!existElementName(nameValue, tipoAdd)){
-            			  $('#insertModal').prop('disabled', false);
-            			  $( "#recipient-name" ).removeClass("is-invalid");
-           			  }else{
-           				  $('#insertModal').prop('disabled', true);
-           				  $( "#recipient-name" ).addClass("is-invalid");
-           			  }
-            	});
-            	/*
-            	Verifica que el campo de restriccion no este vacio
-            	*/
-            	$( "#list0" ).on( "blur keyup", function(){
-          			var nameValue = $( "#list0" ).val();
-         			if(nameValue == ""){
-          				$('#insertModal').prop('disabled', true);
-         			}else{
-         				$('#insertModal').prop('disabled', false);
-         			}
-          		});
-            	
-            	$( ".insertarDatos" ).click(function() {
-            		$('#insertModal').prop('disabled', true);
-          		});
             });
         });
     </script>
