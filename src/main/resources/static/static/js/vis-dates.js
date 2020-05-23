@@ -150,9 +150,12 @@ var network = new vis.Network(container, data, options);
 	  }
   }
   
-  function addEntityParent(idTo, action, idSelected){  
+  function addEntityParent(idTo, action, idSelected){
 	  var idParent = nodes.get(parseInt(idSelected)).parent;
-	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo)};
+	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo),type:"parent", arrows: 
+	  						{from: { enabled: true }, middle: { enabled: false },to: { enabled: false }
+	  						}
+	  					};
 	  
 	  if(idParent != null){
 		  var idEdge = existEdge(parseInt(idSelected), idParent);
@@ -163,6 +166,18 @@ var network = new vis.Network(container, data, options);
 	  }
 	  
 	  nodes.update({id: parseInt(idSelected), parent: parseInt(idTo)});
+  }
+  
+  function removeParentIsA(idNodo){
+	  var idParent = nodes.get(parseInt(idNodo)).parent;
+	  nodes.get(parseInt(idNodo)).parent = undefined;
+	  var allData = allEntitysToRelation(idNodo);
+	  
+	  allData.forEach(function (key){
+		  if(nodes.get(idParent).label == key.label)
+			  edges.remove(key.id);
+	  });
+	  nodes.update({id: parseInt(idNodo), parent: undefined});
   }
   
   function removeEntitytoRelation(idEdge, action, idSelected){
@@ -304,6 +319,40 @@ var network = new vis.Network(container, data, options);
 	  $('#titleModal').html($('#textEditEntity').text());
 	  $("#weak-entity").prop("checked",nodes.get(idNodo).strong);
 	  $('#insertModal').prop('disabled', false);
+  }
+  
+  function existParent(idNodo){
+	  var exist = false;
+	  var dataFull = network.getConnectedEdges(parseInt(idNodo));
+	  
+	  dataFull.forEach(function(key){
+		  if(edges.get(key).type == "parent")
+			  exist = true;
+	  });
+	  
+	  return exist;
+  }
+  
+  function getParentId(idNodo){
+	  var idParent = -1;
+	  var dataFull = network.getConnectedEdges(parseInt(idNodo));
+	  
+	  dataFull.forEach(function(key){
+		  if(edges.get(key).type == "parent")
+			  idParent = edges.get(key).to;
+	  });
+	  
+	  return idParent;
+  }
+  
+  function addEntityChild(idTo, action, idSelected){
+	  var data_element = {from: parseInt(idSelected),type:"child", to: parseInt(idTo),arrows: 
+	  						{from: { enabled: false },middle: { enabled: false },to: { enabled: true }
+	  						}
+	  					};
+	  if(existEdge(idSelected, idTo) == null){
+		  edges.add(data_element);
+	  }
   }
   
   function fillEditAtributte(idNodo){

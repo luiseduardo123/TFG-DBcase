@@ -86,10 +86,11 @@ $(document).ready(function(){
 			$('#insertModal').prop('disabled', false);
 		}},
 		{text: $("#textRemoveParentEntity").text(), href: '#', action: function(e){
-			alert("textRemoveParentEntity"); // solo si es compuesto
+			$( "[functioninsert='removeParentIsA']").click();
 		}},
 		{text: $("#textAddChildEntity").text(), href: '#', action: function(e){
-			alert("textAddChildEntity"); // solo si es compuesto
+			$( "[functioninsert='addEntityChild']").click();
+			$('#insertModal').prop('disabled', false);
 		}},
 		{text: $("#textRemoveChildEntity").text(), href: '#', action: function(e){
 			alert("textRemoveChildEntity"); // solo si es compuesto

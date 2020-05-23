@@ -31,11 +31,11 @@ h2{
 								    <div class="dropdown-divider"></div>
 								    <a id="dropdownMenuLanguage" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-item dropdown-toggle text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{general.configuration}"></a>
 						              <ul aria-labelledby="dropdownMenuLanguage" class="dropdown-menu border-0 shadow" th:classappend="${theme=='dark'} ? bg-dark : bg-light" style="left: 17px;">
-						              	<h6 class="dropdown-header text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{general.theme}"></h6>
+						              	<h6 class="dropdown-header text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{general.language}"></h6>
 						                <li><a href="/lang?lang=es" class="changeOptions dropdown-item text-white" th:classappend="${language=='es'} ? (${theme=='dark'} ? 'text-light active' : 'active text-dark') : (${theme=='dark'} ? 'text-light' : 'text-dark')" th:text="#{general.es}"></a></li>
 						                <li><a href="/lang?lang=en" class="changeOptions dropdown-item text-white" th:classappend="${language=='en'} ? (${theme=='dark'} ? 'text-light active' : 'active text-dark') : (${theme=='dark'} ? 'text-light' : 'text-dark')" th:text="#{general.en}"></a></li>
 						                <div class="dropdown-divider"></div>
-						                <h6 class="dropdown-header text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{general.language}"></h6>
+						                <h6 class="dropdown-header text-center" th:classappend="${theme=='dark'} ? text-light : text-dark" th:text="#{general.theme}"></h6>
 						                <li><a href="/theme?theme=dark" class="changeOptions dropdown-item text-white" th:classappend="${theme=='dark'} ? active : 'text-dark'" th:text="#{general.dark}"></a></li>
 						                <li><a href="/theme?theme=light" class="changeOptions dropdown-item text-white" th:classappend="${theme=='light'} ? active : 'text-light'" th:text="#{general.light}"></a></li>
 						              </ul>
@@ -100,43 +100,46 @@ h2{
 
                  });
             });
-      
-            $('#insertModal').on('click', function() {         
-            	switch($('#tipoAdd').val()) {
-	            	case "addConstrainst":
-	            		addConstrainst($('input[name=listText\\[\\]]').serializeArray(),$('#idSelected').val(), $('#typeAction').val());
-		          	    break;
-		          	case "addEntity":
-		          		addEntity($('#recipient-name').val(), $('#weak-entity').prop('checked'),$('#typeAction').val(),$('#idSelected').val());
-		          	    break;
-		          	case "addRelation":
-		          		console.log($('#recipient-name').val()+" "+$('#typeAction').val()+" "+$('#idSelected').val());
-		          		addRelation($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val());
-		          	    break;
-		          	case "addAttribute":
-		          		addAttribute($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val(), $('#element').val(), $('#primaryKey').prop('checked'), $('#composite').prop('checked'), $('#notNull').prop('checked'), $('#unique').prop('checked'), $('#multivalued').prop('checked'), $('#domain').val(), $('#size').val());
-		            	break;
-		          	case "addEntitytoRelation":
-		          		addEntitytoRelation($('#element').val(), $('[name=cardinality]:checked').val(), $('#roleName').val(), $('#minCardinality').val(), $('#maxCardinality').val(), $('#typeAction').val(),$('#idSelected').val());
-		            	break;
-		          	case "addEntityParent":
-		          		addEntityParent($('#element').val(), $('#typeAction').val(), $('#idSelected').val());
-		            	break;
-		          	case "removeEntitytoRelation":
-		          		removeEntitytoRelation($('#element').val(), $('#typeAction').val(),$('#idSelected').val());
-		            	break;
-		          	case "addDomain":
-		          		addTypeDomain($('#recipient-name').val(), $('#types').val(), $('#values_separated').val(), $('#typeAction').val());
-		            	break;
-		          	case "addTableUnique":
-		          		addTableUnique(groupByArray($('#formInsert').serializeArray()),$('#idSelected').val(), $('#typeAction').val());
-		            	break;	
-		          	case "addIsA":
-		            	break;
-		          	  default:
-		          	}
-            });
-            
+       	 	 
+       	  $('#insertModal').on('click', function() {
+           	switch($('#tipoAdd').val()) {
+               	case "addConstrainst":
+               		addConstrainst($('input[name=listText\\[\\]]').serializeArray(),$('#idSelected').val(), $('#typeAction').val());
+      	          	    break;
+      	          	case "addEntity":
+      	          		addEntity($('#recipient-name').val(), $('#weak-entity').prop('checked'),$('#typeAction').val(),$('#idSelected').val());
+      	          	    break;
+      	          	case "addRelation":
+      	          		console.log($('#recipient-name').val()+" "+$('#typeAction').val()+" "+$('#idSelected').val());
+      	          		addRelation($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val());
+      	          	    break;
+      	          	case "addAttribute":
+      	          		addAttribute($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val(), $('#element').val(), $('#primaryKey').prop('checked'), $('#composite').prop('checked'), $('#notNull').prop('checked'), $('#unique').prop('checked'), $('#multivalued').prop('checked'), $('#domain').val(), $('#size').val());
+      	            	break;
+      	          	case "addEntitytoRelation":
+      	          		addEntitytoRelation($('#element').val(), $('[name=cardinality]:checked').val(), $('#roleName').val(), $('#minCardinality').val(), $('#maxCardinality').val(), $('#typeAction').val(),$('#idSelected').val());
+      	            	break;
+      	          	case "addEntityParent":
+      	          		addEntityParent($('#element').val(), $('#typeAction').val(), $('#idSelected').val());
+      	            	break;
+      	          	case "removeEntitytoRelation":
+      	          		removeEntitytoRelation($('#element').val(), $('#typeAction').val(),$('#idSelected').val());
+      	            	break;
+      	          	case "addEntityChild":
+      	          		addEntityChild($('#element').val(), $('#typeAction').val(), $('#idSelected').val());
+      	            	break;
+      	          	case "addDomain":
+      	          		addTypeDomain($('#recipient-name').val(), $('#types').val(), $('#values_separated').val(), $('#typeAction').val());
+      	            	break;
+      	          	case "addTableUnique":
+      	          		addTableUnique(groupByArray($('#formInsert').serializeArray()),$('#idSelected').val(), $('#typeAction').val());
+      	            	break;	
+      	          	case "addIsA":
+      	            	break;
+      	          	  default:
+      	          	}
+           });
+   
             $('.insertarDatos').on('click', function() {
             	var insert = ""
             	var nodo_select = getNodeSelected();
@@ -192,13 +195,31 @@ h2{
               	    break;
             	  case "addEntityParent":
             		  nodo = getAllNodes(["box"]);
+            		  var valueExistParent = existParent(nodo_select);
             		  var dataType = {
+            				temp_exist_parent: valueExistParent,
               				temp_node_length: nodo.length,
               				temp_nodes: nodo,
              				temp_node_select: nodo_select
              			  };
               		  
               		  $('#formModal').html($('#templateAddEntityParent').tmpl(dataType));
+              	    break;
+            	  case "addEntityChild":
+            		  nodo = getAllNodes(["box"]);
+            		  var valueExistParent = existParent(nodo_select);
+            		  var numIdParent = -1;
+            		  if(valueExistParent)
+            			  numIdParent = getParentId(nodo_select);
+            		  var dataType = {
+            				temp_exist_parent: valueExistParent,
+            				temp_numIdParent: numIdParent,
+              				temp_node_length: nodo.length,
+              				temp_nodes: nodo,
+             				temp_node_select: nodo_select
+             			};
+              		  
+              		  $('#formModal').html($('#templateAddEntityChild').tmpl(dataType));
               	    break;
             	  case "removeEntitytoRelation":
             		  nodo = allEntitysToRelation(nodo_select);
@@ -243,6 +264,10 @@ h2{
           					temp_node_select: nodo_select
           			  };
           		  	  $('#formModal').html($('#templateAddLoadFile').tmpl(dataType));
+      	    		break;
+            	  	case "removeParentIsA":
+            	  		if(existParent(nodo_select))
+	            	  		removeParentIsA(nodo_select);
       	    		break;
             	  default:
             	}

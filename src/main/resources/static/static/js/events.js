@@ -118,6 +118,7 @@ function eventAddEventRecipient(){
     $('#addIsA').on('click', function() {
     	addIsA();
     });
+    
 	// cambiar tamaño de diagramas
 	$('.vis-zoomExtends').on('click', function () {
 		 $('.changeSizeWidth').toggleClass('col-md-6');
@@ -138,5 +139,6 @@ function eventAddEventRecipient(){
 			$('#sidebar').removeClass('active');
 		});
 	});
+	
 	
 })(jQuery);
