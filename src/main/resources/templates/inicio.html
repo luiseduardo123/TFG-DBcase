@@ -110,7 +110,6 @@ h2{
       	          		addEntity($('#recipient-name').val(), $('#weak-entity').prop('checked'),$('#typeAction').val(),$('#idSelected').val());
       	          	    break;
       	          	case "addRelation":
-      	          		console.log($('#recipient-name').val()+" "+$('#typeAction').val()+" "+$('#idSelected').val());
       	          		addRelation($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val());
       	          	    break;
       	          	case "addAttribute":
@@ -133,7 +132,10 @@ h2{
       	            	break;
       	          	case "addTableUnique":
       	          		addTableUnique(groupByArray($('#formInsert').serializeArray()),$('#idSelected').val(), $('#typeAction').val());
-      	            	break;	
+      	            	break;
+      	          case "removeChildEntity":
+      	        		removeEntitytoRelation($('#element').val(), $('#typeAction').val(),$('#idSelected').val());
+    	            	break;	
       	          	case "addIsA":
       	            	break;
       	          	  default:
@@ -169,14 +171,22 @@ h2{
             	  case "addAtribute":
             		  nodo = getAllNodes(["box","diamond"]);
             		  types = getAllTypesDomain();
-            		  
-            		  var dataType = {
-            				temp_node_length: nodo.length,
-            				temp_nodes: nodo,
-            				temp_types: types,
-           					temp_node_select: nodo_select,
-           					temp_type_item: getTypeItem(nodo_select)
-           			  };
+            		  if(nodo_select != null){
+	            		  var dataType = {
+	            				temp_node_length: nodo.length,
+	            				temp_nodes: nodo,
+	            				temp_types: types,
+	           					temp_node_select: nodo_select,
+	           					temp_type_item: getTypeItem(nodo_select)
+	           			  };
+            		  }else{
+            			  var dataType = {
+  	            				temp_node_length: nodo.length,
+  	            				temp_nodes: nodo,
+  	            				temp_types: types,
+  	           					temp_node_select: nodo_select
+  	           			  };
+            		  }
             		  
             		  $('#formModal').html($('#templateAddAtribute').tmpl(dataType));
             		  eventAddEventRecipient();
@@ -204,6 +214,16 @@ h2{
              			  };
               		  
               		  $('#formModal').html($('#templateAddEntityParent').tmpl(dataType));
+              	    break;
+            	  case "removeChildEntity":
+            		  nodo = getChildData(nodo_select);
+            		  var dataType = {
+              				temp_node_length: nodo.length,
+              				temp_nodes: nodo,
+             				temp_node_select: nodo_select
+             			  };
+              		  
+              		  $('#formModal').html($('#templateRemoveChildEntity').tmpl(dataType));
               	    break;
             	  case "addEntityChild":
             		  nodo = getAllNodes(["box"]);

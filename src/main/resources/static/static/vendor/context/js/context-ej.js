@@ -38,6 +38,7 @@ $(document).ready(function(){
 			if(!existDataTableUnique(idSele)){
 				fillEditTableUnique(idSele);//
 			}
+			$('#insertModal').prop('disabled', false);
 		}},	
 		// relation
 		{text: $("#textAddEntitytoRelation").text(), href: '#', action: function(e){
@@ -68,7 +69,12 @@ $(document).ready(function(){
 			}
 		}},
 		{text: $("#tableUnique").text(), href: '#', action: function(e){
-			alert("crear unique");
+			$( "[functioninsert='addUniqueKey']").click();
+			idSele = $("#idSelected").val();
+			if(!existDataTableUnique(idSele)){
+				fillEditTableUnique(idSele);//
+			}
+			$('#insertModal').prop('disabled', false);
 		}},	
 		// atributos
 		{text: $("#renameEntity").text()+" Atributo", href: '#', action: function(e){
@@ -93,7 +99,8 @@ $(document).ready(function(){
 			$('#insertModal').prop('disabled', false);
 		}},
 		{text: $("#textRemoveChildEntity").text(), href: '#', action: function(e){
-			alert("textRemoveChildEntity"); // solo si es compuesto
+			$( "[functioninsert='removeChildEntity']").click();
+			$('#insertModal').prop('disabled', false);
 		}},
 		{text: $("#removeEntity").text(), href: '#', action: function(e){
 			network.selectNodes([getNodeSelected()]);

@@ -310,13 +310,32 @@
 				<div class="form-group">
 					<label for="element" class="col-form-label" th:text="#{item.entity}"></label>
 					<select id="element" class="form-control">
-						{{each(i,v) temp_nodes}}temp_numIdParent
+						{{each(i,v) temp_nodes}}
 							{{if v.id != temp_numIdParent}}
 					    	    <option value='${v.id}'>${v.label}</option>
 							{{/if}}
 						{{/each}}
 					</select>
 					<input type="hidden" id="tipoAdd" value="addEntityChild">
+					<input type="hidden" id="typeAction" value="create">
+				  	<input type="hidden" id="idSelected" value="${temp_node_select}">
+				</div>
+			</form>
+	    {{/if}}
+	</div>
+	<div class="d-none" id="templateRemoveChildEntity" type="text/x-jquery-tmpl">
+		{{if temp_node_length==0 }}
+	        <p class="text-center" th:text="#{textos.notEntitysChild}"></p>
+	    {{else}}
+	    	<form id="formInsert">
+				<div class="form-group">
+					<label for="element" class="col-form-label" th:text="#{item.entity}"></label>
+					<select id="element" class="form-control">
+						{{each(i,v) temp_nodes}}
+					    	    <option value='${v.id}'>${v.labelChild}</option>
+						{{/each}}
+					</select>
+					<input type="hidden" id="tipoAdd" value="removeChildEntity">
 					<input type="hidden" id="typeAction" value="create">
 				  	<input type="hidden" id="idSelected" value="${temp_node_select}">
 				</div>

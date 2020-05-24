@@ -341,8 +341,18 @@ var network = new vis.Network(container, data, options);
 		  if(edges.get(key).type == "parent")
 			  idParent = edges.get(key).to;
 	  });
-	  
 	  return idParent;
+  }
+  
+  function getChildData(idNodo){
+	  var dataFull = network.getConnectedEdges(parseInt(idNodo));
+	  var data = [];
+	  dataFull.forEach(function(key){
+		  if(edges.get(key).type == "child")
+			  data.push({id:key, labelChild: nodes.get(edges.get(key).to).label});
+	  });
+	  
+	  return data;
   }
   
   function addEntityChild(idTo, action, idSelected){

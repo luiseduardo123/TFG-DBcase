@@ -5,13 +5,13 @@
 	<div class="row">
 	  <div class="col-md-12 mt-4">
 	  	<div class="text-center">
-		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addEntity" src="static/images/entidad.png" class="rounded closeSide insertarDatos" alt="Add Entity" style="cursor: pointer;">
+		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addEntity" src="static/images/entidad.png" class="rounded closeSide insertarDatos"  th:alt="#{textos.addEntity}" style="cursor: pointer;">
 		</div>
 	  <p class="text-center" th:text="#{item.entity}"></p>
 	  </div>
 	  <div class="col-md-12 mt-4">
 	  	<div class="text-center">
-		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addRelation" src="static/images/relation.png" class="rounded closeSide insertarDatos" alt="Add Relation" style="cursor: pointer;">
+		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addRelation" src="static/images/relation.png" class="rounded closeSide insertarDatos" th:alt="#{textos.addRelation}" style="cursor: pointer;">
 		</div>
 		<p class="text-center" th:text="#{item.relation}"></p>
 	</div>
@@ -23,7 +23,7 @@
 	</div>
 	  <div class="col-md-12 mt-4">
 	  	<div class="text-center">
-		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addAtribute" src="static/images/attribute.png" class="rounded closeSide insertarDatos" alt="Add Attribute" style="cursor: pointer;">
+		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addAtribute" src="static/images/attribute.png" class="rounded closeSide insertarDatos" th:alt="#{textos.addAttribute}" style="cursor: pointer;">
 		</div>
 		<p class="text-center" th:text="#{item.attribute}"></p>
 	</div>
@@ -79,6 +79,11 @@
 	<div class="col-md-12 mt-4 d-none">
 	  	<div class="text-center">
 		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="addEntityChild" src="static/images/attribute.png" class="rounded closeSide insertarDatos" th:alt="#{textos.entityChild}">
+		</div>
+	</div>
+	<div class="col-md-12 mt-4 d-none">
+	  	<div class="text-center">
+		  <img data-toggle="modal" data-target="#modalAddItem" functionInsert="removeChildEntity" src="static/images/attribute.png" class="rounded closeSide insertarDatos" th:alt="#{textos.removeChildEntity}">
 		</div>
 	</div>
 	</div>
