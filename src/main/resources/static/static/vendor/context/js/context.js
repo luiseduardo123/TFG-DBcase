@@ -152,6 +152,8 @@ var context = context || (function () {
 						$( ".dropdown-context li:nth-child(22)" ).show();
 						break;
 					case "ellipse":
+						var isComposed = getComposedEllipse(nodo_select);
+						var isSubAttribute = getIsSubAttribute(nodo_select);
 						$( ".dropdown-context li:nth-child(5)" ).hide();
 						$( ".dropdown-context li:nth-child(6)" ).hide();
 						$( ".dropdown-context li:nth-child(7)" ).hide();
@@ -164,7 +166,10 @@ var context = context || (function () {
 						$( ".dropdown-context li:nth-child(14)" ).hide();
 						$( ".dropdown-context li:nth-child(15)" ).hide();
 						$( ".dropdown-context li:nth-child(16)" ).show();
-						$( ".dropdown-context li:nth-child(17)" ).show();
+						if(isComposed && !isSubAttribute)
+							$( ".dropdown-context li:nth-child(17)" ).show();
+						else
+							$( ".dropdown-context li:nth-child(17)" ).hide();
 						$( ".dropdown-context li:nth-child(18)" ).hide();
 						$( ".dropdown-context li:nth-child(19)" ).hide();
 						$( ".dropdown-context li:nth-child(20)" ).hide();

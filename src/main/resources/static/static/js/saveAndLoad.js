@@ -1,13 +1,10 @@
 function addConnections(elem, index) {
     var nodesConected = network.getConnectedNodes(index);
     var edgesWithOptions = new Array();
-    console.log(nodesConected.length+" sads");
     nodesConected.forEach(function(idTo){
     	var idEdge = existEdge(parseInt(index), parseInt(idTo));
-    	console.log(parseInt(index)+" -> "+ parseInt(idTo));
     	edgesWithOptions.push(edges.get(idEdge));
     });
-    console.log(edgesWithOptions);
     elem.connections = edgesWithOptions;
 }
 
@@ -76,7 +73,6 @@ function getEdgeData(data) {
     data.forEach(function(node) {
         // add the connection
         node.connections.forEach(function(connId, cIndex, conns) {
-        	console.log(connId.from +" -> "+connId.to);
         	var idEdge = existEdge(connId.from, connId.to);
         	
         	if(idEdge == null){

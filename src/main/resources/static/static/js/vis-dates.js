@@ -93,6 +93,7 @@ var network = new vis.Network(container, data, options);
   function addAttribute(name, action, idSelected, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
 	  var id_node = getIdElement();
 	  var word_pk = name;
+	  var word_multi = 1;
 	  if(pk){
 		  var word = name;
 		  word = word.replace(/./gi, "¯");
@@ -102,9 +103,12 @@ var network = new vis.Network(container, data, options);
 		  if(!notNll){
 			  word_pk +="*";
 		  } 
+		  if(multi){
+			  word_multi = 3;
+		  } 
 	  }
 	  
-	  var data_element = {labelBackend:name, label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25,physics:false};
+	  var data_element = {labelBackend:name, borderWidth:word_multi,label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
@@ -266,7 +270,6 @@ var network = new vis.Network(container, data, options);
   function fillEditConstraints(idNodo){
 	  idNodo = parseInt(idNodo);
 	  valuesConstraints = nodes.get(idNodo).constraints;
-	  console.log("const");
 	  for(var i=0;i<valuesConstraints.length;i++){
 		  if(i!=0){
 			  	var nextValue = parseInt($("#totalInputs").val())+1;
@@ -365,6 +368,29 @@ var network = new vis.Network(container, data, options);
 	  }
   }
   
+  function addSubAttribute(name, action, idSelected, idAttribute = idEntity, comp, notNll, uniq, multi, dom, sz){
+  	  var id_node = getIdElement();
+	  var word_pk = name;
+	  var word_multi = 1;
+	  
+	  if(!notNll){
+		  word_pk +="*";
+	  } 
+	  if(multi){
+		  word_multi = 3;
+	  } 
+	  
+	  var data_element = {labelBackend:name, type:"subAttribute", borderWidth:word_multi,label: word_pk, dataAttribute:{composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25,physics:false};
+	  if(action == "edit"){
+		  data_element.id = parseInt(idSelected);
+		  nodes.update(data_element);
+	  }else{
+		  data_element.id = id_node++;
+		  nodes.add(data_element);
+		  edges.add({from: parseInt(idAttribute), to: parseInt(id_node)-1, color:{color:'blue'}});
+	  }
+}
+  
   function fillEditAtributte(idNodo){
 	  idNodo = parseInt(idNodo);
 	  var nameAttribute = nodes.get(idNodo).label;
@@ -409,20 +435,46 @@ var network = new vis.Network(container, data, options);
 	  return (nodes.get(idSelected).tableUnique === undefined)
   }
   
+  function getIsSubAttribute(idSelected){
+	  idSelected = parseInt(idSelected);
+	  return (nodes.get(idSelected).type == "subAttribute")
+  }
+  
+  function getComposedEllipse(nodo_select){
+	  var idNodo = parseInt(nodo_select);
+	  return (nodes.get(idNodo).dataAttribute.composite)
+  }
+  
+  
   function existConstraints(idSelected){
 	  idSelected = parseInt(idSelected);
 	  return (nodes.get(idSelected).constraints === undefined)
   }
   
-  function allEntitysToRelation(nodo_select){
+  function allEntitysToRelation(nodo_select, onlyType=null){
 	  var data = [];
+	  var dataAll = [];
+	  var type = "all";
+	  
+	  if(onlyType != null){
+		  type = onlyType;
+	  }
+
 	  nodos = network.getConnectedEdges(parseInt(nodo_select));
 	  nodos.forEach(function(edg) {
 		  	idNodo = edges.get(edg).to;
 		  	roleName = edges.get(edg).label;
-			  data.push({id:edg, label:nodes.get(idNodo).label, role:roleName});				  
+		  	if(nodes.get(idNodo).shape == type)
+		  		data.push({id:edg, label:nodes.get(idNodo).label, role:roleName});	
+		  	dataAll.push({id:edg, label:nodes.get(idNodo).label, role:roleName});	
 	  });
-	  return data;
+	  
+	  if(onlyType != null){
+		  return data;
+	  }else{
+		  return dataAll;
+	  }
+	  
   }
 
   function allAttributeOfEntity(nodo_select){

@@ -50,7 +50,9 @@ $(document).ready(function(){
 			$('#insertModal').prop('disabled', false);
 		}},
 		{text: $("#textEditCardOrRol").text(), href: '#', action: function(e){
-			alert("textEditCardOrRol");
+			$( "[functioninsert='addEntitytoRelation']").click();
+			$('#insertModal').prop('disabled', false);
+			$('#titleModal').html($('#textEditCardOrRol').text());
 		}},
 		{text: $("#addNewAttribute").text(), action: function(e){
 			$( "[functioninsert='addAtribute']").click();
@@ -84,7 +86,7 @@ $(document).ready(function(){
 			fillEditAtributte(idSele);
 		}},
 		{text: $("#textAddSubAtributte").text(), href: '#', action: function(e){
-			alert("textAddSubAtributte"); // solo si es compuesto
+			$( "[functioninsert='addSubAtribute']").click();
 		}},
 		//IsA
 		{text: $("#textAddParentEntity").text(), href: '#', action: function(e){

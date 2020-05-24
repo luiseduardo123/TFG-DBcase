@@ -73,7 +73,7 @@ function eventsAddConstrainst(){
 	});
 }
 
-function eventEventPrimaryKeyAttribute(){console.log("flipo");
+function eventEventPrimaryKeyAttribute(){
 	$("#primaryKey, #composite").change(function() {
 		if(($("#primaryKey").prop('checked') && $("#composite").prop('checked')) || 
 		   ($("#primaryKey").prop('checked') && !$("#composite").prop('checked'))){
@@ -86,6 +86,16 @@ function eventEventPrimaryKeyAttribute(){console.log("flipo");
 		if(!$("#primaryKey").prop('checked') && !$("#composite").prop('checked')){
 			$("[for='notNull'],[for='unique'],[for='multivalued']").toggle(true);  
 		}						            		
+	});
+}
+
+function eventSubAttribute(){
+	$("#composite").change(function() {
+		if($("#composite").prop('checked')){
+			$("[for='notNull'],[for='unique']").toggle(false);
+		}else{
+			$("[for='notNull'],[for='unique']").toggle(true);  
+		}					            		
 	});
 }
 
@@ -137,6 +147,7 @@ function eventAddEventRecipient(){
 			$('#insertModal').prop('disabled', true);
 			$("#formModalButton").show();
 			$('#sidebar').removeClass('active');
+			$("[for='notNull'],[for='unique'],[for='multivalued'],[for='composite']").show();
 		});
 	});
 	

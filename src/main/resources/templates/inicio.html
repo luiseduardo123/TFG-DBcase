@@ -89,7 +89,6 @@ h2{
                      data: json,
                      contentType: "application/json",
                      success: function (data) {
-                         console.log("respuesta valida");
                          $("#testResult").html(data);
                      },
                      error: function (xhr, ajaxOptions, thrownError) {
@@ -133,9 +132,12 @@ h2{
       	          	case "addTableUnique":
       	          		addTableUnique(groupByArray($('#formInsert').serializeArray()),$('#idSelected').val(), $('#typeAction').val());
       	            	break;
-      	          case "removeChildEntity":
+	      	        case "removeChildEntity":
       	        		removeEntitytoRelation($('#element').val(), $('#typeAction').val(),$('#idSelected').val());
     	            	break;	
+	      	        case "addSubAtribute":
+	      	        	addSubAttribute($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val(), $('#element').val(), $('#composite').prop('checked'), $('#notNull').prop('checked'), $('#unique').prop('checked'), $('#multivalued').prop('checked'), $('#domain').val(), $('#size').val());
+		            	break;
       	          	case "addIsA":
       	            	break;
       	          	  default:
@@ -192,6 +194,25 @@ h2{
             		  eventAddEventRecipient();
             		  eventEventPrimaryKeyAttribute();
               	    break;
+            	  case "addSubAtribute":
+            		  nodo = getAllNodes(["box","diamond"]);
+            		  types = getAllTypesDomain();
+            		  if(nodo_select != null){
+	            		  var dataType = {
+	            				temp_types: types,
+	           					temp_node_select: nodo_select
+	           			  };
+            		  }else{
+            			  var dataType = {
+  	            				temp_types: types,
+  	           					temp_node_select: nodo_select
+  	           			  };
+            		  }
+            		  
+            		  $('#formModal').html($('#templateAddSubAtribute').tmpl(dataType));
+            		  eventAddEventRecipient();
+            		  eventSubAttribute();
+              	    break;
             	  case "addEntitytoRelation":
             		  nodo = getAllNodes(["box"]);
             		  var dataType = {
@@ -242,13 +263,12 @@ h2{
               		  $('#formModal').html($('#templateAddEntityChild').tmpl(dataType));
               	    break;
             	  case "removeEntitytoRelation":
-            		  nodo = allEntitysToRelation(nodo_select);
+            		  nodo = allEntitysToRelation(nodo_select, "box");
             		  var dataType = {
                 				temp_node_length: nodo.length,
                 				temp_nodes: nodo,
                					temp_node_select: nodo_select
                			  };
-                		  
                 	  $('#formModal').html($('#templateRemoveEntitytoRelation').tmpl(dataType));
                 	  eventsRemoveEntityToRelation();
               	    break;
