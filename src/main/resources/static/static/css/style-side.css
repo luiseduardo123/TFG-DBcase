@@ -1,17 +1,14 @@
-@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 body {
-    font-family: 'Poppins', sans-serif;
     background: #fafafa;
 }
 
 p {
-    font-family: 'Poppins', sans-serif;
     font-size: 1.1em;
     font-weight: 300;
     line-height: 1.7em;
     color: #999;
 }
-
+/*
 a,
 a:hover,
 a:focus {
@@ -19,7 +16,7 @@ a:focus {
     text-decoration: none;
     transition: all 0.3s;
 }
-
+*/
 .navbar {
     padding: 15px 10px;
     background: #fff;
@@ -170,18 +167,6 @@ a.article:hover {
 	PRINCIPAL
 */
 
-.col-md-6-height{
-	height: 50%;
-}
-
-.col-md-12-height{
-	height: 100%;
-}
-
-.col-md-24-height{
-	height: 200%;
-}
-
 /* select2 */
 .select2-dropdown.select2-dropdown--below{
 	z-index: 10001;
@@ -195,4 +180,7 @@ a.article:hover {
     display: none;
 }
 
+.dropdown-toggle::after {
+    content: unset;
+}
 

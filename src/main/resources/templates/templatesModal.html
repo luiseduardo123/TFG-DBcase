@@ -381,5 +381,45 @@
 			</form>
 	    {{/if}}
 	</div>
-	
+	<div class="d-none" id="templateAbout" type="text/x-jquery-tmpl">
+    	<h2 class="text-center font-weight-bold" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">DBCASE Web</h2>
+		<p class="text-center font-weight-bold" th:text="#{textos.about1}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></p>
+		<hr>
+		<p><strong th:text="#{textos.about2}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></strong></p>
+		<ul class="text-center">
+			<li>Fernando Sáenz Pérez</li>
+		</ul>
+		<p th:text="#{textos.about3}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></p>
+		<ul class="text-center">
+			<li>Luis Eduardo Paucar Cerrón</li>
+			<li>David Conde Cubas</li>
+		</ul>
+		<hr>
+		<p><strong th:text="#{textos.about4}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></strong></p>
+		<p class="text-center font-weight-bold" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">DBCASE 2.0 (2018/2019).</p>
+		<p th:text="#{textos.about5}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></p>
+		<ul class="text-center">
+			<li>Miguel Arriba García</li>
+		</ul>
+		<hr>
+		<p class="text-center font-weight-bold" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">DBCASE 1.0 - Sistemas Informáticos (2008/2009).</p>
+		<p th:text="#{textos.about3}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></p>
+		<ul class="text-center">
+			<li>Rodrigo Denis Cepeda Mateos</li>
+			<li>Cristina Marco de Francisco</li>
+			<li>Tello Serrano Gordillo</li>
+		</ul>
+		<hr>	 
+		<p class="text-center font-weight-bold" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">DBDT 1.0 - Sistemas Informáticos (2007/2008).</p>
+		<p th:text="#{textos.about3}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></p>
+		<ul class="text-center">
+			<li>Alberto Milán Gutiérrez</li>
+			<li>Miguel Martínez Segura</li>
+			<li>Francisco Javier Cáceres González</li>
+			<li><strong th:text="#{textos.about7}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></strong>: Yolanda García Ruiz.</li>
+		</ul>
+		<hr>
+		<p th:text="#{textos.about6}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></p>
+		<p th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">Facultad de Informática. Universidad Complutense</p>
+	</div>
 </div>

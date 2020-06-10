@@ -11,7 +11,7 @@
 	<groupId>com.tfg.ucm</groupId>
 	<artifactId>DBCaseWeb</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<!-- <packaging>war</packaging> -->
 	<name>DBCaseWeb</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -53,6 +53,12 @@
 		    <groupId>net.sf.jung</groupId>
 		    <artifactId>jung-graph-impl</artifactId>
 		    <version>2.0.1</version>
+		</dependency>
+		
+		<dependency>
+		      <groupId>javax.xml.bind</groupId>
+		      <artifactId>jaxb-api</artifactId>
+		      <version>2.3.0</version>
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/com.jgoodies/looks -->

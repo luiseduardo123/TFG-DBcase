@@ -119,6 +119,26 @@ function eventAddEventRecipient(){
 	$('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
     });
+	
+	$("#general-about").click(function() {
+		$( "[functioninsert='addTextAbout']").click();
+		$("#formModalButton").hide();
+	});
+	
+	$(document).keydown(function(e) {
+		if(e.which == 46){
+			if(getNodesSelectedCount()!=0 && getNodesSelectedCount()>1){
+				if(confirm($("#textDeleteNodes").text())){
+					deleteNodeSelected();
+				}
+			}else{
+				if(getNodesSelectedCount()==1){
+					deleteNodeSelected();
+				}
+			}
+		}
+	});
+
 	// Añadir la funcion a ejecutar en cada modal
 	$('.closeSide').on('click', function() {
         $('#titleModal').html(this.getAttribute("alt"));
@@ -131,12 +151,8 @@ function eventAddEventRecipient(){
     
 	// cambiar tamaño de diagramas
 	$('.vis-zoomExtends').on('click', function () {
-		 $('.changeSizeWidth').toggleClass('col-md-6');
+		$('.changeSizeWidth').toggleClass('col-md-6');
         $('.changeSizeWidth').toggleClass('col-md-12');
-        $('.changeSizeWidth').toggleClass('col-md-6-height');
-        $('.changeSizeWidth').toggleClass('col-md-12-height');
-        $('.changeSizeHeight').toggleClass('col-md-6-height');
-        $('.changeSizeHeight').toggleClass('col-md-24-height');
     });
 	
 	$('.insertarDatos').on('click', function() {
@@ -151,5 +167,41 @@ function eventAddEventRecipient(){
 		});
 	});
 	
+	$('.dropdown').on('show.bs.dropdown', function () {
+		$("#sticky-top").removeClass("sticky-top");
+	});
+
+	$('.dropdown').on('hidden.bs.dropdown', function () {
+		$("#sticky-top").addClass("sticky-top");
+	});
+	
+	$("#general-new").on('click',function(){
+		sessionStorage.setItem('codeSave', "");
+		location.reload();
+	});
+	
+	function simuleClick(){
+		var event = new PointerEvent('pointerdown') ;
+		document.getElementsByClassName("vis-zoomExtendsScreen")[0].dispatchEvent(event);
+	}
+	$("#general-print").on('click',function(){
+		$.when(simuleClick()).then(function(){
+			var dataUrl = document.getElementsByTagName("canvas")[0].toDataURL();
+		    var windowContent = '<!DOCTYPE html>';
+		    windowContent += '<html>'
+		    windowContent += '<head><title>Print canvas</title></head>';
+		    windowContent += '<body>'
+		    windowContent += '<img src="' + dataUrl + '">';
+		    windowContent += '</body>';
+		    windowContent += '</html>';
+		    var printWin = window.open('','','width=340,height=260');
+		   // printWin.document.open();
+		    printWin.document.write(windowContent);
+		    printWin.document.close();
+		    printWin.focus();
+		    printWin.print();
+		    printWin.close();
+		});
+	});
 	
 })(jQuery);

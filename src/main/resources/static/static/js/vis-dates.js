@@ -25,7 +25,7 @@ var options = {
 		      speed: {x: 10, y: 10, zoom: 0.02},
 		      bindToWindow: true
 		    },
-		    multiselect: false,
+		    multiselect: true,
 		    navigationButtons: true,
 		    selectable: true,
 		    selectConnectedEdges: true,
@@ -503,3 +503,14 @@ var network = new vis.Network(container, data, options);
   function getTypeItem(idItem){
 	  return nodes.get(parseInt(idItem)).shape;
   }
+  
+  function getNodesSelectedCount(){
+	  return network.getSelectedNodes().length;
+  }
+  
+  function deleteNodeSelected(){
+	  network.getSelectedNodes().forEach(function(idNodo) {
+		  nodes.remove(parseInt(idNodo));			  
+	  });
+  }
+  

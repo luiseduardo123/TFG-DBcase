@@ -230,6 +230,12 @@ $(document).ready(function () {
           			  };
           		  	  $('#formModal').html($('#templateAddLoadFile').tmpl(dataType));
       	    		break;
+            	  	case "addTextAbout":
+            	  		var dataType = {
+          					temp_node_select: nodo_select
+          			  };
+          		  	  $('#formModal').html($('#templateAbout').tmpl(dataType));
+      	    		break;
             	  	case "removeParentIsA":
             	  		if(existParent(nodo_select))
 	            	  		removeParentIsA(nodo_select);

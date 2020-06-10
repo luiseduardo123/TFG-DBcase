@@ -1,7 +1,3 @@
-
-
-
-
 /*//////////////////////////////////////////////////////////////////
 [ FONT ]*/
 
@@ -20,7 +16,6 @@
   src: url('../fonts/montserrat/Montserrat-Bold.ttf'); 
 }
 
-
 /*//////////////////////////////////////////////////////////////////
 [ RESTYLE TAG ]*/
 
@@ -32,12 +27,26 @@
 
 body, html {
 	height: 100%;
-	font-family: Montserrat-Regular, sans-serif;
+}
+
+.when-dark{
+	color:#f8f9fa !important;
+}
+
+.when-dark:hover{
+	color:#343a40 !important;
+	text-decoration: none !important;
+	background-color: #f8f9fa !important;
+}
+
+.when-white:hover{
+	color:#f8f9fa !important;
+	text-decoration: none !important;
+	background-color: #6d7fcc !important;
 }
 
 /*---------------------------------------------*/
 a {
-	font-family: Montserrat-Regular;
 	font-size: 14px;
 	line-height: 1.7;
 	color: #666666;
@@ -52,18 +61,12 @@ a:focus {
 	outline: none !important;
 }
 
-a:hover {
-	text-decoration: none;
-  color: #fff;
-}
-
 /*---------------------------------------------*/
 h1,h2,h3,h4,h5,h6 {
 	margin: 0px;
 }
 
 p {
-	font-family: Montserrat-Regular;
 	font-size: 14px;
 	line-height: 1.7;
 	color: #666666;
@@ -130,7 +133,6 @@ iframe {
 /*//////////////////////////////////////////////////////////////////
 [ Utility ]*/
 .txt1 {
-  font-family: Montserrat-Regular;
   font-size: 16px;
   color: #cccccc;
   line-height: 1.4;
@@ -168,7 +170,6 @@ iframe {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  
   position: relative;
   z-index: 1;
 }
@@ -195,8 +196,6 @@ iframe {
   background: transparent;
 }
 
-
-
 /*------------------------------------------------------------------
 [  ]*/
 .login100-form {
@@ -211,7 +210,6 @@ iframe {
 }
 
 .login100-form-title {
-  font-family: Montserrat-ExtraBold;
   font-size: 24px;
   color: #fff;
   line-height: 1.2;
@@ -233,7 +231,6 @@ iframe {
   width: 100%;
 }
 
-
 /*---------------------------------------------*/
 .wrap-input100 {
   position: relative;
@@ -242,7 +239,6 @@ iframe {
 }
 
 .input100 {
-  font-family: Montserrat-Bold;
   font-size: 15px;
   line-height: 1.2;
   color: #333333;
@@ -254,7 +250,6 @@ iframe {
   border-radius: 25px;
   padding: 0 30px 0 53px;
 }
-
 
 /*------------------------------------------------------------------
 [ Focus ]*/
@@ -293,7 +288,6 @@ iframe {
 .symbol-input100 {
   font-size: 15px;
   color: #999999;
-
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -308,7 +302,6 @@ iframe {
   height: 100%;
   padding-left: 30px;
   pointer-events: none;
-
   -webkit-transition: all 0.4s;
   -o-transition: all 0.4s;
   -moz-transition: all 0.4s;
@@ -319,7 +312,6 @@ iframe {
   color: #00c6fb;
   padding-left: 23px;
 }
-
 
 /*------------------------------------------------------------------
 [ Button ]*/
@@ -335,11 +327,9 @@ iframe {
 }
 
 .login100-form-btn {
-  font-family: Montserrat-Bold;
   font-size: 15px;
   line-height: 1.5;
   color: #e0e0e0;
-
   width: 100%;
   height: 50px;
   border-radius: 25px;
@@ -352,12 +342,10 @@ iframe {
   justify-content: center;
   align-items: center;
   padding: 0 25px;
-
   -webkit-transition: all 0.4s;
   -o-transition: all 0.4s;
   -moz-transition: all 0.4s;
   transition: all 0.4s;
-
   position: relative;
   z-index: 1;
 }
@@ -397,10 +385,8 @@ iframe {
 [ Button sign in with ]*/
 .btn-face,
 .btn-google {
-  font-family: Raleway-Bold;
   font-size: 16px;
   line-height: 1.2;
-
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -413,13 +399,11 @@ iframe {
   border-radius: 3px;
   border: 1px solid #e6e6e6;
   background-color: #fff;
-
   -webkit-transition: all 0.4s;
   -o-transition: all 0.4s;
   -moz-transition: all 0.4s;
   transition: all 0.4s;
 }
-
 
 .btn-face {
   color: #3b5998;
@@ -441,13 +425,10 @@ iframe {
   padding-bottom: 1px;
 }
 
-
 .btn-face:hover,
 .btn-google:hover {
   border-color: #d33f8d;
 }
-
-
 
 /*------------------------------------------------------------------
 [ Alert validate ]*/
@@ -472,8 +453,6 @@ iframe {
   transform: translateY(-50%);
   right: 8px;
   pointer-events: none;
-
-  font-family: Montserrat-Bold;
   color: #c80000;
   font-size: 13px;
   line-height: 1.4;
@@ -490,7 +469,6 @@ iframe {
 
 .alert-validate::after {
   content: "\f06a";
-  font-family: FontAwesome;
   display: block;
   position: absolute;
   color: #c80000;

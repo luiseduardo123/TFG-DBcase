@@ -39080,8 +39080,8 @@
 
 	      this.cleanNavigation();
 	      this.navigationDOM = {};
-	      var navigationDivs = ['up', 'down', 'left', 'right', 'zoomIn', 'zoomOut', 'zoomExtends'];
-	      var navigationDivActions = ['_moveUp', '_moveDown', '_moveLeft', '_moveRight', '_zoomIn', '_zoomOut', '_fit'];
+	      var navigationDivs = ['up', 'down', 'left', 'right', 'zoomIn', 'zoomOut', 'zoomExtendsScreen', 'zoomExtends'];
+	      var navigationDivActions = ['_moveUp', '_moveDown', '_moveLeft', '_moveRight', '_zoomIn', '_zoomOut', '_fit','_fit'];
 	      this.navigationDOM['wrapper'] = document.createElement('div');
 	      this.navigationDOM['wrapper'].className = 'vis-navigation';
 	      this.canvas.frame.appendChild(this.navigationDOM['wrapper']);
