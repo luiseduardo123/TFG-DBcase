@@ -21,5 +21,14 @@ class Domains {
   
   setTypesDomains(idNew, valueNew, typeNew, valueSeparate)   {
 	  this.types.push({id:idNew, value:valueNew, type:typeNew, valueSeparate:valueSeparate});
+	  this.print("#itemsDomains");
+  }
+  
+  print(tag){
+	  $(tag).html("");
+	  this.types.forEach(function(type) {
+		  $(tag).append('<li class="list-group-item pb-1 pt-1">'+type.value+'</li>');		  
+	  });
+	  
   }
 }

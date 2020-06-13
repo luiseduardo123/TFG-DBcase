@@ -152,7 +152,55 @@ function eventAddEventRecipient(){
 	// cambiar tamaño de diagramas
 	$('.vis-zoomExtends').on('click', function () {
 		$('.changeSizeWidth').toggleClass('col-md-6');
-        $('.changeSizeWidth').toggleClass('col-md-12');
+        $('.changeSizeWidth').toggleClass('col-md-10');
+        $('.changeSizeWidthData').toggleClass('col-md-12');
+        $('.changeSizeWidthData').toggleClass('col-md-4');
+    });
+	
+	// cambiar distribución de la vista
+	$('.change-aparience').on('click', function () {
+		//alert($(this).attr("value")+" is");
+		$('.change-aparience').removeClass("active");
+		$(this).addClass("active");
+		
+		if($("#frame4").hasClass("float-left")){
+			$("#frame1").show();
+			$("#frame2").addClass("col-md-2");
+			$("#frame2").removeClass("col-md-4");
+			$("#frame3").addClass("col-md-4");
+			$("#frame3").removeClass("col-md-8");
+			$("#frame4").addClass("col-md-12");
+			$("#frame5").addClass("col-md-12");
+			$("#frame4").removeClass("col-md-6 float-left");
+			$("#frame5").removeClass("col-md-6 float-left");
+		}
+		
+		if($("#frame1").hasClass("col-md-10")){
+			$(".vis-zoomExtends").click();
+		}
+		switch($(this).attr("value")){
+			case "0":
+				$("#frame1").hide();
+				$("#frame2").removeClass("col-md-2");
+				$("#frame2").addClass("col-md-4");
+				$("#frame3").removeClass("col-md-4");
+				$("#frame3").addClass("col-md-8");
+				$("#frame4").removeClass("col-md-12");
+				$("#frame5").removeClass("col-md-12");
+				$("#frame4").addClass("col-md-6 float-left");
+				$("#frame5").addClass("col-md-6 float-left");
+				break;
+			case "1":
+				break;
+			case "2":
+				$(".vis-zoomExtends").click();
+				break;
+		}
+    });
+	
+	// abrir modal add Domain
+	$('#openCreateDomain').on('click', function () {
+		$( "[functioninsert='createDomain']").click();
     });
 	
 	$('.insertarDatos').on('click', function() {
@@ -203,5 +251,7 @@ function eventAddEventRecipient(){
 		    printWin.close();
 		});
 	});
+	
+	printDomains();
 	
 })(jQuery);

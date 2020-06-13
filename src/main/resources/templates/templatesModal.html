@@ -387,7 +387,8 @@
 		<hr>
 		<p><strong th:text="#{textos.about2}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></strong></p>
 		<ul class="text-center">
-			<li>Fernando Sáenz Pérez</li>
+			<li>Fernando Sáenz Pérez <a class="ml-2" href="mailto:fernan@sip.ucm.es"><i class="fa fa-envelope" aria-hidden="true" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></i></a>
+			</li>
 		</ul>
 		<p th:text="#{textos.about3}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></p>
 		<ul class="text-center">
@@ -420,6 +421,6 @@
 		</ul>
 		<hr>
 		<p th:text="#{textos.about6}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></p>
-		<p th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">Facultad de Informática. Universidad Complutense</p>
+		<p th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">Facultad de Informática. Universidad Complutense de Madrid</p>
 	</div>
 </div>

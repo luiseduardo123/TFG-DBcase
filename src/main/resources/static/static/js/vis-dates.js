@@ -514,3 +514,7 @@ var network = new vis.Network(container, data, options);
 	  });
   }
   
+  function printDomains(){
+	  typeDomain.print("#itemsDomains");
+  }
+  
