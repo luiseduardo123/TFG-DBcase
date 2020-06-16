@@ -1,5 +1,9 @@
 $(document).ready(function () {
-        	
+	
+			$('#modalAddItem').on('shown.bs.modal', function () {
+				$("#recipient-name").focus();
+			});
+	
        	 	 $('#btnTest').on('click', function () {
        		  //var url = "<c:url value="/generateData"/>";
        		  var f= 2;

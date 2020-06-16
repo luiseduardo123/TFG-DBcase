@@ -1,5 +1,6 @@
 var nodes = new vis.DataSet([]);
 var nodoSelected;
+var poscSelection;
 var typeDomain = new Domains();
 // create an array with edges
 var edges = new vis.DataSet([]);
@@ -21,7 +22,7 @@ var options = {
 		    hover: false,
 		    hoverConnectedEdges: true,
 		    keyboard: {
-		      enabled: false,
+		      enabled: true,
 		      speed: {x: 10, y: 10, zoom: 0.02},
 		      bindToWindow: true
 		    },
@@ -46,11 +47,16 @@ var network = new vis.Network(container, data, options);
   }
   function addEntity(nombre, weakEntity,action, idSelected){
 	  var id_node = getIdElement();
-	  var data_element = {label: nombre, strong: weakEntity, shape: 'box', color:'#ffcc45', scale:20, widthConstraint:150, heightConstraint:25,physics:false};
+	  var data_element = {label: nombre, isWeak: weakEntity, shape: 'box', color:'#ffcc45', scale:20, widthConstraint:150, heightConstraint:25,physics:false};
+
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
 	  }else{
+		  if(poscSelection != null){
+			  data_element.x = poscSelection.x;
+			  data_element.y = poscSelection.y;
+		  }
 		  data_element.id = id_node++;
 		  nodes.add(data_element);
 	  }
@@ -76,10 +82,15 @@ var network = new vis.Network(container, data, options);
   function addRelation(nombre, action, idSelected){
 	  var id_node = getIdElement();
 	  var data_element = {label: nombre, shape: 'diamond', color:'#ff554b', scale:20, physics:false};
+	  
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
 	  }else{
+		  if(poscSelection != null){
+			  data_element.x = poscSelection.x;
+			  data_element.y = poscSelection.y;
+		  }
 		  data_element.id = id_node++;
 		  nodes.add(data_element);
 	  }
@@ -87,7 +98,12 @@ var network = new vis.Network(container, data, options);
   
   function addIsA(){
 	  var id_node = getIdElement();
-	  nodes.add({id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20, physics:false});
+	  var data_element = {id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20, physics:false}
+	  if(poscSelection != null){
+		  data_element.x = poscSelection.x;
+		  data_element.y = poscSelection.y;
+	  }
+	  nodes.add(data_element);
   }
   
   function addAttribute(name, action, idSelected, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
@@ -143,9 +159,9 @@ var network = new vis.Network(container, data, options);
 		  center = "  ";
 	  else
 		  center = roleName;
-	  
 	  var idEdge = existEdge(idSelected, idTo);
-	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: center, labelFrom:right, labelTo:left};
+	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo),label: right+" .. "+left+"  "+center, labelF:right, labelT:left, name:center};
+	  
 	  if(idEdge != null){
 		  data_element.id = idEdge;
 		  edges.update(data_element);
@@ -385,6 +401,10 @@ var network = new vis.Network(container, data, options);
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
 	  }else{
+		  if(poscSelection != null){
+			  data_element.x = poscSelection.x;
+			  data_element.y = poscSelection.y;
+		  }
 		  data_element.id = id_node++;
 		  nodes.add(data_element);
 		  edges.add({from: parseInt(idAttribute), to: parseInt(id_node)-1, color:{color:'blue'}});
@@ -413,6 +433,7 @@ var network = new vis.Network(container, data, options);
   // Metodo que obtiene el nodo seleccionado con boton derecho y lo almacena en nodoSelect
   network.on('oncontext', function(params) {
 	  poscSelect = params.pointer.DOM;
+	  poscSelection = params.pointer.canvas;
 	  if(typeof network.getNodeAt(poscSelect) !== 'undefined'){
 		  nodoSelected = network.getNodeAt(poscSelect);
 	  }else{

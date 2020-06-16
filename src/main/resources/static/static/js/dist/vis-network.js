@@ -39081,6 +39081,7 @@
 	      this.cleanNavigation();
 	      this.navigationDOM = {};
 	      var navigationDivs = ['up', 'down', 'left', 'right', 'zoomIn', 'zoomOut', 'zoomExtendsScreen', 'zoomExtends'];
+	      var navigationToolTips = [$("#textTooltip1").text(), $("#textTooltip2").text(), $("#textTooltip3").text(), $("#textTooltip4").text(), $("#textTooltip5").text(), $("#textTooltip6").text(), $("#textTooltip7").text(), $("#textTooltip8").text()];
 	      var navigationDivActions = ['_moveUp', '_moveDown', '_moveLeft', '_moveRight', '_zoomIn', '_zoomOut', '_fit','_fit'];
 	      this.navigationDOM['wrapper'] = document.createElement('div');
 	      this.navigationDOM['wrapper'].className = 'vis-navigation';
@@ -39088,6 +39089,8 @@
 
 	      for (var i = 0; i < navigationDivs.length; i++) {
 	        this.navigationDOM[navigationDivs[i]] = document.createElement('div');
+	        this.navigationDOM[navigationDivs[i]].setAttribute("data-toggle", "tooltip");
+	        this.navigationDOM[navigationDivs[i]].setAttribute("title", navigationToolTips[i]);
 	        this.navigationDOM[navigationDivs[i]].className = 'vis-button vis-' + navigationDivs[i];
 	        this.navigationDOM['wrapper'].appendChild(this.navigationDOM[navigationDivs[i]]);
 	        var hammer$1 = new hammer(this.navigationDOM[navigationDivs[i]]);

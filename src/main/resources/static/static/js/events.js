@@ -137,6 +137,13 @@ function eventAddEventRecipient(){
 				}
 			}
 		}
+		if(e.which == 13){
+			e.preventDefault();
+			console.log("pepito");
+			if(!$('#insertModal').prop('disabled')){
+				$("#insertModal").click();
+			}
+		}
 	});
 
 	// Añadir la funcion a ejecutar en cada modal
