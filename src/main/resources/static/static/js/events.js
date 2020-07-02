@@ -7,6 +7,14 @@ function groupByArray(xs) {
 	  return Object.values(resultado);
 	}
 
+function inArray(needle, haystack) {
+    var length = haystack.length;
+    for(var i = 0; i < length; i++) {
+        if(haystack[i].idChild == needle) return true;
+    }
+    return false;
+}
+
 function editList(){
 	$("#addListUnique").click(function(){
 		var nodo = allAttributeOfEntity(parseInt($("#idSelected").val()));
@@ -113,6 +121,47 @@ function eventAddEventRecipient(){
 	});
 }
 
+function updateTableElements(){
+	$('#accordion').html("");
+	var nodo = getAllNodes(["box"]);
+	for(var i=0;i<nodo.length;i++){
+		var dataType = {
+			nameE: nodo[i].label,
+			idE: nodo[i].id
+		};
+		$('#accordion').append($('#templateElementEntity').tmpl(dataType));
+		$('#childs-attribute'+nodo[i].id).html("");
+		var listAtributes = allAttributeOfEntity(nodo[i].id);
+		for(var e=0;e<listAtributes.length;e++){
+			$('#childs-attribute'+nodo[i].id).append('<p class="card-link small ml-0" href="#" aria-expanded="true"><img src="static/images/attribute-small.png" class="rounded"><span class="pl-1 text-'+$("#textTheme").text()+'">'+listAtributes[e].label+' : '+listAtributes[e].type+'('+listAtributes[e].size+')</span></p>');
+		}
+	}
+	
+	$('#accordion2').html("");
+	var nodo = getAllNodes(["diamond", "triangleDown"]);
+	for(var i=0;i<nodo.length;i++){
+		var dataType = {
+			nameE: nodo[i].label,
+			idE: nodo[i].id,
+			shape: nodo[i].shape
+		};
+		$('#accordion2').append($('#templateElementRelation').tmpl(dataType));
+		$('#childs-attribute'+nodo[i].id).html("");
+		var listAtributes = allEntitysToRelation(nodo[i].id, "box");
+		for(var e=0;e<listAtributes.length;e++){
+			var asoc = "";
+			if(listAtributes[e].asoc.length<10)
+				asoc = ": "+listAtributes[e].asoc;
+			$('#childs-attribute'+nodo[i].id).append('<p class="card-link small ml-0" href="#" aria-expanded="true"><img src="static/images/entidad-small.png" class="rounded"><span class="pl-1 text-'+$("#textTheme").text()+'">'+listAtributes[e].label+''+asoc+'</span></p>');
+		}
+		
+		var listAtributes = allAttributeOfEntity(nodo[i].id);
+		for(var e=0;e<listAtributes.length;e++){
+			$('#childs-attribute'+nodo[i].id).append('<p class="card-link small ml-0" href="#" aria-expanded="true"><img src="static/images/attribute-small.png" class="rounded"><span class="pl-1 text-'+$("#textTheme").text()+'">'+listAtributes[e].label+' : '+listAtributes[e].type+'('+listAtributes[e].size+')</span></p>');
+		}
+	}
+}
+
 (function ($) {
 	
 	// sidebar lateral desplegar
@@ -139,7 +188,6 @@ function eventAddEventRecipient(){
 		}
 		if(e.which == 13){
 			e.preventDefault();
-			console.log("pepito");
 			if(!$('#insertModal').prop('disabled')){
 				$("#insertModal").click();
 			}
@@ -213,7 +261,6 @@ function eventAddEventRecipient(){
 	$('.insertarDatos').on('click', function() {
 		// Limpiar el modal cuando se cierra, se deshabilita el boton 
 		$('#modalAddItem').on('hidden.bs.modal', function (event) {
-			console.log("limpiar modal");
 			$('#formModal').html("");
 			$('#insertModal').prop('disabled', true);
 			$("#formModalButton").show();

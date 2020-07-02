@@ -61,6 +61,7 @@ function importNetwork(type, value=null) {
     var inputData = JSON.parse(inputValue);
     getNodeData(inputData);
     getEdgeData(inputData);
+    updateTableElements()
 }
 
 function getNodeData(data) {

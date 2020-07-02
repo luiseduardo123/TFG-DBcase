@@ -57,7 +57,7 @@ $(document).ready(function(){
 		{text: $("#addNewAttribute").text(), action: function(e){
 			$( "[functioninsert='addAtribute']").click();
 		}},
-		{text: $("#renameEntity").text()+" Relacion", href: '#', action: function(e){
+		{text: $("#textEditRelation").text(), href: '#', action: function(e){
 			$( "[functioninsert='addRelation']").click();
 			$( "#typeAction").val("edit");
 			idSele = $("#idSelected").val();
@@ -107,6 +107,7 @@ $(document).ready(function(){
 		{text: $("#removeEntity").text(), href: '#', action: function(e){
 			network.selectNodes([getNodeSelected()]);
 			network.deleteSelected();
+			updateTableElements();
 		}}
 	];
 	

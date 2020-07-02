@@ -179,6 +179,10 @@ $(document).ready(function () {
             		  nodo = getAllNodes(["box"]);
             		  var valueExistParent = existParent(nodo_select);
             		  var numIdParent = -1;
+            		  var childs = getChildData(nodo_select);
+	        		  nodo = nodo.filter(function(elem) {
+	        			  return !inArray(elem.id, childs);
+	        		  });
             		  if(valueExistParent)
             			  numIdParent = getParentId(nodo_select);
             		  var dataType = {

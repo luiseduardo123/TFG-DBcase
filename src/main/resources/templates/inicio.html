@@ -28,8 +28,9 @@ h2{
 			              <div class="dropdown-menu" aria-labelledby="general-file" th:classappend="${theme=='dark'} ? 'bg-dark' : 'bg-light'">
 			                <a class="dropdown-item" id="general-new" href="#" th:text="#{general.new}" th:classappend="${theme=='dark'} ? 'when-dark' : 'when-white'"></a>
 			                <a class="dropdown-item" id="loadFile" href="#" th:text="#{general.open}" th:classappend="${theme=='dark'} ? 'when-dark' : 'when-white'"></a>
-			                <a class="dropdown-item" id="general-print" href="#" th:text="#{general.print}" th:classappend="${theme=='dark'} ? 'when-dark' : 'when-white'"></a>
 			                <a class="dropdown-item" id="saveAs" href="#" th:text="#{general.export}" th:classappend="${theme=='dark'} ? 'when-dark' : 'when-white'"></a>
+			                <a class="dropdown-item" id="general-print" href="#" th:text="#{general.print}" th:classappend="${theme=='dark'} ? 'when-dark' : 'when-white'"></a>
+			                
 			              </div>
 			            </li>
 			            <li class="nav-item dropdown">
@@ -70,27 +71,35 @@ h2{
 					</div>
 			      </nav>
 	         </div>
-          	<div  style="height: 100%;position: absolute;width: 100%;top: 0px;padding-top: 80px;">
+          	<div style="height: 100%;position: absolute;width: 100%;top: 0px;padding-top: 80px;">
           		<div class="row w-100 h-100 mr-0 ml-0">
-          			<div class="changeSizeWidth col-md-6 pr-0 pl-0 h-100" id="frame1">
+          			<div class="changeSizeWidth col-md-6 pr-0 pl-0 h-100 border-top" id="frame1" th:classappend="${theme=='dark'} ? border-light : border-dark">
           				<div class="row pl-2 pt-2" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
 							  <div class="col-6 col-md-6"><p class="h5 mt-2" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{textos.conceptualSchema}"></p></div>
 						</div>
           				<div id="diagram" style="top: 0px;position: absolute;" class="w-100 h-100">
 						</div>
           			</div>
-          			<div class="col-md-2 h-100" style="overflow: auto;" id="frame2">
+          			<div class="col-md-2 h-100 border-top border-left border-right" style="overflow: auto;" id="frame2" th:classappend="${theme=='dark'} ? border-light : border-dark">
           				<div class="row pt-2" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
 							  <ul class="col-md-12 pl-3 nav nav-tabs" id="myTab" role="tablist">
 							  <li class="nav-item w-50 text-center">
-							    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{textos.elements}">Home</a>
+							    <a class="nav-link active pl-1 pr-1" id="home-tab" style="text-overflow: ellipsis;overflow: hidden;" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true" th:classappend="${theme=='dark'} ? 'text-white t-white' : 't-dark'" th:text="#{textos.elements}">Home</a>
 							  </li>
 							  <li class="nav-item w-50 text-center">
-							    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{textos.domain}">Profile</a>
+							    <a class="nav-link pl-1 pr-1" id="profile-tab" style="text-overflow: ellipsis;overflow: hidden;" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" th:classappend="${theme=='dark'} ? 'text-white t-white' : 't-dark'" th:text="#{textos.domain}">Profile</a>
 							  </li>
 							</ul>
 							<div class="tab-content w-100" id="myTabContent">
-							  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">ass
+							  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+							  		<div class="col-md-12">
+							  			<p class="h6 mt-2" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{item.entitys}"></p>
+							  			<div id="accordion">
+										</div>
+										<p class="h6 mt-2" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{item.relations}"></p>
+							  			<div id="accordion2">
+										</div>
+							  		</div>
 							  </div>
 							  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 							  		<div class="col-12 col-md-12 text-center"><button type="button" class="mt-2 mb-2 btn" id="openCreateDomain" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{general.new}"></button></div>
@@ -103,8 +112,8 @@ h2{
           				<!-- <div style="top: 0px;position: absolute;" class="w-100 h-100">
 						</div> -->
           			</div>
-          			<div class="col-md-4 changeSizeWidthData" style="min-height: 500px;" id="frame3">
-          				<div class="col-md-12 pr-0 pl-0 h-50" style="overflow-y: auto;overflow-x: hidden;" id="frame4">
+          			<div class="col-md-4 changeSizeWidthData border-top" style="min-height: 500px;" id="frame3" th:classappend="${theme=='dark'} ? border-light : border-dark">
+          				<div class="col-md-12 pr-0 pl-0 h-50 border-bottom" style="overflow-y: auto;overflow-x: hidden;" id="frame4"  th:classappend="${theme=='dark'} ? border-light : border-dark">
           					<div id="sticky-top" class="row pt-2 sticky-top" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
 							  <div class="col-6 col-md-6"><p class="h5 mt-2" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{textos.logicalSchema}"></p></div>
 							  <div class="col-6 col-md-6"><button type="button" class="btn float-right ml-2" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.saveAs}"></button><button type="button" id="btnTest" class="btn float-right" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.generate}"></button></div>

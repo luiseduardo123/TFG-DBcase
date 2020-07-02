@@ -184,3 +184,11 @@ a.article:hover {
     content: unset;
 }
 
+.active.t-dark{
+	background-color: #343a40 !important;
+	color:white !important;
+}
+
+.active.t-white{
+	background-color: #f8f9fa !important;
+}

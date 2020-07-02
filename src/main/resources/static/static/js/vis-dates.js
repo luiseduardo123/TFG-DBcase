@@ -13,6 +13,16 @@ var data = {
 };
 
 var options = {
+		 edges: {
+		    smooth: {
+		      type: "continuous",
+		      forceDirection: "none",
+		      roundness: 1
+		    }
+		  },
+		  physics: {
+	          enabled: false
+	        },
 		  interaction:{
 		    dragNodes:true,
 		    dragView: true,
@@ -36,7 +46,11 @@ var options = {
 		};
   
 var network = new vis.Network(container, data, options);
-  
+
+/**
+ * 
+ * @returns Devuelve un id unico para asignar a un nuevo elemento que se cree
+ */
   function getIdElement(){
 	  var dataIds = nodes.getIds();
 	  if(dataIds.length==0)
@@ -47,7 +61,7 @@ var network = new vis.Network(container, data, options);
   }
   function addEntity(nombre, weakEntity,action, idSelected){
 	  var id_node = getIdElement();
-	  var data_element = {label: nombre, isWeak: weakEntity, shape: 'box', color:'#ffcc45', scale:20, widthConstraint:150, heightConstraint:25,physics:false};
+	  var data_element = {widthConstraint:{ minimum: 100, maximum: 200},label: nombre, isWeak: weakEntity, shape: 'box', color:'#ffcc45', scale:10, heightConstraint:25,physics:false};
 
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
@@ -60,6 +74,7 @@ var network = new vis.Network(container, data, options);
 		  data_element.id = id_node++;
 		  nodes.add(data_element);
 	  }
+	  updateTableElements();
   }
 
   function addConstrainst(values, idSelected, action){
@@ -81,7 +96,11 @@ var network = new vis.Network(container, data, options);
   
   function addRelation(nombre, action, idSelected){
 	  var id_node = getIdElement();
-	  var data_element = {label: nombre, shape: 'diamond', color:'#ff554b', scale:20, physics:false};
+	  var  tam = 30;
+	  if (nombre.length>5){
+		  tam = 30+(nombre.length-5);
+	  }
+	  var data_element = {size:tam,label: nombre, shape: 'diamond', color:'#ff554b', scale:20, physics:false};
 	  
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
@@ -104,6 +123,7 @@ var network = new vis.Network(container, data, options);
 		  data_element.y = poscSelection.y;
 	  }
 	  nodes.add(data_element);
+	  updateTableElements();
   }
   
   function addAttribute(name, action, idSelected, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
@@ -124,15 +144,20 @@ var network = new vis.Network(container, data, options);
 		  } 
 	  }
 	  
-	  var data_element = {labelBackend:name, borderWidth:word_multi,label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, widthConstraint:80, heightConstraint:25,physics:false};
+	  var data_element = {widthConstraint:{ minimum: 50, maximum: 160},labelBackend:name, borderWidth:word_multi,label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, heightConstraint:18,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
 	  }else{
+		  if(poscSelection != null){
+			  data_element.x = poscSelection.x-180;
+			  data_element.y = poscSelection.y+30;
+		  }
 		  data_element.id = id_node++;
 		  nodes.add(data_element);
 		  edges.add({from: parseInt(idEntity), to: parseInt(id_node)-1, color:{color:'blue'}});
 	  }
+	  updateTableElements();
   }
   
   function addEntitytoRelation(idTo, cardinality, roleName, minCardinality, maxCardinality, action, idSelected){
@@ -160,7 +185,7 @@ var network = new vis.Network(container, data, options);
 	  else
 		  center = roleName;
 	  var idEdge = existEdge(idSelected, idTo);
-	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo),label: right+" .. "+left+"  "+center, labelF:right, labelT:left, name:center};
+	  var data_element = {from: parseInt(idSelected), smooth:false, to: parseInt(idTo),label: right+" .. "+left+"  "+center, labelF:right, labelT:left, name:center};
 	  
 	  if(idEdge != null){
 		  data_element.id = idEdge;
@@ -170,6 +195,13 @@ var network = new vis.Network(container, data, options);
 	  }
   }
   
+  /**
+   * Añadir una entidad padre a un elemento IsA
+   * @param idTo Entidad Padre
+   * @param action añadir o actualizar
+   * @param idSelected Nodo IsA
+   * @returns
+   */
   function addEntityParent(idTo, action, idSelected){
 	  var idParent = nodes.get(parseInt(idSelected)).parent;
 	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo),type:"parent", arrows: 
@@ -186,8 +218,14 @@ var network = new vis.Network(container, data, options);
 	  }
 	  
 	  nodes.update({id: parseInt(idSelected), parent: parseInt(idTo)});
+	  updateTableElements();
   }
   
+  /**
+   * Quita la entidad padre
+   * @param idNodo Id padre
+   * @returns
+   */
   function removeParentIsA(idNodo){
 	  var idParent = nodes.get(parseInt(idNodo)).parent;
 	  nodes.get(parseInt(idNodo)).parent = undefined;
@@ -198,10 +236,12 @@ var network = new vis.Network(container, data, options);
 			  edges.remove(key.id);
 	  });
 	  nodes.update({id: parseInt(idNodo), parent: undefined});
+	  updateTableElements();
   }
   
   function removeEntitytoRelation(idEdge, action, idSelected){
 	  edges.remove(idEdge);
+	  updateTableElements();
   }
   
   /* 
@@ -352,6 +392,11 @@ var network = new vis.Network(container, data, options);
 	  return exist;
   }
   
+  /**
+   * Obtiene el nodo padre del elemento IsA
+   * @param idNodo ELemente IsA
+   * @returns
+   */
   function getParentId(idNodo){
 	  var idParent = -1;
 	  var dataFull = network.getConnectedEdges(parseInt(idNodo));
@@ -368,7 +413,7 @@ var network = new vis.Network(container, data, options);
 	  var data = [];
 	  dataFull.forEach(function(key){
 		  if(edges.get(key).type == "child")
-			  data.push({id:key, labelChild: nodes.get(edges.get(key).to).label});
+			  data.push({id:key, labelChild: nodes.get(edges.get(key).to).label, idChild: nodes.get(edges.get(key).to).id});
 	  });
 	  
 	  return data;
@@ -382,6 +427,7 @@ var network = new vis.Network(container, data, options);
 	  if(existEdge(idSelected, idTo) == null){
 		  edges.add(data_element);
 	  }
+	  updateTableElements();
   }
   
   function addSubAttribute(name, action, idSelected, idAttribute = idEntity, comp, notNll, uniq, multi, dom, sz){
@@ -461,6 +507,11 @@ var network = new vis.Network(container, data, options);
 	  return (nodes.get(idSelected).type == "subAttribute")
   }
   
+  /**
+   * 
+   * @param id de un nodo tipo atributo
+   * @returns Devuelve true si es un atributo compuesto o no
+   */
   function getComposedEllipse(nodo_select){
 	  var idNodo = parseInt(nodo_select);
 	  return (nodes.get(idNodo).dataAttribute.composite)
@@ -472,6 +523,12 @@ var network = new vis.Network(container, data, options);
 	  return (nodes.get(idSelected).constraints === undefined)
   }
   
+  /**
+   * Devuelve los elementos de una relacion, todas o solo las del tipo especificado
+   * @param nodo_select id del elemento tipo relacion del que se quiere obtener sus elementos conectados
+   * @param onlyType si es distinto de null filtra los elementos que se quiere obtener
+   * @returns Devuelve un array con los datos
+   */
   function allEntitysToRelation(nodo_select, onlyType=null){
 	  var data = [];
 	  var dataAll = [];
@@ -485,9 +542,19 @@ var network = new vis.Network(container, data, options);
 	  nodos.forEach(function(edg) {
 		  	idNodo = edges.get(edg).to;
 		  	roleName = edges.get(edg).label;
-		  	if(nodes.get(idNodo).shape == type)
-		  		data.push({id:edg, label:nodes.get(idNodo).label, role:roleName});	
-		  	dataAll.push({id:edg, label:nodes.get(idNodo).label, role:roleName});	
+		  	labelF = edges.get(edg).labelF;
+		  	labelT = edges.get(edg).labelT;
+		  	if(nodes.get(idNodo).shape == type){
+		  		if(nodes.get(idNodo).shape == "box")
+		  			data.push({id:edg, label:nodes.get(idNodo).label, role:roleName, asoc:labelF+"-"+labelT});
+		  		else
+		  			data.push({id:edg, label:nodes.get(idNodo).label, role:roleName});
+		  	}
+		  	if(nodes.get(idNodo).shape == "box")
+		  		dataAll.push({id:edg, label:nodes.get(idNodo).label, role:roleName, asoc:labelF+"-"+labelT});
+	  		else
+	  			dataAll.push({id:edg, label:nodes.get(idNodo).label, role:roleName});
+		  		
 	  });
 	  
 	  if(onlyType != null){
@@ -505,7 +572,7 @@ var network = new vis.Network(container, data, options);
 		  	idNodo = edges.get(edg).to;
 		  	roleName = edges.get(edg).label;
 		  	if(nodes.get(idNodo).shape == "ellipse")
-		  		data.push({id:idNodo, label:nodes.get(idNodo).labelBackend});				  
+		  		data.push({id:idNodo, label:nodes.get(idNodo).labelBackend, type:nodes.get(idNodo).dataAttribute.domain, size:nodes.get(idNodo).dataAttribute.size});				  
 	  });
 	  return data;
   }

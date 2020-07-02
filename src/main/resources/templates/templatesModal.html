@@ -397,13 +397,13 @@
 		</ul>
 		<hr>
 		<p><strong th:text="#{textos.about4}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></strong></p>
-		<p class="text-center font-weight-bold" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">DBCASE 2.0 (2018/2019).</p>
+		<p class="text-center font-weight-bold" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">DBCASE 2.0 (2018/2019)</p>
 		<p th:text="#{textos.about5}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></p>
 		<ul class="text-center">
 			<li>Miguel Arriba García</li>
 		</ul>
 		<hr>
-		<p class="text-center font-weight-bold" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">DBCASE 1.0 - Sistemas Informáticos (2008/2009).</p>
+		<p class="text-center font-weight-bold" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">DBCASE 1.0 - Sistemas Informáticos (2008/2009)</p>
 		<p th:text="#{textos.about3}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></p>
 		<ul class="text-center">
 			<li>Rodrigo Denis Cepeda Mateos</li>
@@ -411,16 +411,46 @@
 			<li>Tello Serrano Gordillo</li>
 		</ul>
 		<hr>	 
-		<p class="text-center font-weight-bold" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">DBDT 1.0 - Sistemas Informáticos (2007/2008).</p>
+		<p class="text-center font-weight-bold" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">DBDT 1.0 - Sistemas Informáticos (2007/2008)</p>
 		<p th:text="#{textos.about3}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></p>
 		<ul class="text-center">
 			<li>Alberto Milán Gutiérrez</li>
 			<li>Miguel Martínez Segura</li>
 			<li>Francisco Javier Cáceres González</li>
-			<li><strong th:text="#{textos.about7}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></strong>: Yolanda García Ruiz.</li>
+			<li><strong th:text="#{textos.about7}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></strong>: Yolanda García Ruiz</li>
 		</ul>
 		<hr>
 		<p th:text="#{textos.about6}" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'"></p>
 		<p th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">Facultad de Informática. Universidad Complutense de Madrid</p>
+	</div>
+	
+	<div class="d-none" id="templateElementEntity" type="text/x-jquery-tmpl">
+		<div class="">
+		    <div class="">
+		      <a class="card-link" data-toggle="collapse" href="#collapse${idE}">
+		        	<img src="static/images/entidad-small.png" class="rounded"><span class="pl-1" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">${nameE}</span>
+		      </a>
+		    </div>
+		    <div id="collapse${idE}" class="collapse" data-parent="#accordion">
+		      <div id="childs-attribute${idE}" class="card-body pt-1 pb-1 pr-0 pl-3">
+		        Lorem ipsum..
+		      </div>
+		    </div>
+		  </div>
+	</div>
+	
+	<div class="d-none" id="templateElementRelation" type="text/x-jquery-tmpl">
+		<div class="">
+		    <div class="">
+		      <a class="card-link" data-toggle="collapse" href="#collapse${idE}">
+		        	<img src="static/images/${shape}-small.png" class="rounded"><span class="pl-1" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'">${nameE}</span>
+		      </a>
+		    </div>
+		    <div id="collapse${idE}" class="collapse" data-parent="#accordion2">
+		      <div id="childs-attribute${idE}" class="card-body pt-1 pb-1 pr-0 pl-3">
+		        Lorem ipsum..
+		      </div>
+		    </div>
+		  </div>
 	</div>
 </div>
