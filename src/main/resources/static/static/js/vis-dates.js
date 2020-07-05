@@ -185,7 +185,7 @@ var network = new vis.Network(container, data, options);
 	  else
 		  center = roleName;
 	  var idEdge = existEdge(idSelected, idTo);
-	  var data_element = {from: parseInt(idSelected), smooth:false, to: parseInt(idTo),label: right+" .. "+left+"  "+center, labelF:right, labelT:left, name:center};
+	  var data_element = {from: parseInt(idSelected), smooth:false, to: parseInt(idTo),label: right+" .. "+left+" "+center, labelF:right, labelT:left, name:center};
 	  
 	  if(idEdge != null){
 		  data_element.id = idEdge;
@@ -376,7 +376,7 @@ var network = new vis.Network(container, data, options);
 	  idNodo = parseInt(idNodo);
 	  jQuery("#recipient-name").val(nodes.get(idNodo).label);
 	  $('#titleModal').html($('#textEditEntity').text());
-	  $("#weak-entity").prop("checked",nodes.get(idNodo).strong);
+	  $("#weak-entity").prop("checked",nodes.get(idNodo).isWeak);
 	  $('#insertModal').prop('disabled', false);
   }
   

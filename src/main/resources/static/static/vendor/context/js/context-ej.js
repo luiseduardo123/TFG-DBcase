@@ -19,7 +19,7 @@ $(document).ready(function(){
 		{text: $("#addNewAttribute").text(), action: function(e){
 			$( "[functioninsert='addAtribute']").click();
 		}},
-		{text: $("#renameEntity").text()+" Entidad", href: '#', action: function(e){
+		{text: $("#textEditEntity").text(), href: '#', action: function(e){
 			$( "[functioninsert='addEntity']").click();
 			$( "#typeAction").val("edit");
 			idSele = $("#idSelected").val();

@@ -154,7 +154,7 @@ public class Controlador {
 		conf.leerFicheroConfiguracion();
 
 		// Obtenemos el lenguaje en el que vamos a trabajar
-		Lenguaje.encuentraLenguajes();
+		//Lenguaje.encuentraLenguajes();
 
 		if (conf.existeFichero()) {
 			Vector<String> lengs = Lenguaje.obtenLenguajesDisponibles();
@@ -169,7 +169,7 @@ public class Controlador {
 			else
 				Lenguaje.cargaLenguajePorDefecto();
 		} else {
-			Lenguaje.cargaLenguajePorDefecto();
+			//Lenguaje.cargaLenguajePorDefecto();-
 			Theme.loadDefaultTheme();
 		}
 
