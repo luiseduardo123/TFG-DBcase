@@ -297,12 +297,13 @@ function updateTableElements(){
 		    windowContent += '</body>';
 		    windowContent += '</html>';
 		    var printWin = window.open('','','width=340,height=260');
-		   // printWin.document.open();
-		    printWin.document.write(windowContent);
-		    printWin.document.close();
-		    printWin.focus();
-		    printWin.print();
-		    printWin.close();
+			var dataUrl = document.getElementsByTagName("canvas")[0].toDataURL('image/png', 1.0);
+		    var imgData = dataUrl;
+	        console.log(imgData);
+	        var doc = new jsPDF();
+	        doc.text(10, 10, $("#nameText").text());
+	        doc.addImage(dataUrl, 'jpeg', 0, 30, 215, 120);
+	        doc.save('a4.pdf');
 		});
 	});
 	

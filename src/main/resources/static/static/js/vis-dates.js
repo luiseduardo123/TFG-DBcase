@@ -185,7 +185,7 @@ var network = new vis.Network(container, data, options);
 	  else
 		  center = roleName;
 	  var idEdge = existEdge(idSelected, idTo);
-	  var data_element = {from: parseInt(idSelected), smooth:false, to: parseInt(idTo),label: right+" .. "+left+" "+center, labelF:right, labelT:left, name:center};
+	  var data_element = {from: parseInt(idSelected), smooth:false, to: parseInt(idTo),label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center};
 	  
 	  if(idEdge != null){
 		  data_element.id = idEdge;
@@ -542,8 +542,8 @@ var network = new vis.Network(container, data, options);
 	  nodos.forEach(function(edg) {
 		  	idNodo = edges.get(edg).to;
 		  	roleName = edges.get(edg).label;
-		  	labelF = edges.get(edg).labelF;
-		  	labelT = edges.get(edg).labelT;
+		  	labelF = edges.get(edg).labelFrom;
+		  	labelT = edges.get(edg).labelTo;
 		  	if(nodes.get(idNodo).shape == type){
 		  		if(nodes.get(idNodo).shape == "box")
 		  			data.push({id:edg, label:nodes.get(idNodo).label, role:roleName, asoc:labelF+"-"+labelT});
