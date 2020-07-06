@@ -517,7 +517,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void creaTablas(TransferConexion conexion){
-		sqlHTML+="<div class='card'><h2>"+Lenguaje.text(Lenguaje.TABLES)+"</h2>";
+		sqlHTML+="<div class='card'><h2>Lenguaje.text(Lenguaje.TABLES)</h2>";
 
 		Iterator tablasM=tablasMultivalorados.iterator();
 		while (tablasM.hasNext()){
@@ -579,7 +579,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void creaEnums(TransferConexion conexion){
-		sqlHTML+="<div class='card'><h2>"+Lenguaje.text(Lenguaje.TYPES_SECTION)+"</h2>";
+		sqlHTML+="<div class='card'><h2>Lenguaje.text(Lenguaje.TYPES_SECTION)</h2>";
 		
 		Iterator<Enumerado> tablasD=tiposEnumerados.values().iterator();
 		while (tablasD.hasNext()){
@@ -590,7 +590,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void ponRestricciones(TransferConexion conexion){
-		sqlHTML+="<div class='card'><h2>"+Lenguaje.text(Lenguaje.CONSTRAINTS_SECTION)+"</h2>";
+		sqlHTML+="<div class='card'><h2>Lenguaje.text(Lenguaje.CONSTRAINTS_SECTION)</h2>";
 		
 		Iterator tablasE=tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
@@ -615,7 +615,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void ponClaves(TransferConexion conexion){
-		sqlHTML+="<div class='card'><h2>"+Lenguaje.text(Lenguaje.KEYS_SECTION)+"</h2>";
+		sqlHTML+="<div class='card'><h2>Lenguaje.text(Lenguaje.KEYS_SECTION)</h2>";
 		
 		String restEntidad = "";
 		String restEntidadHTML = "";
@@ -703,7 +703,7 @@ public class GeneradorEsquema {
 		generaTablasEntidades();
 		generaTablasRelaciones();
 		mr = warnings.toString();
-		mr += "<div class='card'><h2>"+Lenguaje.text(Lenguaje.RELATIONS)+"</h2>";
+		mr += "<div class='card'><h2>Lenguaje.text(Lenguaje.RELATIONS)</h2>";
 		Iterator tablasE = tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
@@ -721,9 +721,9 @@ public class GeneradorEsquema {
 			Tabla t =(Tabla)tablasM.next();
 			mr+=t.modeloRelacionalDeTabla(true);
 		}
-		mr += "<p></p></div><div class='card'><h2>"+Lenguaje.text(Lenguaje.RIC)+"</h2>";
+		mr += "<p></p></div><div class='card'><h2>Lenguaje.text(Lenguaje.RIC)</h2>";
 		mr += restriccionesIR();
-		mr += "<p></p></div><div class='card'><h2>"+Lenguaje.text(Lenguaje.LOST_CONSTR)+"</h2>";
+		mr += "<p></p></div><div class='card'><h2>Lenguaje.text(Lenguaje.LOST_CONSTR)</h2>";
 		mr += restriccionesPerdidas();
 		mr += "<p></p></div>";
 		controlador.mensajeDesde_SS(TC.SS_GeneracionModeloRelacional,mr);
@@ -852,7 +852,7 @@ public class GeneradorEsquema {
 		generaTablasEntidades();
 		generaTablasRelaciones();
 		mr = warnings.toString();
-		mr += "<div class='card'><h2>" + Lenguaje.text(Lenguaje.RELATIONS) + "</h2>";
+		mr += "<div class='card'><h2>Lenguaje.text(Lenguaje.RELATIONS)</h2>";
 		Iterator tablasE = tablasEntidades.values().iterator();
 		while (tablasE.hasNext()) {
 			Tabla t = (Tabla) tablasE.next();
@@ -870,9 +870,9 @@ public class GeneradorEsquema {
 			Tabla t = (Tabla) tablasM.next();
 			mr += t.modeloRelacionalDeTabla(true);
 		}
-		mr += "<p></p></div><div class='card'><h2>" + Lenguaje.text(Lenguaje.RIC) + "</h2>";
+		mr += "<p></p></div><div class='card'><h2>Lenguaje.text(Lenguaje.RIC)</h2>";
 		mr += restriccionesIR();
-		mr += "<p></p></div><div class='card'><h2>" + Lenguaje.text(Lenguaje.LOST_CONSTR) + "</h2>";
+		mr += "<p></p></div><div class='card'><h2>Lenguaje.text(Lenguaje.LOST_CONSTR)</h2>";
 		mr += restriccionesPerdidas();
 		mr += "<p></p></div>";
 		return mr;

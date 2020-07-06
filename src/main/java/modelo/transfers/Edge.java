@@ -9,12 +9,13 @@ public class Edge {
 	String label;
 	String labelFrom;
 	String labelTo;
+	String name;
 	
 	public Edge() {
 		
 	} 
 	
-	public Edge(int from, int to, Color color, String id, String label, String labelFrom, String labelTo) {
+	public Edge(int from, int to, Color color, String id, String label, String labelFrom, String labelTo, String name) {
 		this.from = from;
 		this.to = to;
 		this.color = color;
@@ -22,8 +23,17 @@ public class Edge {
 		this.label = label;
 		this.labelFrom = labelFrom;
 		this.labelTo = labelTo;
+		this.name = name;
 	}
- 
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public int getFrom() {
 		return from;
 	}
@@ -80,5 +90,8 @@ public class Edge {
 		this.labelTo = labelTo;
 	}
 	
+	public void updateLabelFromName() {
+		this.label = this.name;
+	}
 	
 }

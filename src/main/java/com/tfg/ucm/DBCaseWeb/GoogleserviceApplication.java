@@ -212,6 +212,7 @@ public class GoogleserviceApplication {
 		}
 		
 		for (int j = 0; j < edges.size(); j++) {
+			edges.get(j).updateLabelFromName();
 			if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferEntidad) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferAtributo)) {
 				// Mandamos la entidad, el nuevo atributo y si hay tamano tambien
 				Vector<Object> v = new Vector<Object>();

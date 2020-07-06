@@ -11,7 +11,7 @@
 	<groupId>com.tfg.ucm</groupId>
 	<artifactId>DBCaseWeb</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<!-- <packaging>war</packaging> -->
+	<packaging>war</packaging>
 	<name>DBCaseWeb</name>
 	<description>Demo project for Spring Boot</description>
 
