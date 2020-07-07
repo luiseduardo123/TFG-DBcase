@@ -1,6 +1,9 @@
 package modelo.servicios;
 
 import java.util.Vector;
+
+import org.springframework.context.MessageSource;
+
 import controlador.Controlador;
 import controlador.TC;
 import modelo.transfers.TipoDominio;
@@ -23,7 +26,11 @@ public class ValidadorBD extends GeneradorEsquema{
 	private String errores="";
 	private String warnings="";
 	
-	public ValidadorBD() {}
+	public ValidadorBD(MessageSource messageSource) {
+		super(messageSource);
+	}
+	
+	public ValidadorBD() {super();}
 	
 	public static ValidadorBD getInstancia() {
 		if(INSTANCE==null) INSTANCE = new ValidadorBD();

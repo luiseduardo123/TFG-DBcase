@@ -408,7 +408,7 @@ public class GoogleserviceApplication {
 //			c.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ClickBotonAnadir, vData2);
 			
 		// ASIGNAR A ENTIDAD UNA RELACION ==//	
-		GeneradorEsquema testGen = new GeneradorEsquema();
+		GeneradorEsquema testGen = new GeneradorEsquema(messageSource);
 		testGen.setControlador(c);
 		String respuesta = testGen.generaModeloRelacional_v3();
 		System.err.println(respuesta);

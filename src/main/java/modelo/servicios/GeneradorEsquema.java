@@ -7,9 +7,14 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+
 import controlador.Controlador;
 import controlador.TC;
 import modelo.conectorDBMS.ConectorDBMS;
@@ -25,7 +30,6 @@ import persistencia.DAOEntidades;
 import persistencia.DAORelaciones;
 import persistencia.EntidadYAridad;
 import vista.componentes.MyFileChooser;
-import vista.lenguaje.Lenguaje;
 
 @SuppressWarnings({"unchecked","rawtypes"})
 public class GeneradorEsquema {
@@ -33,6 +37,10 @@ public class GeneradorEsquema {
 	//atributos para la generacion de los modelos
 	private String sqlHTML="";
 	private String mr="";
+	
+    private MessageSource msgSrc;
+    
+    private Locale loc = LocaleContextHolder.getLocale();
 	private TransferConexion conexionScriptGenerado = null;
 	private RestriccionesPerdidas restriccionesPerdidas = new RestriccionesPerdidas();
 	//aqui se almacenaran las tablas ya creadas, organizadas por el id de la entidad /relacion (clave) y con el objeto tabla como valor.
@@ -42,6 +50,13 @@ public class GeneradorEsquema {
 	private Hashtable<Integer,Enumerado> tiposEnumerados = new Hashtable<Integer,Enumerado>();
 	private ValidadorBD validadorBD;
 	
+	public GeneradorEsquema(MessageSource messageSource) {
+		this.msgSrc = messageSource;
+	}
+	
+	public GeneradorEsquema() {
+	}
+
 	protected boolean estaEnVectorDeEnteros(Vector sinParam, int valor){
 		int i=0;
 		boolean encontrado=false;
@@ -70,7 +85,7 @@ public class GeneradorEsquema {
 			//recorremos los atributos aniadiendolos a la tabla
 			for (int j=0;j<atribs.size();j++){
 				TransferAtributo ta=atribs.elementAt(j);
-				if(ta.getUnique()) restriccionesPerdidas.add(new restriccionPerdida(te.getNombre(), ta+" "+Lenguaje.text(Lenguaje.IS_UNIQUE), restriccionPerdida.TABLA));
+				if(ta.getUnique()) restriccionesPerdidas.add(new restriccionPerdida(te.getNombre(), ta+" "+this.msgSrc.getMessage("textosId.is unique", null, this.loc), restriccionPerdida.TABLA));
 				if (ta.getCompuesto()) 
 					tabla.aniadeListaAtributos(this.atributoCompuesto(ta, te.getNombre(),""),te.getListaRestricciones(),tiposEnumerados);
 				else if (ta.isMultivalorado()) multivalorados.add(ta);
@@ -129,7 +144,7 @@ public class GeneradorEsquema {
 				Vector<TransferAtributo> ats = this.dameAtributosEnTransfer(tr.getListaAtributos());
 				for (int a = 0; a < ats.size(); a++) {
 					TransferAtributo ta = ats.elementAt(a);
-					if(ta.getUnique()) restriccionesPerdidas.add(new restriccionPerdida(tr.getNombre(), ta+" "+Lenguaje.text(Lenguaje.IS_UNIQUE), restriccionPerdida.TABLA));
+					if(ta.getUnique()) restriccionesPerdidas.add(new restriccionPerdida(tr.getNombre(), ta+" "+this.msgSrc.getMessage("textosId.is_unique", null, this.loc), restriccionPerdida.TABLA));
 					if (ta.getCompuesto())
 						tabla.aniadeListaAtributos(this.atributoCompuesto(ta, tr.getNombre(), ""), ta.getListaRestricciones(), tiposEnumerados);
 					else if (ta.isMultivalorado()) multivalorados.add(ta);
@@ -356,28 +371,28 @@ public class GeneradorEsquema {
 	public void exportarCodigo(String text, boolean sql){
 		if (!validadorBD.validaBaseDeDatos(false, new StringBuilder())){
 			JOptionPane.showMessageDialog(null,
-					Lenguaje.text(Lenguaje.ERROR)+".\n" +
-					Lenguaje.text(Lenguaje.SCRIPT_ERROR),
-					Lenguaje.text(Lenguaje.DBCASE),
+					this.msgSrc.getMessage("textosId.error", null, this.loc)+".\n" +
+					this.msgSrc.getMessage("textosId.scriptError", null, this.loc),
+					this.msgSrc.getMessage("textosId.dbcase", null, this.loc),
 					JOptionPane.PLAIN_MESSAGE);
 				return;
 			}
 		if (text.isEmpty()){
 			JOptionPane.showMessageDialog(null,
-				Lenguaje.text(Lenguaje.ERROR)+".\n" +
-				Lenguaje.text(Lenguaje.MUST_GENERATE_SCRIPT),
-				Lenguaje.text(Lenguaje.DBCASE),
+				this.msgSrc.getMessage("textosId.error", null, this.loc)+".\n" +
+				this.msgSrc.getMessage("textosId.mustGenerateScript", null, this.loc),
+				this.msgSrc.getMessage("textosId.dbcase", null, this.loc),
 				JOptionPane.PLAIN_MESSAGE);
 			return;
 		}
-		text="# "+Lenguaje.text(Lenguaje.SCRIPT_GENERATED)+"\n"+
-		(sql?"# "+Lenguaje.text(Lenguaje.SYNTAX) + ": " +conexionScriptGenerado.getRuta()+ "\n\n":"")+text;
+		text="# "+this.msgSrc.getMessage("textosId.scriptGenerated", null, this.loc)+"\n"+
+		(sql?"# "+this.msgSrc.getMessage("textosId.syntax", null, this.loc) + ": " +conexionScriptGenerado.getRuta()+ "\n\n":"")+text;
 		// Si ya se ha generado el Script
 		MyFileChooser jfc = new MyFileChooser();
-		jfc.setDialogTitle(Lenguaje.text(Lenguaje.DBCASE));
+		jfc.setDialogTitle(this.msgSrc.getMessage("textosId.dbcase", null, this.loc));
 		jfc.setCurrentDirectory(new File(System.getProperty("user.dir")+"/projects"));
 		jfc.setFileFilter(new FileNameExtensionFilter("Text", "txt"));
-		if(sql)jfc.setFileFilter(new FileNameExtensionFilter(Lenguaje.text(Lenguaje.SQL_FILES), "sql"));
+		if(sql)jfc.setFileFilter(new FileNameExtensionFilter(this.msgSrc.getMessage("textosId.sqlFiles", null, this.loc), "sql"));
 		int resul = jfc.showSaveDialog(null);
 		if (resul == 0){
 			File ruta = jfc.getSelectedFile();
@@ -392,17 +407,17 @@ public class GeneradorEsquema {
 				file.close();
 				JOptionPane.showMessageDialog(
 						null,
-						Lenguaje.text(Lenguaje.INFO)+"\n"+    
-						Lenguaje.text(Lenguaje.OK_FILE)+"\n" +
-						Lenguaje.text(Lenguaje.FILE)+": "+ruta,
-						Lenguaje.text(Lenguaje.DBCASE),
+						this.msgSrc.getMessage("textosId.info", null, this.loc)+"\n"+    
+						this.msgSrc.getMessage("textosId.okFile", null, this.loc)+"\n" +
+						this.msgSrc.getMessage("textosId.file", null, this.loc)+": "+ruta,
+						this.msgSrc.getMessage("textosId.dbcase", null, this.loc),
 						JOptionPane.PLAIN_MESSAGE);
 
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(null,
-						Lenguaje.text(Lenguaje.ERROR)+".\n" +
-						Lenguaje.text(Lenguaje.SCRIPT_ERROR),
-						Lenguaje.text(Lenguaje.DBCASE),
+						this.msgSrc.getMessage("textosId.error", null, this.loc)+".\n" +
+						this.msgSrc.getMessage("textosId.scriptError", null, this.loc),
+						this.msgSrc.getMessage("textosId.dbcase", null, this.loc),
 						JOptionPane.PLAIN_MESSAGE);
 			}	
 		}
@@ -423,16 +438,16 @@ public class GeneradorEsquema {
 		// Comprobaciones previas
 		if (tc.getTipoConexion() != conexionScriptGenerado.getTipoConexion()) {
 			int respuesta = JOptionPane.showConfirmDialog(null,
-					Lenguaje.text(Lenguaje.WARNING)+".\n" +
-					Lenguaje.text(Lenguaje.SCRIPT_GENERATED_FOR)+": \n" +
+					this.msgSrc.getMessage("textosId.warning", null, this.loc)+".\n" +
+					this.msgSrc.getMessage("textosId.scriptGeneratedFor", null, this.loc)+": \n" +
 					"     " + conexionScriptGenerado.getRuta() + " \n" +
-					Lenguaje.text(Lenguaje.CONEXION_TYPE_IS)+": \n" + 
+					this.msgSrc.getMessage("textosId.conexionTypeIs", null, this.loc)+": \n" + 
 					"     " + tc.getRuta() + "\n" +
-					Lenguaje.text(Lenguaje.POSSIBLE_ERROR_SRIPT)+" \n" +
-					Lenguaje.text(Lenguaje.SHOULD_GENERATE_SCRIPT)+" \n" +
-					Lenguaje.text(Lenguaje.OF_CONEXION)+"\n"+
-					Lenguaje.text(Lenguaje.CONTINUE_ANYWAY),
-					Lenguaje.text(Lenguaje.DBCASE),
+					this.msgSrc.getMessage("textosId.possibleErrorScript", null, this.loc)+" \n" +
+					this.msgSrc.getMessage("textosId.shouldGenerateScript", null, this.loc)+" \n" +
+					this.msgSrc.getMessage("textosId.ofConexion", null, this.loc)+"\n"+
+					this.msgSrc.getMessage("textosId.continueAnyway", null, this.loc),
+					this.msgSrc.getMessage("textosId.dbcase", null, this.loc),
 					JOptionPane.OK_CANCEL_OPTION,
 					JOptionPane.WARNING_MESSAGE);
 			if (respuesta == JOptionPane.CANCEL_OPTION) return;
@@ -457,10 +472,10 @@ public class GeneradorEsquema {
 			
 			// Avisar por GUI
 			JOptionPane.showMessageDialog(null,
-					Lenguaje.text(Lenguaje.ERROR)+".\n" +
-					Lenguaje.text(Lenguaje.NO_DB_CONEXION)+" \n" +
-					Lenguaje.text(Lenguaje.REASON)+": \n" + e.getMessage(),
-					Lenguaje.text(Lenguaje.DBCASE),
+					this.msgSrc.getMessage("textosId.error", null, this.loc)+".\n" +
+					this.msgSrc.getMessage("textosId.noDBConexion", null, this.loc)+" \n" +
+					this.msgSrc.getMessage("textosId.reason", null, this.loc)+": \n" + e.getMessage(),
+					this.msgSrc.getMessage("textosId.dbcase", null, this.loc),
 					JOptionPane.PLAIN_MESSAGE);
 			// Terminar
 			return;
@@ -487,11 +502,11 @@ public class GeneradorEsquema {
 		} catch (SQLException e) {			
 			// Avisar por GUI
 			JOptionPane.showMessageDialog(null,
-					Lenguaje.text(Lenguaje.ERROR)+".\n" +
-					Lenguaje.text(Lenguaje.CANT_EXECUTE_SCRIPT)+" \n" +
-					Lenguaje.text(Lenguaje.ENQUIRY_ERROR)+": \n" + ordenActual + "\n" + 
-					Lenguaje.text(Lenguaje.REASON)+": \n" + e.getMessage(),
-					Lenguaje.text(Lenguaje.DBCASE),
+					this.msgSrc.getMessage("textosId.error", null, this.loc)+".\n" +
+					this.msgSrc.getMessage("textosId.cantExecuteScript", null, this.loc)+" \n" +
+					this.msgSrc.getMessage("textosId.enquiryError", null, this.loc)+": \n" + ordenActual + "\n" + 
+					this.msgSrc.getMessage("textosId.reason", null, this.loc)+": \n" + e.getMessage(),
+					this.msgSrc.getMessage("textosId.dbcase", null, this.loc),
 					JOptionPane.PLAIN_MESSAGE);
 			
 			// Terminar
@@ -501,23 +516,23 @@ public class GeneradorEsquema {
 			conector.cerrarConexion();
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null,
-					Lenguaje.text(Lenguaje.ERROR)+".\n" +
-					Lenguaje.text(Lenguaje.CANT_CLOSE_CONEXION)+" \n" +
-					Lenguaje.text(Lenguaje.REASON)+" \n" + e.getMessage(),
-					Lenguaje.text(Lenguaje.DBCASE),
+					this.msgSrc.getMessage("textosId.error", null, this.loc)+".\n" +
+					this.msgSrc.getMessage("textosId.cantCloseConexion", null, this.loc)+" \n" +
+					this.msgSrc.getMessage("textosId.reason", null, this.loc)+" \n" + e.getMessage(),
+					this.msgSrc.getMessage("textosId.dbcase", null, this.loc),
 					JOptionPane.PLAIN_MESSAGE);
 			return;
 		}
 		System.out.println("Conexion cerrada correctamente");
 		JOptionPane.showMessageDialog(null,
-				Lenguaje.text(Lenguaje.INFO)+"\n" +
-				Lenguaje.text(Lenguaje.OK_SCRIPT_EXECUT),
-				Lenguaje.text(Lenguaje.DBCASE),
+				this.msgSrc.getMessage("textosId.info", null, this.loc)+"\n" +
+				this.msgSrc.getMessage("textosId.okScriptExecut", null, this.loc),
+				this.msgSrc.getMessage("textosId.dbcase", null, this.loc),
 				JOptionPane.PLAIN_MESSAGE);
 	}
 	
 	private void creaTablas(TransferConexion conexion){
-		sqlHTML+="<div class='card'><h2>Lenguaje.text(Lenguaje.TABLES)</h2>";
+		sqlHTML+="<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.tables", null, this.loc)+"</p>";
 
 		Iterator tablasM=tablasMultivalorados.iterator();
 		while (tablasM.hasNext()){
@@ -579,7 +594,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void creaEnums(TransferConexion conexion){
-		sqlHTML+="<div class='card'><h2>Lenguaje.text(Lenguaje.TYPES_SECTION)</h2>";
+		sqlHTML+="<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.types_section", null, this.loc)+"</p>";
 		
 		Iterator<Enumerado> tablasD=tiposEnumerados.values().iterator();
 		while (tablasD.hasNext()){
@@ -590,7 +605,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void ponRestricciones(TransferConexion conexion){
-		sqlHTML+="<div class='card'><h2>Lenguaje.text(Lenguaje.CONSTRAINTS_SECTION)</h2>";
+		sqlHTML+="<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.constraints_section", null, this.loc)+"</p>";
 		
 		Iterator tablasE=tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
@@ -615,7 +630,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void ponClaves(TransferConexion conexion){
-		sqlHTML+="<div class='card'><h2>Lenguaje.text(Lenguaje.KEYS_SECTION)</h2>";
+		sqlHTML+="<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.keys_section", null, this.loc)+"</p>";
 		
 		String restEntidad = "";
 		String restEntidadHTML = "";
@@ -703,7 +718,7 @@ public class GeneradorEsquema {
 		generaTablasEntidades();
 		generaTablasRelaciones();
 		mr = warnings.toString();
-		mr += "<div class='card'><h2>Lenguaje.text(Lenguaje.RELATIONS)</h2>";
+		mr += "<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.relations", null, this.loc)+"</p>";
 		Iterator tablasE = tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
@@ -721,9 +736,9 @@ public class GeneradorEsquema {
 			Tabla t =(Tabla)tablasM.next();
 			mr+=t.modeloRelacionalDeTabla(true);
 		}
-		mr += "<p></p></div><div class='card'><h2>Lenguaje.text(Lenguaje.RIC)</h2>";
+		mr += "<p></p></div><div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
 		mr += restriccionesIR();
-		mr += "<p></p></div><div class='card'><h2>Lenguaje.text(Lenguaje.LOST_CONSTR)</h2>";
+		mr += "<p></p></div><div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.lost_constr", null, this.loc)+"</p>";
 		mr += restriccionesPerdidas();
 		mr += "<p></p></div>";
 		controlador.mensajeDesde_SS(TC.SS_GeneracionModeloRelacional,mr);
@@ -819,16 +834,16 @@ public class GeneradorEsquema {
 			conector.abrirConexion(tc.getRuta(), tc.getUsuario(), tc.getPassword());
 			conector.cerrarConexion();
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null,Lenguaje.text(Lenguaje.ERROR)+".\n" +
-				Lenguaje.text(Lenguaje.NO_DB_CONEXION)+" \n" +
-				Lenguaje.text(Lenguaje.REASON)+": \n" + e.getMessage(),
-				Lenguaje.text(Lenguaje.DBCASE),
+			JOptionPane.showMessageDialog(null,this.msgSrc.getMessage("textosId.error", null, this.loc)+".\n" +
+				this.msgSrc.getMessage("textosId.noDBConexion", null, this.loc)+" \n" +
+				this.msgSrc.getMessage("textosId.reason", null, this.loc)+": \n" + e.getMessage(),
+				this.msgSrc.getMessage("textosId.dbcase", null, this.loc),
 				JOptionPane.PLAIN_MESSAGE);
 			return;
 		}
 		JOptionPane.showMessageDialog(null,
-			Lenguaje.text(Lenguaje.OK_SCRIPT_EXECUT),
-			Lenguaje.text(Lenguaje.DBCASE),
+			this.msgSrc.getMessage("textosId.okScriptExecut", null, this.loc),
+			this.msgSrc.getMessage("textosId.dbcase", null, this.loc),
 			JOptionPane.PLAIN_MESSAGE);
 		return;
 	}
@@ -852,7 +867,7 @@ public class GeneradorEsquema {
 		generaTablasEntidades();
 		generaTablasRelaciones();
 		mr = warnings.toString();
-		mr += "<div class='card'><h2>Lenguaje.text(Lenguaje.RELATIONS)</h2>";
+		mr += "<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.relations", null, this.loc)+"</p>";
 		Iterator tablasE = tablasEntidades.values().iterator();
 		while (tablasE.hasNext()) {
 			Tabla t = (Tabla) tablasE.next();
@@ -870,9 +885,9 @@ public class GeneradorEsquema {
 			Tabla t = (Tabla) tablasM.next();
 			mr += t.modeloRelacionalDeTabla(true);
 		}
-		mr += "<p></p></div><div class='card'><h2>Lenguaje.text(Lenguaje.RIC)</h2>";
+		mr += "<p></p></div><div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
 		mr += restriccionesIR();
-		mr += "<p></p></div><div class='card'><h2>Lenguaje.text(Lenguaje.LOST_CONSTR)</h2>";
+		mr += "<p></p></div><div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.lostConstr", null, this.loc)+"</p>";
 		mr += restriccionesPerdidas();
 		mr += "<p></p></div>";
 		return mr;
