@@ -144,10 +144,19 @@ $(document).ready(function () {
               	    break;
             	  case "addEntitytoRelation":
             		  nodo = getAllNodes(["box"]);
+            		  var childs = allEntityOfRelation(nodo_select);
+	        		  var selection = -1;
+	        		  for(var i=0;i<nodo.length;i++){
+	        			  if(!inArray1(nodo[i].id, childs)){
+	        				  selection = nodo[i].id;
+	        			  }
+	        		  }
+	        		  
             		  var dataType = {
               				temp_node_length: nodo.length,
               				temp_nodes: nodo,
-             				temp_node_select: nodo_select
+             				temp_node_select: nodo_select,
+             				temp_option_selection: selection
              			  };
               		  
               		  $('#formModal').html($('#templateAddEntitytoRelation').tmpl(dataType));
@@ -156,12 +165,17 @@ $(document).ready(function () {
             	  case "addEntityParent":
             		  nodo = getAllNodes(["box"]);
             		  var valueExistParent = existParent(nodo_select);
+            		  var numIdParent = -1;
+            		  var childs = getChildData(nodo_select);
+	        		  nodo = nodo.filter(function(elem) {
+	        			  return !inArray(elem.id, childs);
+	        		  });
             		  var dataType = {
             				temp_exist_parent: valueExistParent,
               				temp_node_length: nodo.length,
               				temp_nodes: nodo,
              				temp_node_select: nodo_select
-             			  };
+            		  };
               		  
               		  $('#formModal').html($('#templateAddEntityParent').tmpl(dataType));
               	    break;

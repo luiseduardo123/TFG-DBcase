@@ -15,6 +15,14 @@ function inArray(needle, haystack) {
     return false;
 }
 
+function inArray1(needle, haystack) {
+    var length = haystack.length;
+    for(var i = 0; i < length; i++) {
+        if(haystack[i].id == needle) return true;
+    }
+    return false;
+}
+
 function editList(){
 	$("#addListUnique").click(function(){
 		var nodo = allAttributeOfEntity(parseInt($("#idSelected").val()));
@@ -45,6 +53,24 @@ function editList(){
 }
 
 function eventsEntityToRelation(){
+	$("#element, #roleName").change(function(){
+		var idF = $("#element").val();
+		var idT = $("#idSelected").val();
+		var idEdge = existEdge(idF, idT);
+		if(idEdge){
+			if($("#roleName").val() == ""){
+				$("#insertModal").prop("disabled", true);
+				if($("#textWarning").length == 0){
+					$("#roleName").after("<span id='textWarning' class='text-warning'>"+$("#textNecesaryRol").text()+"</span>")
+				}
+			}else{
+				$("#insertModal").prop("disabled", false);
+			}
+		}else{
+			$("#insertModal").prop("disabled", false);
+		}
+	});
+	
 	$( "input[name='cardinality']" ).click(function(){
 		if($(this).attr('id') == 'minMax'){
 			$("#minCardinality").prop("disabled", false);
@@ -228,6 +254,14 @@ function updateTableElements(){
 			$("#frame5").addClass("col-md-12");
 			$("#frame4").removeClass("col-md-6 float-left");
 			$("#frame5").removeClass("col-md-6 float-left");
+			$("#frame2").addClass("border-left");
+			$("#frame4").removeClass("h-100");
+			$("#frame4").addClass("h-50");
+			$("#frame5").removeClass("h-100");
+			$("#frame5").addClass("h-50");
+			$("#frame4").removeClass("border-right");
+			$("#frame4").addClass("border-bottom");
+			$("#frame5").removeClass("pl-2");
 		}
 		
 		if($("#frame1").hasClass("col-md-10")){
@@ -244,6 +278,14 @@ function updateTableElements(){
 				$("#frame5").removeClass("col-md-12");
 				$("#frame4").addClass("col-md-6 float-left");
 				$("#frame5").addClass("col-md-6 float-left");
+				$("#frame4").removeClass("h-50");
+				$("#frame4").addClass("h-100");
+				$("#frame5").removeClass("h-50");
+				$("#frame5").addClass("h-100");
+				$("#frame4").removeClass("border-bottom");
+				$("#frame4").addClass("border-right");
+				$("#frame2").removeClass("border-left");
+				$("#frame5").addClass("pl-2");
 				break;
 			case "1":
 				break;

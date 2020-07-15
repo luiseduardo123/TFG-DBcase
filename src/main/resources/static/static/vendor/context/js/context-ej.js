@@ -105,9 +105,7 @@ $(document).ready(function(){
 			$('#insertModal').prop('disabled', false);
 		}},
 		{text: $("#removeEntity").text(), href: '#', action: function(e){
-			network.selectNodes([getNodeSelected()]);
-			network.deleteSelected();
-			updateTableElements();
+			deleteNodeSelected(getNodeSelected());
 		}}
 	];
 	

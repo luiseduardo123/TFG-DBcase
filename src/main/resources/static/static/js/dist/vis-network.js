@@ -570,7 +570,7 @@
 	 * http://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
 	 */
 
-	function drawRoundRect(ctx, x, y, w, h, r) {
+	function drawRoundRect(ctx, x, y, w, h, r, isWeak) {
 	  var r2d = Math.PI / 180;
 
 	  if (w - 2 * r < 0) {
@@ -582,8 +582,19 @@
 	    r = h / 2;
 	  } //ensure that the radius isn't too large for y
 
-
 	  ctx.beginPath();
+	  
+	  if(isWeak){
+		  ctx.moveTo(x + r-3, y-3);
+		  ctx.lineTo(x + w - r, y-3);
+		  ctx.arc(x + w - r+3, y + r-3, r, r2d * 270, r2d * 360, false);
+		  ctx.lineTo(x + w+3, y + h - r+3);
+		  ctx.arc(x + w - r+3, y + h - r+3, r, 0, r2d * 90, false);
+		  ctx.lineTo(x + r, y + h+3);
+		  ctx.arc(x + r-3, y + h - r+3, r, r2d * 90, r2d * 180, false);
+		  ctx.lineTo(x-3, y + r);
+		  ctx.arc(x + r-3, y + r-3, r, r2d * 180, r2d * 270, false);
+	  }
 	  ctx.moveTo(x + r, y);
 	  ctx.lineTo(x + w - r, y);
 	  ctx.arc(x + w - r, y + r, r, r2d * 270, r2d * 360, false);
@@ -26652,7 +26663,7 @@
 	      this.left = x - this.width / 2;
 	      this.top = y - this.height / 2;
 	      this.initContextForDraw(ctx, values);
-	      drawRoundRect(ctx, this.left, this.top, this.width, this.height, values.borderRadius);
+	      drawRoundRect(ctx, this.left, this.top, this.width, this.height, values.borderRadius, this.options.isWeak);
 	      this.performFill(ctx, values);
 	      this.updateBoundingBox(x, y, ctx, selected, hover);
 	      this.labelModule.draw(ctx, this.left + this.textSize.width / 2 + this.margin.left, this.top + this.textSize.height / 2 + this.margin.top, selected, hover);

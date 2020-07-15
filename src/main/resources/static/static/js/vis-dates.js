@@ -20,6 +20,21 @@ var options = {
 		      roundness: 1
 		    }
 		  },
+		  nodes: {
+			  borderWidthSelected:0,
+			 color: {
+				 border: '#000000', 
+				 background:'#ffcc45', 
+				 highlight: {
+				        border: '#000000',
+				        background: '#ffcc45eb'
+				      },
+				 hover: {
+					 border: '#ffcc45',
+					 background: '#ffcc45'
+						 }
+			 }
+		  },
 		  physics: {
 	          enabled: false
 	        },
@@ -45,6 +60,7 @@ var options = {
 		  }
 		};
   
+//options = {};
 var network = new vis.Network(container, data, options);
 
 /**
@@ -61,8 +77,7 @@ var network = new vis.Network(container, data, options);
   }
   function addEntity(nombre, weakEntity,action, idSelected){
 	  var id_node = getIdElement();
-	  var data_element = {widthConstraint:{ minimum: 100, maximum: 200},label: nombre, isWeak: weakEntity, shape: 'box', color:'#ffcc45', scale:10, heightConstraint:25,physics:false};
-
+	  var data_element = {widthConstraint:{ minimum: 100, maximum: 200},label: nombre, isWeak: weakEntity, shape: 'box', scale:10, heightConstraint:25,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
@@ -144,7 +159,7 @@ var network = new vis.Network(container, data, options);
 		  } 
 	  }
 	  
-	  var data_element = {widthConstraint:{ minimum: 50, maximum: 160},labelBackend:name, borderWidth:word_multi,label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, heightConstraint:18,physics:false};
+	  var data_element = {widthConstraint:{ minimum: 50, maximum: 160},labelBackend:name, borderWidth:word_multi,label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, heightConstraint:29,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
@@ -185,11 +200,14 @@ var network = new vis.Network(container, data, options);
 	  else
 		  center = roleName;
 	  var idEdge = existEdge(idSelected, idTo);
-	  var data_element = {from: parseInt(idSelected), smooth:false, to: parseInt(idTo),label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center};
-	  
+	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, smoot:false};
+	  var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, smooth: {type: "horizontal", forceDirection: "none", roundness: 0.7}};
+	  var data_element_update = {};
 	  if(idEdge != null){
-		  data_element.id = idEdge;
-		  edges.update(data_element);
+		  data_element_update.id = idEdge;
+		  data_element_update.smooth = {type: "vertical", forceDirection: "none", roundness: 0.7};
+		  edges.update(data_element_update);
+		  edges.add(data_element1);
 	  }else{
 		  edges.add(data_element);
 	  }
@@ -378,6 +396,9 @@ var network = new vis.Network(container, data, options);
 	  $('#titleModal').html($('#textEditEntity').text());
 	  $("#weak-entity").prop("checked",nodes.get(idNodo).isWeak);
 	  $('#insertModal').prop('disabled', false);
+	  $('#weak-entity').change(function(){
+		  $('#insertModal').prop('disabled', false);
+	  });
   }
   
   function existParent(idNodo){
@@ -577,6 +598,18 @@ var network = new vis.Network(container, data, options);
 	  return data;
   }
   
+  function allEntityOfRelation(nodo_select){
+	  var data = [];
+	  nodos = network.getConnectedEdges(parseInt(nodo_select));
+	  nodos.forEach(function(edg) {
+		  	idNodo = edges.get(edg).to;
+		  	roleName = edges.get(edg).label;
+		  	if(nodes.get(idNodo).shape == "box")
+		  		data.push({id:idNodo, label:nodes.get(idNodo).label});				  
+	  });
+	  return data;
+  }
+  
   /* domains**/
   
   function getAllTypesDomain(){
@@ -596,10 +629,26 @@ var network = new vis.Network(container, data, options);
 	  return network.getSelectedNodes().length;
   }
   
-  function deleteNodeSelected(){
-	  network.getSelectedNodes().forEach(function(idNodo) {
-		  nodes.remove(parseInt(idNodo));			  
-	  });
+  function deleteNodeSelected(id = null){
+	if(id==null){
+		var dat = network.getSelectedNodes();
+	}else{
+		var dat = [parseInt(id)];
+	}
+	
+	var attr = allAttributeOfEntity(getNodeSelected());
+	var attrsId = [];
+	dat.forEach(function(id) {
+		var attr = allAttributeOfEntity(id);
+		attr.forEach(function(elem) {
+			attrsId.push(elem.id);
+		});
+		attrsId.push(id);
+	});
+	
+	network.selectNodes(attrsId);
+	network.deleteSelected();
+	updateTableElements();
   }
   
   function printDomains(){

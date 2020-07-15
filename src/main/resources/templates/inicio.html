@@ -115,7 +115,7 @@ h2{
           			</div>
           			<div class="col-md-4 changeSizeWidthData border-top" style="min-height: 500px;" id="frame3" th:classappend="${theme=='dark'} ? border-light : border-dark">
           				<div class="col-md-12 pr-0 pl-0 h-50 border-bottom" style="overflow-y: auto;overflow-x: hidden;" id="frame4"  th:classappend="${theme=='dark'} ? border-light : border-dark">
-          					<div id="sticky-top" class="row pt-2 sticky-top" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
+          					<div id="sticky-top" class="row pt-0 sticky-top" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
 							  <div class="col-6 col-md-6"><p class="h5 mt-2" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{textos.logicalSchema}"></p></div>
 							  <div class="col-6 col-md-6"><button type="button" class="btn float-right ml-2" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.saveAs}"></button><button type="button" id="btnTest" class="btn float-right" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.generate}"></button></div>
 							</div>
@@ -124,7 +124,7 @@ h2{
           				</div>
           				<div class="col-md-12 pr-0 pl-0 h-50" style="overflow-y: auto;overflow-x: hidden;" id="frame5">
           					<div class="row pt-2 sticky-top" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
-							  <div class="col-6 col-md-6"><p class="h5 mt-2" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{textos.PhysicalSchema}"></p></div>
+							  <div class="col-6 col-md-6"><p class="h5" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{textos.PhysicalSchema}"></p></div>
 							  <div class="col-6 col-md-6">
 							  	<select class="float-right ml-2 form-control" id="selectLenguage" th:classappend="${theme=='dark'} ? 'bg-dark text-white' : 'bg-light text-dark'">
 							  		<option>MySQL</option>

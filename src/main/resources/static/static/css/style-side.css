@@ -192,3 +192,7 @@ a.article:hover {
 .active.t-white{
 	background-color: #f8f9fa !important;
 }
+
+.select2-results__option{
+	color: black !important;
+}
