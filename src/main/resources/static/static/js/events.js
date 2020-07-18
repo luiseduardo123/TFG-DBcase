@@ -330,22 +330,15 @@ function updateTableElements(){
 	}
 	$("#general-print").on('click',function(){
 		$.when(simuleClick()).then(function(){
-			var dataUrl = document.getElementsByTagName("canvas")[0].toDataURL();
-		    var windowContent = '<!DOCTYPE html>';
-		    windowContent += '<html>'
-		    windowContent += '<head><title>Print canvas</title></head>';
-		    windowContent += '<body>'
-		    windowContent += '<img src="' + dataUrl + '">';
-		    windowContent += '</body>';
-		    windowContent += '</html>';
-		    var printWin = window.open('','','width=340,height=260');
-			var dataUrl = document.getElementsByTagName("canvas")[0].toDataURL('image/png', 1.0);
-		    var imgData = dataUrl;
-	        console.log(imgData);
-	        var doc = new jsPDF();
-	        doc.text(10, 10, $("#nameText").text());
-	        doc.addImage(dataUrl, 'jpeg', 0, 30, 215, 120);
-	        doc.save('a4.pdf');
+			var c = document.getElementsByTagName("canvas")[0];
+			var ctx = c.getContext("2d");
+			var dataURL = ctx.canvas.toDataURL('image/png', 1.0);
+			var doc = new jsPDF()
+			doc.setFontSize(13)
+			doc.text(10, 12, $('#nameText').text());
+			doc.text(170, 12, "DBCASE Web");
+			doc.addImage(dataURL, 'PNG', 15, 40, 180, 160)
+			doc.save( $('#idText').text()+""+(new Date().getMilliseconds())+'.pdf');
 		});
 	});
 	

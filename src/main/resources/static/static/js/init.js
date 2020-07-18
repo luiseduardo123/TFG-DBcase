@@ -1,9 +1,33 @@
 $(document).ready(function () {
-	
 			$('#modalAddItem').on('shown.bs.modal', function () {
-				$("#recipient-name").focus();
+				switch($("#tipoAdd").val()){
+					case "addEntity":
+					case "addRelation":
+					case "addDomain":
+					case "addAttribute":
+						$("#recipient-name").focus();
+					break;
+					case "addConstrainst":
+						$("#list0").focus();
+					break;
+				}
 			});
-	
+			
+			$('#modalAddItem').on('hide.bs.modal', function () {
+				switch($("#tipoAdd").val()){
+					case "addEntity":
+					case "addRelation":
+					case "addDomain":
+					case "addAttribute":
+						$("#recipient-name").unbind("focus");
+					break;
+					case "addConstrainst":
+						$("#list0").unbind("focus");
+					break;
+				}
+				
+			});
+			
        	 	 $('#btnTest').on('click', function () {
        		  //var url = "<c:url value="/generateData"/>";
        		  var f= 2;

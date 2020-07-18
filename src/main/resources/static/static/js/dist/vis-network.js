@@ -621,7 +621,7 @@
 	 * Postfix '_vis' added to discern it from standard method ellipse().
 	 */
 
-	function drawEllipse(ctx, x, y, w, h) {
+	function drawEllipse(ctx, x, y, w, h, isMulti) {
 	  var kappa = 0.5522848,
 	      ox = w / 2 * kappa,
 	      // control point offset horizontal
@@ -636,6 +636,13 @@
 	  ym = y + h / 2; // y-middle
 
 	  ctx.beginPath();
+	  if(isMulti){
+		  ctx.moveTo(x-3, ym);
+		  ctx.bezierCurveTo(x-3, ym - oy, xm - ox, y-3, xm, y-3);
+		  ctx.bezierCurveTo(xm + ox, y-3, xe+3, ym - oy, xe+3, ym);
+		  ctx.bezierCurveTo(xe+3, ym + oy, xm + ox, ye+3, xm, ye+3);
+		  ctx.bezierCurveTo(xm - ox, ye+3, x-3, ym + oy, x-3, ym);
+	  }
 	  ctx.moveTo(x, ym);
 	  ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
 	  ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
@@ -27600,7 +27607,7 @@
 	      this.left = x - this.width * 0.5;
 	      this.top = y - this.height * 0.5;
 	      this.initContextForDraw(ctx, values);
-	      drawEllipse(ctx, this.left, this.top, this.width, this.height);
+	      drawEllipse(ctx, this.left, this.top, this.width, this.height, this.options.dataAttribute.multivalued);
 	      this.performFill(ctx, values);
 	      this.updateBoundingBox(x, y, ctx, selected, hover);
 	      this.labelModule.draw(ctx, x, y, selected, hover);
@@ -39428,9 +39435,9 @@
 
 	      this.cleanNavigation();
 	      this.navigationDOM = {};
-	      var navigationDivs = ['up', 'down', 'left', 'right', 'zoomIn', 'zoomOut', 'zoomExtendsScreen', 'zoomExtends'];
-	      var navigationDivActions = ['_moveUp', '_moveDown', '_moveLeft', '_moveRight', '_zoomIn', '_zoomOut', '_fit'];
-	      var navigationToolTips = [$("#textTooltip1").text(), $("#textTooltip2").text(), $("#textTooltip3").text(), $("#textTooltip4").text(), $("#textTooltip5").text(), $("#textTooltip6").text(), $("#textTooltip7").text(), $("#textTooltip8").text()];
+	      var navigationDivs = ['up', 'down', 'left', 'right', 'zoomIn', 'zoomOut', 'zoomExtendsScreen', 'zoomExtends', 'centrarMover'];
+	      var navigationDivActions = ['_moveUp', '_moveDown', '_moveLeft', '_moveRight', '_zoomIn', '_zoomOut', '_fit', 'centrarMover'];
+	      var navigationToolTips = [$("#textTooltip1").text(), $("#textTooltip2").text(), $("#textTooltip3").text(), $("#textTooltip4").text(), $("#textTooltip5").text(), $("#textTooltip6").text(), $("#textTooltip7").text(), $("#textTooltip8").text(), $("#textTooltip9").text()];
 	      this.navigationDOM['wrapper'] = document.createElement('div');
 	      this.navigationDOM['wrapper'].className = 'vis-navigation';
 	      this.canvas.frame.appendChild(this.navigationDOM['wrapper']);

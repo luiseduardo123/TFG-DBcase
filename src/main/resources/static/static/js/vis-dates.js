@@ -4,6 +4,7 @@ var poscSelection;
 var typeDomain = new Domains();
 // create an array with edges
 var edges = new vis.DataSet([]);
+var changeDrawView = true;
  
   // create a network
 var container = document.getElementById('diagram');
@@ -13,6 +14,7 @@ var data = {
 };
 
 var options = {
+		
 		 edges: {
 		    smooth: {
 		      type: "continuous",
@@ -180,8 +182,10 @@ var network = new vis.Network(container, data, options);
 	  var center;
 	  var right;
 	  var exist = false;
+	  var direct1 = false;
 	  switch(cardinality){
 	  	case 'max1':
+	  		direct1 = true;
 	  		left = '1';
 	  		right = '0';
 	  	break;
@@ -200,8 +204,8 @@ var network = new vis.Network(container, data, options);
 	  else
 		  center = roleName;
 	  var idEdge = existEdge(idSelected, idTo);
-	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, smoot:false};
-	  var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, smooth: {type: "horizontal", forceDirection: "none", roundness: 0.7}};
+	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, smooth:false, arrows:{to: { enabled: direct1 }}};
+	  var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, arrows:{to: { enabled: direct1 }}, smooth: {type: "horizontal", forceDirection: "none", roundness: 0.7}};
 	  var data_element_update = {};
 	  if(idEdge != null){
 		  data_element_update.id = idEdge;
@@ -509,6 +513,103 @@ var network = new vis.Network(container, data, options);
 	  
 	  params.event.preventDefault();
 	});
+
+  var drag = false;
+  var rect = {}
+  var canvas = network.canvas.frame.canvas;
+  var ctx = canvas.getContext('2d');
+  var drawingSurfaceImageData;
+  
+  function saveDrawingSurface() {
+	   drawingSurfaceImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  }
+  
+  function getStartToEnd(start, theLen) {
+	    return theLen > 0 ? {start: start, end: start + theLen} : {start: start + theLen, end: start};
+  }
+  
+  function restoreDrawingSurface() {
+	    ctx.putImageData(drawingSurfaceImageData, 0, 0);
+  }
+  
+  //crear boton para poder que dragView: poner a true o false
+  
+  function selectNodesFromHighlight() {
+	    var fromX, toX, fromY, toY;
+	    var nodesIdInDrawing = [];
+	    var xRange = getStartToEnd(rect.startX, rect.w);
+	    var yRange = getStartToEnd(rect.startY, rect.h);
+
+	    var allNodes = nodes.get();
+	    for (var i = 0; i < allNodes.length; i++) {
+	        var curNode = allNodes[i];
+	        var nodePosition = network.getPositions([curNode.id]);
+	        var nodeXY = network.canvasToDOM({x: nodePosition[curNode.id].x, y: nodePosition[curNode.id].y});
+	        if (xRange.start <= nodeXY.x && nodeXY.x <= xRange.end && yRange.start <= nodeXY.y && nodeXY.y <= yRange.end) {
+	            nodesIdInDrawing.push(curNode.id);
+	        }
+	    }
+	    network.selectNodes(nodesIdInDrawing);
+  }
+
+  $(document).ready(function() {
+	  $(".vis-centrarMover").on("click", function(e){
+		  changeDrawView = !changeDrawView;
+		  network.setOptions({interaction:{dragView:changeDrawView}});
+		  if(changeDrawView){
+			  $(".vis-centrarMover").css('background-color', 'transparent');
+			  $("#diagram").unbind("mousemove");
+			  $("#diagram").unbind("mousedown");
+			  $("#diagram").unbind("mouseup");
+		  }else{
+			  $(".vis-centrarMover").css('background-color', 'rgb(255 0 0 / 27%)');
+			  $("#diagram").on("mousemove", function(e) {
+			      if (drag) { 
+			          restoreDrawingSurface();
+			          rect.w = (e.pageX - this.offsetLeft) - rect.startX;
+			          rect.h = (e.pageY - this.offsetTop) - rect.startY-80;
+			          ctx.setLineDash([5]);
+			          
+			          var colorRed = '';
+			          if(changeDrawView)
+			        	  colorRed = 'transparent';
+					  else
+						  colorRed = 'rgb(255 0 0 / 27%)';
+			          ctx.strokeStyle = colorRed;
+			          ctx.strokeRect(rect.startX, rect.startY, rect.w, rect.h);
+			          ctx.setLineDash([]);
+			          ctx.fillStyle = colorRed;
+			          ctx.fillRect(rect.startX, rect.startY, rect.w, rect.h);
+			      }
+			  });
+			  $("#diagram").on("mousedown", function(e) {
+			      if (e.button == 0) { 
+			          selectedNodes = e.ctrlKey ? network.getSelectedNodes() : null;
+			          saveDrawingSurface();
+			          var that = this;
+			          rect.startX = e.pageX - this.offsetLeft;
+			          rect.startY = e.pageY - this.offsetTop-90;
+			          drag = true;
+			          if(changeDrawView)
+			        	  container.style.cursor = "default";
+			          else
+			        	  container.style.cursor = "crosshair";
+			      }
+			  });
+			  $("#diagram").on("mouseup", function(e) {
+			      if (e.button == 0) { 
+			          restoreDrawingSurface();
+			          drag = false;
+			          container.style.cursor = "default";
+			          selectNodesFromHighlight();
+			      }
+			  });
+		  }
+	  });
+	  /*
+
+	  */
+  });
   
   function getNodeSelected(){
 	  return nodoSelected;

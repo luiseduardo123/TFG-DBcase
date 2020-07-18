@@ -204,20 +204,25 @@
 	            	<div class="form-inline">
 						<input class="" type="radio" name="cardinality" id="max1" value="max1">
 						<label class="form-check-label" for="max1">
-							Max 1
+							&nbsp;1
 						</label>
 					</div>
 					<div class="form-inline">
 						<input class="" type="radio" name="cardinality" id="maxN" value="maxN" checked>
 						<label class="form-check-label" for="maxN">
-							Max N
+							&nbsp;N
+						</label>
+					</div>
+					<div class="form-inline">
+						<label class="form-check-label mt-1 font-weight-bold" th:text="#{textos.participation}">
+							Participación mínimo-máximo
 						</label>
 					</div>
 					<div class="form-inline">
 						<input class="" type="radio" name="cardinality" id="minMax" value="minMax">
 						<label for="minMax" class="row form-check-label col-11 pl-3 justify-content-start">
-							Min <input type="number" id="minCardinality" class="form-control col-2 ml-1 mr-1" disabled>
-							Max <input type="number" id="maxCardinality" class="form-control col-2 ml-1" disabled>
+							&nbsp;Min <input type="number" id="minCardinality" class="form-control col-2 ml-1 mr-1" disabled>
+							&nbsp;Max <input type="number" id="maxCardinality" class="form-control col-2 ml-1" disabled>
 						</label>
 					</div>
 					<label for="domain" class="col-form-label" th:text="#{textos.roleName}"></label>
