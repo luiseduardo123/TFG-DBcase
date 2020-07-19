@@ -5,7 +5,6 @@ import java.util.Vector;
 import org.springframework.context.MessageSource;
 
 import controlador.Controlador;
-import controlador.TC;
 import modelo.transfers.TipoDominio;
 import modelo.transfers.Transfer;
 import modelo.transfers.TransferAtributo;
@@ -17,7 +16,6 @@ import persistencia.DAODominios;
 import persistencia.DAOEntidades;
 import persistencia.DAORelaciones;
 import persistencia.EntidadYAridad;
-import vista.lenguaje.Lenguaje;
 
 @SuppressWarnings({ "unchecked", "rawtypes"})
 public class ValidadorBD extends GeneradorEsquema{
@@ -42,25 +40,25 @@ public class ValidadorBD extends GeneradorEsquema{
 	}
 	//Dado un transfer y un texto, genera un error (formato html)
 	private void error(Transfer t, String texto) {
-		if(t instanceof TransferEntidad) texto = Lenguaje.text(Lenguaje.THE_ENTITY)+" "+t.getNombre()+" "+texto;
-		else if(t instanceof TransferRelacion) texto = Lenguaje.text(Lenguaje.THE_RELATION)+" "+t.getNombre()+" "+texto;
-		else if(t instanceof TransferAtributo) texto = Lenguaje.text(Lenguaje.THE_ATRIBUTE)+" "+t+" "+texto;
-		else if(t instanceof TransferDominio) texto = Lenguaje.text(Lenguaje.THE_DOMAIN)+" "+t.getNombre()+" "+texto;
-		errores += "<li>"+texto+"</li>";
+		if(t instanceof TransferEntidad) texto = this.getTraduction("textosId.theentity")+" "+t.getNombre()+" "+texto;
+		else if(t instanceof TransferRelacion) texto = this.getTraduction("textosId.therelation")+" "+t.getNombre()+" "+texto;
+		else if(t instanceof TransferAtributo) texto = this.getTraduction("textosId.theattribute")+" "+t+" "+texto;
+		else if(t instanceof TransferDominio) texto = this.getTraduction("textosId.thedomain")+" "+t.getNombre()+" "+texto;
+		errores += "<p class='text-dark'>"+texto+"</p>";
 	}
 	//Dado un transfer y un texto, genera un warning (formato html)
 	private void warning(Transfer t, String texto) {
-		if(t instanceof TransferEntidad) texto = Lenguaje.text(Lenguaje.THE_ENTITY)+" "+t.getNombre()+" "+texto;
-		else if(t instanceof TransferRelacion) texto = Lenguaje.text(Lenguaje.THE_RELATION)+" "+t.getNombre()+" "+texto;
-		else if(t instanceof TransferAtributo) texto = Lenguaje.text(Lenguaje.THE_ATRIBUTE)+" "+t+" "+texto;
-		else if(t instanceof TransferDominio) texto = Lenguaje.text(Lenguaje.THE_DOMAIN)+" "+t.getNombre()+" "+texto;
-		warnings += "<li>"+texto+"</li>";
+		if(t instanceof TransferEntidad) texto = this.getTraduction("textosId.theentity")+" "+t.getNombre()+" "+texto;
+		else if(t instanceof TransferRelacion) texto = this.getTraduction("textosId.therelation")+" "+t.getNombre()+" "+texto;
+		else if(t instanceof TransferAtributo) texto = this.getTraduction("textosId.theattribute")+" "+t+" "+texto;
+		else if(t instanceof TransferDominio) texto = this.getTraduction("textosId.thedomain")+" "+t.getNombre()+" "+texto;
+		warnings += "<p class='text-dark'>"+texto+"</p>";
 	}
 	private void construyeErroresWarnings() {
 		if(!warnings.isEmpty())
-			mensaje += "<div class='warning'><strong>" + Lenguaje.text(Lenguaje.WARNING)+"</strong><ol>"+warnings+"</ol></div>";
+			mensaje += "<div class='pl-1 pt-1 pr-1 alert alert-warning'><p class='h5 text-dark font-weight-bold'>" + this.getTraduction("textosId.warning")+"</p>"+warnings+"</div>";
 		if(!errores.isEmpty())
-			mensaje += "<div class='error'><strong>" + Lenguaje.text(Lenguaje.ERROR)+"</strong><ol>"+errores+"</ol></div>";
+			mensaje += "<div class='pl-1 pt-1 pr-1 alert alert-danger'><p class='h5 text-dark font-weight-bold'>" + this.getTraduction("textosId.error")+"</p>"+errores+"</div>";
 	}
 	/*
 	 * metodo principal
@@ -70,7 +68,7 @@ public class ValidadorBD extends GeneradorEsquema{
 		mensaje = "";warnings = "";this.errores = "";
 		boolean valido;
 		if(esVacio()) {
-			warning(null, Lenguaje.text(Lenguaje.EMPTY_DIAGRAM));
+			warning(null, this.getTraduction("textosId.emptyDiagram"));
 			valido=false;
 		}else {
 			valido=true;
@@ -113,7 +111,7 @@ public class ValidadorBD extends GeneradorEsquema{
 		//comprueba que una entidad tenga atributos con nombres distintos.
 		Vector<TransferAtributo> ats= dameAtributosEnTransfer(te.getListaAtributos());
 		if (ats.size() < 1){
-			error(te,Lenguaje.text(Lenguaje.NO_ATTRIB));
+			error(te,this.getTraduction("textosId.noAttrib"));
 			return false;
 		}
 		TransferAtributo ti, tj;
@@ -125,7 +123,7 @@ public class ValidadorBD extends GeneradorEsquema{
 				tj=ats.elementAt(j);
 				if(ti.getNombre().toLowerCase().equals(tj.getNombre().toLowerCase())) {
 					valido=false;
-					error(tj,Lenguaje.text(Lenguaje.IS_REPEATED_IN_ENTITY)+te.getNombre());
+					error(tj,this.getTraduction("textosId.isRepeatedInEnt")+te.getNombre());
 				}j++;
 			}
 			i++;
@@ -140,10 +138,10 @@ public class ValidadorBD extends GeneradorEsquema{
 		int tam =veya.size();
 		int contD=0,contF=0;
 		switch (tam){
-		case 0: error(tr,Lenguaje.text(Lenguaje.NO_ENT_RELATION));
+		case 0: error(tr,this.getTraduction("textosId.noEntRelation"));
 			valida=false;
 		break;
-		case 1: error(tr,Lenguaje.text(Lenguaje.ONE_ENT_WEAK_REL));
+		case 1: error(tr,this.getTraduction("textosId.oneEntWeakRel"));
 			valida=false;
 		break;
 		default:
@@ -152,15 +150,15 @@ public class ValidadorBD extends GeneradorEsquema{
 			contF= tam-contD;
 		}
 		if(contD<1){
-			error(tr,Lenguaje.text(Lenguaje.NO_WEAK_ENT_REL));
+			error(tr,this.getTraduction("textosId.noWeakEntRel"));
 			valida=false;
 		}
 		if (contD > 1){
-			error(tr,Lenguaje.text(Lenguaje.MANY_WEAK_ENT_REL));
+			error(tr,this.getTraduction("textosId.manyWeakEntRel"));
 			valida=false;
 		}
 		if(contF<1){
-			error(tr,Lenguaje.text(Lenguaje.NO_STRONG_ENT_REL));
+			error(tr,this.getTraduction("textosId.noStrongEntRel"));
 			valida=false;
 		}
 		return valida;
@@ -179,7 +177,7 @@ public class ValidadorBD extends GeneradorEsquema{
 				if (!veya.isEmpty()&& veya.elementAt(0).getEntidad()==te.getIdEntidad()) papi++;
 			}i++;
 		}
-		if (papi>1)	warning(te,Lenguaje.text(Lenguaje.ENT_PARENT_IN)+" "+papi+Lenguaje.text(Lenguaje.ISA_RELATIONS));
+		if (papi>1)	warning(te,this.getTraduction("textosId.entParentIn")+" "+papi+this.getTraduction("textosId.isaRelations"));
 	}
 
 	//metodos privados de validacion de relaciones.
@@ -187,16 +185,16 @@ public class ValidadorBD extends GeneradorEsquema{
 		boolean valida=true;
 		if(dameNumEntidadesDebiles(tr)>0){
 			valida= false;
-			error(tr,Lenguaje.text(Lenguaje.NO_WEAK_ENT_RELAT));
+			error(tr,this.getTraduction("textosId.noWeakEntRel"));
 		}
 		else{
 			Vector<EntidadYAridad> veya =tr.getListaEntidadesYAridades();
 			int tam =veya.size();
 			switch (tam){
-			case 0: error(tr,Lenguaje.text(Lenguaje.NO_PARENT_REL));
+			case 0: error(tr,this.getTraduction("textosId.noParentRel"));
 					valida=false;
 			break;
-			case 1: error(tr,Lenguaje.text(Lenguaje.NO_CHILD_RELATION));
+			case 1: error(tr,this.getTraduction("textosId.noChildRel"));
 					valida=false;
 			break;
 			default: break;
@@ -255,16 +253,16 @@ public class ValidadorBD extends GeneradorEsquema{
 		boolean valida=true;
 		if(dameNumEntidadesDebiles(tr)>0 && !this.misDebilesEstanEnDebiles(tr)){
 			valida= false;
-			error(tr,Lenguaje.text(Lenguaje.NO_WEAK_ENT_RELAT));
+			error(tr,this.getTraduction("textosId.noWeakEntRel"));
 		}
 		else{
 			Vector<EntidadYAridad> veya =tr.getListaEntidadesYAridades();
 			int tam =veya.size();
 			switch (tam){
-			case 0: error(tr,Lenguaje.text(Lenguaje.NO_ENT_RELATION));
+			case 0: error(tr,this.getTraduction("textosId.noEntRelation"));
 					valida = false;
 			break;
-			case 1: error(tr,Lenguaje.text(Lenguaje.ONE_ENT_REL));
+			case 1: error(tr,this.getTraduction("textosId.oneEntRel"));
 					valida = false;
 			break;
 			default: break;
@@ -306,13 +304,13 @@ public class ValidadorBD extends GeneradorEsquema{
 			}
 			if (encontrado){
 				valido=false;
-				error(t,Lenguaje.text(Lenguaje.REPEATED_DOM_NAMES));				
+				error(t,this.getTraduction("textosId.repeatedDomNames"));				
 			}
 			// Validar que tiene valores y son distintos
 			Vector<String> valores = t.getListaValores();
 			if (valores == null || valores.size() < 1){
 				valido=false;
-				error(t,Lenguaje.text(Lenguaje.NO_VALUE_DOM));
+				error(t,this.getTraduction("textosId.noValueDom"));
 			}else{
 				String valorComprobado = null;
 				int k = 0;
@@ -328,7 +326,7 @@ public class ValidadorBD extends GeneradorEsquema{
 				}
 				if (seRepite){
 					valido=false;
-					error(t,Lenguaje.text(Lenguaje.THE_VALUE) + valorComprobado +Lenguaje.text(Lenguaje.IS_REPEATED));
+					error(t,this.getTraduction("textosId.theValue") + valorComprobado +this.getTraduction("textosId.isRepeated"));
 				}
 			}
 			// Comprobar si se usa (esto solo da un aviso si falla)
@@ -340,7 +338,7 @@ public class ValidadorBD extends GeneradorEsquema{
 				esta = atributos.get(k).getDominio().equalsIgnoreCase(t.getNombre());
 				k++;
 			}
-			if (!esta) warning(t,Lenguaje.text(Lenguaje.NO_USE_DOM));
+			if (!esta) warning(t,this.getTraduction("textosId.noUseDom"));
 			i++;
 		}
 		return valido;
@@ -386,8 +384,8 @@ public class ValidadorBD extends GeneradorEsquema{
 				k++;
 			}
 			if (relacionada){
-				if (te.isDebil()) error(te, Lenguaje.text(Lenguaje.NOKEY_WEAK_ENTITY));
-				else error(te,Lenguaje.text(Lenguaje.NOKEY_ENTITY_RELATION));
+				if (te.isDebil()) error(te, this.getTraduction("textosId.noKeyWeakEntity"));
+				else error(te,this.getTraduction("textosId.noKeyEntRel"));
 				valido=false;
 			}
 		}
@@ -407,10 +405,10 @@ public class ValidadorBD extends GeneradorEsquema{
 						}
 						contador++;
 					}
-					if (compuesto) warning(te,Lenguaje.text(Lenguaje.ALL_CHILDREN_KEYS));
+					if (compuesto) warning(te,this.getTraduction("textosId.allChildrenKey"));
 					else{
 						valido=false;
-						error(te,Lenguaje.text(Lenguaje.NO_ATTRIB_KEY));
+						error(te,this.getTraduction("textosId.noAttribKey"));
 					}
 				}
 				else{ // comprobamos que no haya una clave que sea un atributo multivalorado.
@@ -420,12 +418,12 @@ public class ValidadorBD extends GeneradorEsquema{
 						if(aux.isMultivalorado()){
 							valido=false;
 							noMulti=false;
-							error(aux,Lenguaje.text(Lenguaje.MULTIVALUE_KEY));
+							error(aux,this.getTraduction("textosId.multivalueKey"));
 						}
 						contador++;
 					}
 				}
-		if (valido && !relacionada) warning(te,Lenguaje.text(Lenguaje.NO_PRIMARY_KEY));
+		if (valido && !relacionada) warning(te,this.getTraduction("textosId.noPrimaryKey"));
 		return valido;
 	}
 	
@@ -569,12 +567,12 @@ public class ValidadorBD extends GeneradorEsquema{
 				i++;
 			}
 			if (contSubAtrib!=1){
-				error(ta,Lenguaje.text(Lenguaje.MANY_ATTRIB_SUBATTRIB));
+				error(ta,this.getTraduction("textosId.manyAttribSubattrib"));
 				valido=false;
 			}
 		}
 		else if (cont!=1){ 
-			error(ta,Lenguaje.text(Lenguaje.MANY_ENTITIES));
+			error(ta,this.getTraduction("textosId.manyEntities"));
 			valido=false;
 		}
 		return valido; 
@@ -585,9 +583,9 @@ public class ValidadorBD extends GeneradorEsquema{
 		int numSubs=ta.getListaComponentes().size();
 		switch (numSubs) {
 		case 0: valido=false;
-				error(ta, Lenguaje.text(Lenguaje.NO_SUBATTRIB));
+				error(ta, this.getTraduction("textosId.noSubattrib"));
 		break;
-		case 1: warning(ta,Lenguaje.text(Lenguaje.ONE_SUBATTRIB));
+		case 1: warning(ta,this.getTraduction("textosId.oneSubattrib"));
 		break;
 		}
 
@@ -606,19 +604,19 @@ public class ValidadorBD extends GeneradorEsquema{
 		if (ta.getCompuesto()) {
 			if(!dom.equals("null")){
 				valido=false;
-				error(ta, Lenguaje.text(Lenguaje.COMPOSED_ATTRIBUTE));
+				error(ta, this.getTraduction("textosId.composedAttribute"));
 			}
 		}else{
 			if (dom.equals("")||dom.equals("null")){ 
 				valido=false;
-				error(ta, Lenguaje.text(Lenguaje.NO_DOMAIN));
+				error(ta, this.getTraduction("textosId.noDomain"));
 			}
 			else{
 				if (dom.contains("(")) dom=quitaParenDominio(dom);
 				int i=0;
 				while(i<TipoDominio.values().length && !TipoDominio.values()[i].equals(dom))i++;
 				if (i>TipoDominio.values().length){
-					error(ta, Lenguaje.text(Lenguaje.UNKNOWN_DOMAIN));
+					error(ta, this.getTraduction("textosId.unkownDomain"));
 					valido=false;
 				}
 			}
