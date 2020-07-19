@@ -56,7 +56,11 @@ public class GeneradorEsquema {
 	
 	public GeneradorEsquema() {
 	}
-
+	
+	protected String getTraduction(String textLang) {
+		return this.msgSrc.getMessage(textLang, null, this.loc)+"";
+	}
+	
 	protected boolean estaEnVectorDeEnteros(Vector sinParam, int valor){
 		int i=0;
 		boolean encontrado=false;
@@ -85,7 +89,7 @@ public class GeneradorEsquema {
 			//recorremos los atributos aniadiendolos a la tabla
 			for (int j=0;j<atribs.size();j++){
 				TransferAtributo ta=atribs.elementAt(j);
-				if(ta.getUnique()) restriccionesPerdidas.add(new restriccionPerdida(te.getNombre(), ta+" "+this.msgSrc.getMessage("textosId.is unique", null, this.loc), restriccionPerdida.TABLA));
+				if(ta.getUnique()) restriccionesPerdidas.add(new restriccionPerdida(te.getNombre(), ta+" "+this.msgSrc.getMessage("textosId.isUnique", null, this.loc), restriccionPerdida.TABLA));
 				if (ta.getCompuesto()) 
 					tabla.aniadeListaAtributos(this.atributoCompuesto(ta, te.getNombre(),""),te.getListaRestricciones(),tiposEnumerados);
 				else if (ta.isMultivalorado()) multivalorados.add(ta);
@@ -144,7 +148,7 @@ public class GeneradorEsquema {
 				Vector<TransferAtributo> ats = this.dameAtributosEnTransfer(tr.getListaAtributos());
 				for (int a = 0; a < ats.size(); a++) {
 					TransferAtributo ta = ats.elementAt(a);
-					if(ta.getUnique()) restriccionesPerdidas.add(new restriccionPerdida(tr.getNombre(), ta+" "+this.msgSrc.getMessage("textosId.is_unique", null, this.loc), restriccionPerdida.TABLA));
+					if(ta.getUnique()) restriccionesPerdidas.add(new restriccionPerdida(tr.getNombre(), ta+" "+this.msgSrc.getMessage("textosId.isUnique", null, this.loc), restriccionPerdida.TABLA));
 					if (ta.getCompuesto())
 						tabla.aniadeListaAtributos(this.atributoCompuesto(ta, tr.getNombre(), ""), ta.getListaRestricciones(), tiposEnumerados);
 					else if (ta.isMultivalorado()) multivalorados.add(ta);
@@ -500,7 +504,7 @@ public class GeneradorEsquema {
 					conector.ejecutarOrden(ordenActual);	
 				}
 			}
-		} catch (SQLException e) {			
+		} catch (SQLException e) {	
 			// Avisar por GUI
 			JOptionPane.showMessageDialog(null,
 					this.msgSrc.getMessage("textosId.error", null, this.loc)+".\n" +
@@ -533,7 +537,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void creaTablas(TransferConexion conexion){
-		sqlHTML +="<div class='card'><p class='h5'>"+"TABLES"+"</p>";//this.msgSrc.getMessage("textosId.tables", null, this.loc)+"</p>";
+		sqlHTML +="<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.tables", null, this.loc)+"</p>";
 
 		Iterator tablasM=tablasMultivalorados.iterator();
 		while (tablasM.hasNext()){
@@ -595,7 +599,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void creaEnums(TransferConexion conexion){
-		sqlHTML+="<div class='card'><p class='h5'>"+"TYPES_SECTION"+"</p>";//+this.msgSrc.getMessage("textosId.types_section", null, this.loc)+"</p>";
+		sqlHTML+="<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.typesSection", null, this.loc)+"</p>";
 		
 		Iterator<Enumerado> tablasD=tiposEnumerados.values().iterator();
 		while (tablasD.hasNext()){
@@ -606,7 +610,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void ponRestricciones(TransferConexion conexion){
-		sqlHTML+="<div class='card'><p class='h5'>"+"CONSTRAINTS_SECTION"+"</p>";//this.msgSrc.getMessage("textosId.constraints_section", null, this.loc)+"</p>";
+		sqlHTML+="<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.constraintsSection", null, this.loc)+"</p>";
 		
 		Iterator tablasE=tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
@@ -631,7 +635,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void ponClaves(TransferConexion conexion){
-		sqlHTML+="<div class='card'><p class='h5'>"+"KEYS_SECTION"+"</p>";//this.msgSrc.getMessage("textosId.keys_section", null, this.loc)+"</p>";
+		sqlHTML+="<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.keysSection", null, this.loc)+"</p>";
 		
 		String restEntidad = "";
 		String restEntidadHTML = "";
@@ -719,7 +723,7 @@ public class GeneradorEsquema {
 		generaTablasEntidades();
 		generaTablasRelaciones();
 		mr = warnings.toString();
-		mr += "<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.relations", null, this.loc)+"</p>";
+		mr += "<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.relations", null, this.loc)+"</p>";
 		Iterator tablasE = tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
@@ -737,9 +741,9 @@ public class GeneradorEsquema {
 			Tabla t =(Tabla)tablasM.next();
 			mr+=t.modeloRelacionalDeTabla(true);
 		}
-		mr += "<p></p></div><div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
+		mr += "<p></p></div><div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
 		mr += restriccionesIR();
-		mr += "<p></p></div><div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.lost_constr", null, this.loc)+"</p>";
+		mr += "<p></p></div><div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.lostConstr", null, this.loc)+"</p>";
 		mr += restriccionesPerdidas();
 		mr += "<p></p></div>";
 		controlador.mensajeDesde_SS(TC.SS_GeneracionModeloRelacional,mr);
@@ -855,7 +859,7 @@ public class GeneradorEsquema {
 
 	public void setControlador(Controlador controlador) {
 		this.controlador = controlador;
-		this.validadorBD = ValidadorBD.getInstancia();
+		this.validadorBD = new ValidadorBD(this.msgSrc);//this.validadorBD = ValidadorBD.getInstancia();
 		this.validadorBD.setControlador(controlador);
 	}
 	
@@ -868,7 +872,7 @@ public class GeneradorEsquema {
 		generaTablasEntidades();
 		generaTablasRelaciones();
 		mr = warnings.toString();
-		mr += "<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.relations", null, this.loc)+"</p>";
+		mr += "<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.relations", null, this.loc)+"</p>";
 		Iterator tablasE = tablasEntidades.values().iterator();
 		while (tablasE.hasNext()) {
 			Tabla t = (Tabla) tablasE.next();
@@ -886,9 +890,9 @@ public class GeneradorEsquema {
 			Tabla t = (Tabla) tablasM.next();
 			mr += t.modeloRelacionalDeTabla(true);
 		}
-		mr += "<p></p></div><div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
+		mr += "<p></p></div><div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
 		mr += restriccionesIR();
-		mr += "<p></p></div><div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.lostConstr", null, this.loc)+"</p>";
+		mr += "<p></p></div><div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.lostConstr", null, this.loc)+"</p>";
 		mr += restriccionesPerdidas();
 		mr += "<p></p></div>";
 		return mr;
