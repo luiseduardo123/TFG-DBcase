@@ -226,7 +226,8 @@ public class ConectorMySQL extends ConectorDBMS {
 			tipo.equalsIgnoreCase("BIT") ||
 			tipo.equalsIgnoreCase("DATE") ||
 			tipo.equalsIgnoreCase("DATETIME") ||
-			tipo.equalsIgnoreCase("BLOB")){
+			tipo.equalsIgnoreCase("BLOB") ||
+			tipo.equalsIgnoreCase("VARCHAR")) {
 				return tipo;
 		}
 		

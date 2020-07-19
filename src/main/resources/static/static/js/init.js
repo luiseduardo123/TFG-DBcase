@@ -28,7 +28,7 @@ $(document).ready(function () {
 				
 			});
 			
-       	 	 $('#btnTest').on('click', function () {
+       	 	$('#btnTest').on('click', function () {
        		  //var url = "<c:url value="/generateData"/>";
        		  var f= 2;
        		  var myObj = {}; 
@@ -51,7 +51,35 @@ $(document).ready(function () {
                      }
 
                  });
-            });
+			});
+			
+			$('#btnTestScriptSQL').on('click', function () {
+				//var url = "<c:url value="/generateData"/>";
+				var f= 2;
+				var myObj = {}; 
+				myObj["data1"] = JSON.stringify(nodes.get()); 
+				myObj["data2"] = JSON.stringify(edges.get()); 
+				myObj["data3"] = $("#selectLenguage option:selected").text();
+				myObj["data4"] = $("#selectLenguage option:selected").index(); 
+
+			 	var json = JSON.stringify(myObj);
+			   
+				$.ajax({
+					type: 'POST',
+					url: '/generateDataScriptSQL',
+					data: json,
+					contentType: "application/json",
+					success: function (data) {
+						$("#resultSPhysicalSchema").html(data);
+					},
+					error: function (xhr, ajaxOptions, thrownError) {
+						console.log(xhr.status);
+						console.log(xhr.responseText);
+						console.log(thrownError);
+					}
+
+				});
+		   });
        	 	 
        	  $('#insertModal').on('click', function() {
            	switch($('#tipoAdd').val()) {

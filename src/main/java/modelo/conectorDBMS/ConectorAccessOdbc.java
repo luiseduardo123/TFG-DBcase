@@ -221,6 +221,8 @@ public class ConectorAccessOdbc extends ConectorDBMS {
 		if (tipo.equalsIgnoreCase("DATE")) return "DATETIME";
 		if (tipo.equalsIgnoreCase("BLOB")) return "IMAGE";
 		
+		if (tipo.equalsIgnoreCase("VARCHAR")) return "VARCHAR";
+
 		// Tipos compuestos que no hay que modificar
 		if (tipo.indexOf("(") > 0){
 			String tipoSinParam = tipo.substring(0, tipo.indexOf("("));

@@ -345,10 +345,10 @@ public class GeneradorEsquema {
 		sqlHTML="";
 	}
 
-	public void generaScriptSQL(TransferConexion conexion){
-		reset();
+	public String generaScriptSQL(TransferConexion conexion){
+		reset(); 
 		StringBuilder warnings = new StringBuilder();
-		if (!validadorBD.validaBaseDeDatos(false, warnings)) return;
+		if (!validadorBD.validaBaseDeDatos(true, warnings)) return "";
 		// Eliminar tablas anteriores, pero recordar que el modelo a ha sido validado
 		reset();
 		conexionScriptGenerado = conexion;
@@ -365,7 +365,8 @@ public class GeneradorEsquema {
 		creaEnums(conexion);
 		ponClaves(conexion);	
 		ponRestricciones(conexion);
-		controlador.mensajeDesde_SS(TC.SS_GeneracionScriptSQL,sqlHTML);
+		//controlador.mensajeDesde_SS(TC.SS_GeneracionScriptSQL,sqlHTML);
+		return sqlHTML;
 	}
 
 	public void exportarCodigo(String text, boolean sql){
@@ -532,7 +533,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void creaTablas(TransferConexion conexion){
-		sqlHTML+="<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.tables", null, this.loc)+"</p>";
+		sqlHTML +="<div class='card'><p class='h5'>"+"TABLES"+"</p>";//this.msgSrc.getMessage("textosId.tables", null, this.loc)+"</p>";
 
 		Iterator tablasM=tablasMultivalorados.iterator();
 		while (tablasM.hasNext()){
@@ -594,7 +595,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void creaEnums(TransferConexion conexion){
-		sqlHTML+="<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.types_section", null, this.loc)+"</p>";
+		sqlHTML+="<div class='card'><p class='h5'>"+"TYPES_SECTION"+"</p>";//+this.msgSrc.getMessage("textosId.types_section", null, this.loc)+"</p>";
 		
 		Iterator<Enumerado> tablasD=tiposEnumerados.values().iterator();
 		while (tablasD.hasNext()){
@@ -605,7 +606,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void ponRestricciones(TransferConexion conexion){
-		sqlHTML+="<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.constraints_section", null, this.loc)+"</p>";
+		sqlHTML+="<div class='card'><p class='h5'>"+"CONSTRAINTS_SECTION"+"</p>";//this.msgSrc.getMessage("textosId.constraints_section", null, this.loc)+"</p>";
 		
 		Iterator tablasE=tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
@@ -630,7 +631,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void ponClaves(TransferConexion conexion){
-		sqlHTML+="<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.keys_section", null, this.loc)+"</p>";
+		sqlHTML+="<div class='card'><p class='h5'>"+"KEYS_SECTION"+"</p>";//this.msgSrc.getMessage("textosId.keys_section", null, this.loc)+"</p>";
 		
 		String restEntidad = "";
 		String restEntidadHTML = "";
