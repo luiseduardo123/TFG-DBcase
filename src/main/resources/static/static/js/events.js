@@ -342,6 +342,29 @@ function updateTableElements(){
 		});
 	});
 	
+	
+	$("#down_schema_physical").on('click',function(){
+		if($("#resultSPhysicalSchema").html().length > 8){
+			var str = $("#resultSPhysicalSchema").html();
+			var res = str.replace(/<\/p>/g, "\r\n");
+			res = res.replace(/<p class="h5 text-dark font-weight-bold">/g, "");
+			res = res.replace(/<p class="text-dark">/g, "");
+			res = res.replace(/<div class="pl-1 pt-1 pr-1 alert alert-warning">/g, "#");
+			res = res.replace(/<div class="pl-1 pt-1 pr-1 alert alert-danger">/g, "#");
+			res = res.replace(/<div class="pl-1 pt-1 pr-1 alert alert-light">/g, "#");
+			res = res.replace(/<\/div>/g, "");
+			res = res.replace(/<u>/g, "");
+			res = res.replace(/<\/u>/g, "");
+			res = res.replace(/<p>/g, "");
+			res = res.replace(/<strong>/g, "");
+			res = res.replace(/<\/strong>/g, "");
+			res = res.replace(/\*/g, "");
+			res = "#"+$("#textGeneratedBy").text()+"\r\n"+res;
+			var blob = new Blob([res], {type: "text/plain;charset=utf-8"});
+			saveAs(blob, $('#idText').text()+""+(new Date().getMilliseconds())+".sql");
+		}
+	});
+	
 	$("#down_schema_logic").on('click',function(){
 		if($("#testResult").html().length > 8){
 			var str = $("#testResult").html();
@@ -355,6 +378,7 @@ function updateTableElements(){
 			res = res.replace(/<u>/g, "");
 			res = res.replace(/<\/u>/g, "");
 			res = res.replace(/<p>/g, "");
+			res = "#"+$("#textGeneratedBy").text()+"\r\n"+res;
 			var blob = new Blob([res], {type: "text/plain;charset=utf-8"});
 			saveAs(blob, $('#idText').text()+""+(new Date().getMilliseconds())+".txt");
 		}
