@@ -15,4 +15,5 @@ public enum TipoDominio {
 	TEXT,
 	TIME,
 	VARCHAR
+ 
 }

@@ -232,7 +232,8 @@ public class ConectorOracle extends ConectorDBMS {
 		// Tipos simples que no hay que modificar
 		if (tipo.equalsIgnoreCase("INTEGER") ||
 			tipo.equalsIgnoreCase("DATE") ||
-			tipo.equalsIgnoreCase("BLOB")){
+			tipo.equalsIgnoreCase("BLOB") ||
+			tipo.equalsIgnoreCase("VARCHAR")){
 				return tipo;
 		}
 		

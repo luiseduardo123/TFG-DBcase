@@ -56,11 +56,7 @@ public class GeneradorEsquema {
 	
 	public GeneradorEsquema() {
 	}
-	
-	protected String getTraduction(String textLang) {
-		return this.msgSrc.getMessage(textLang, null, this.loc)+"";
-	}
-	
+
 	protected boolean estaEnVectorDeEnteros(Vector sinParam, int valor){
 		int i=0;
 		boolean encontrado=false;
@@ -349,10 +345,10 @@ public class GeneradorEsquema {
 		sqlHTML="";
 	}
 
-	public void generaScriptSQL(TransferConexion conexion){
-		reset();
+	public String generaScriptSQL(TransferConexion conexion){
+		reset(); 
 		StringBuilder warnings = new StringBuilder();
-		if (!validadorBD.validaBaseDeDatos(false, warnings)) return;
+		if (!validadorBD.validaBaseDeDatos(true, warnings)) return "";
 		// Eliminar tablas anteriores, pero recordar que el modelo a ha sido validado
 		reset();
 		conexionScriptGenerado = conexion;
@@ -369,7 +365,8 @@ public class GeneradorEsquema {
 		creaEnums(conexion);
 		ponClaves(conexion);	
 		ponRestricciones(conexion);
-		controlador.mensajeDesde_SS(TC.SS_GeneracionScriptSQL,sqlHTML);
+		//controlador.mensajeDesde_SS(TC.SS_GeneracionScriptSQL,sqlHTML);
+		return sqlHTML;
 	}
 
 	public void exportarCodigo(String text, boolean sql){
@@ -536,7 +533,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void creaTablas(TransferConexion conexion){
-		sqlHTML+="<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.tables", null, this.loc)+"</p>";
+		sqlHTML +="<div class='card'><p class='h5'>"+"TABLES"+"</p>";//this.msgSrc.getMessage("textosId.tables", null, this.loc)+"</p>";
 
 		Iterator tablasM=tablasMultivalorados.iterator();
 		while (tablasM.hasNext()){
@@ -598,7 +595,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void creaEnums(TransferConexion conexion){
-		sqlHTML+="<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.types_section", null, this.loc)+"</p>";
+		sqlHTML+="<div class='card'><p class='h5'>"+"TYPES_SECTION"+"</p>";//+this.msgSrc.getMessage("textosId.types_section", null, this.loc)+"</p>";
 		
 		Iterator<Enumerado> tablasD=tiposEnumerados.values().iterator();
 		while (tablasD.hasNext()){
@@ -609,7 +606,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void ponRestricciones(TransferConexion conexion){
-		sqlHTML+="<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.constraints_section", null, this.loc)+"</p>";
+		sqlHTML+="<div class='card'><p class='h5'>"+"CONSTRAINTS_SECTION"+"</p>";//this.msgSrc.getMessage("textosId.constraints_section", null, this.loc)+"</p>";
 		
 		Iterator tablasE=tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
@@ -634,7 +631,7 @@ public class GeneradorEsquema {
 	}
 	
 	private void ponClaves(TransferConexion conexion){
-		sqlHTML+="<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.keys_section", null, this.loc)+"</p>";
+		sqlHTML+="<div class='card'><p class='h5'>"+"KEYS_SECTION"+"</p>";//this.msgSrc.getMessage("textosId.keys_section", null, this.loc)+"</p>";
 		
 		String restEntidad = "";
 		String restEntidadHTML = "";
@@ -691,7 +688,7 @@ public class GeneradorEsquema {
 			String claves="", valores = "";
 			for (int j=0;j<foreigns.size();j++) {
 				if(!abierto) {
-					code+="<p class='text-dark'>";
+					code+="<p>";
 					abierto=true;
 				}
 				claves+= t.getNombreTabla()+"."+foreigns.elementAt(j)[3]+"_"+foreigns.elementAt(j)[0];
@@ -722,7 +719,7 @@ public class GeneradorEsquema {
 		generaTablasEntidades();
 		generaTablasRelaciones();
 		mr = warnings.toString();
-		mr += "<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.relations", null, this.loc)+"</p>";
+		mr += "<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.relations", null, this.loc)+"</p>";
 		Iterator tablasE = tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
@@ -740,9 +737,9 @@ public class GeneradorEsquema {
 			Tabla t =(Tabla)tablasM.next();
 			mr+=t.modeloRelacionalDeTabla(true);
 		}
-		mr += "<p></p></div><div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
+		mr += "<p></p></div><div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
 		mr += restriccionesIR();
-		mr += "<p></p></div><div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.lost_constr", null, this.loc)+"</p>";
+		mr += "<p></p></div><div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.lost_constr", null, this.loc)+"</p>";
 		mr += restriccionesPerdidas();
 		mr += "<p></p></div>";
 		controlador.mensajeDesde_SS(TC.SS_GeneracionModeloRelacional,mr);
@@ -858,7 +855,7 @@ public class GeneradorEsquema {
 
 	public void setControlador(Controlador controlador) {
 		this.controlador = controlador;
-		this.validadorBD = new ValidadorBD(this.msgSrc);//this.validadorBD = ValidadorBD.getInstancia();
+		this.validadorBD = ValidadorBD.getInstancia();
 		this.validadorBD.setControlador(controlador);
 	}
 	
@@ -871,7 +868,7 @@ public class GeneradorEsquema {
 		generaTablasEntidades();
 		generaTablasRelaciones();
 		mr = warnings.toString();
-		mr += "<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.relations", null, this.loc)+"</p>";
+		mr += "<div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.relations", null, this.loc)+"</p>";
 		Iterator tablasE = tablasEntidades.values().iterator();
 		while (tablasE.hasNext()) {
 			Tabla t = (Tabla) tablasE.next();
@@ -889,9 +886,9 @@ public class GeneradorEsquema {
 			Tabla t = (Tabla) tablasM.next();
 			mr += t.modeloRelacionalDeTabla(true);
 		}
-		mr += "<p></p></div><div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
+		mr += "<p></p></div><div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
 		mr += restriccionesIR();
-		mr += "<p></p></div><div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.lostConstr", null, this.loc)+"</p>";
+		mr += "<p></p></div><div class='card'><p class='h5'>"+this.msgSrc.getMessage("textosId.lostConstr", null, this.loc)+"</p>";
 		mr += restriccionesPerdidas();
 		mr += "<p></p></div>";
 		return mr;

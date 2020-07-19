@@ -51,6 +51,7 @@ import modelo.transfers.Generic;
 import modelo.transfers.Node;
 import modelo.transfers.TipoDominio;
 import modelo.transfers.TransferAtributo;
+import modelo.transfers.TransferConexion;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
 
@@ -255,157 +256,7 @@ public class GoogleserviceApplication {
 			else {
 				System.err.println("problemas al parseo de las relaciones");
 			}
-		}
-		 
-//		Integer fs=2;
-//		// TRANSFER ENTIDAD A
-//			// Generamos el transfer que mandaremos al controlador
-//			TransferEntidad te = new TransferEntidad();
-//			te.setPosicion(new Point2D.Float(0, (float) 1.0));
-//			te.setNombre("A");
-//			te.setDebil(false);
-//			te.setListaAtributos(new Vector());
-//			te.setListaClavesPrimarias(new Vector());
-//			te.setListaRestricciones(new Vector());
-//			te.setListaUniques(new Vector());
-//			//Mandamos mensaje + datos al controlador
-//			c.mensajeDesde_GUI(TC.GUIInsertarEntidad_Click_BotonInsertar, te);
-//		// TRANSFER ENTIDAD A
-//		 
-//			
-//		//TRANSFER ATRIBUTO (CLAVE PRIMARIA) PK_A
-//			TransferAtributo ta = new TransferAtributo(c);
-//			ta.setNombre("PK_A");
-//			String tamano = "";
-//			double x = te.getPosicion().getX();
-//			double y = te.getPosicion().getY();
-//			ta.setPosicion(new Point2D.Double(x,y));
-//			ta.setListaComponentes(new Vector()); 
-//			ta.setClavePrimaria(true);  
-//			ta.setCompuesto(false); 
-//			// Si esta seleccionado la opcion multivalorado
-//			ta.setMultivalorado(false); 
-//			//Unique y Notnull
-//			ta.setNotnull(false);
-//			//ponemos unique a false, ya que en caso de ser Unique se hace la llamada abajo.
-//			ta.setUnique(false); 
-//			TipoDominio dominio;
-//			String dom;  
-//			dom=(TipoDominio.VARCHAR).toString();
-//			ta.setDominio(dom); 
-//			ta.setListaRestricciones(new Vector()); 
-//			// Mandamos la entidad, el nuevo atributo y si hay tamano tambien
-//			Vector<Object> v = new Vector<Object>();
-//			v.add(te);
-//			v.add(ta);
-//			if (!tamano.isEmpty()) v.add(tamano);
-//			c.mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_Click_BotonAnadir, v);
-//			if (true){
-//				Vector<Object> v1= new Vector<Object>();
-//				TransferAtributo clon_atributo2 = ta.clonar();
-//				clon_atributo2.setClavePrimaria(false);
-//				v1.add(clon_atributo2);
-//			    v1.add(te);
-//				c.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarClavePrimariaAtributo,v1);
-//			}  
-//		//TRANSFER ATRIBUTO (CLAVE PRIMARIA) PK_A
-//			 
-//		// TRANSFER ENTIDAD B
-//			// Generamos el transfer que mandaremos al controlador
-//			TransferEntidad teB = new TransferEntidad();
-//			teB.setPosicion(new Point2D.Float(0, (float) 1.0));
-//			teB.setNombre("B");
-//			teB.setDebil(false);
-//			teB.setListaAtributos(new Vector());
-//			teB.setListaClavesPrimarias(new Vector());
-//			teB.setListaRestricciones(new Vector());
-//			teB.setListaUniques(new Vector());
-//			//Mandamos mensaje + datos al controlador
-//			c.mensajeDesde_GUI(TC.GUIInsertarEntidad_Click_BotonInsertar, teB);
-//		// TRANSFER ENTIDAD B ==/
-//		 
-//		//TRANSFER ATRIBUTO (CLAVE PRIMARIA) PK_B
-//			TransferAtributo tab = new TransferAtributo(c);
-//			tab.setNombre("PK_B");
-//			String tamanoB = "";
-//			double xB = teB.getPosicion().getX();
-//			double yB = teB.getPosicion().getY();
-//			tab.setPosicion(new Point2D.Double(xB,yB));
-//			tab.setListaComponentes(new Vector()); 
-//			tab.setClavePrimaria(true);  
-//			tab.setCompuesto(false); 
-//			// Si esta seleccionado la opcion multivalorado
-//			tab.setMultivalorado(false); 
-//			//Unique y Notnull
-//			tab.setNotnull(false);
-//			//ponemos unique a false, ya que en caso de ser Unique se hace la llamada abajo.
-//			tab.setUnique(false); 
-//		//	TipoDominio dominio;
-//			//String dom;  
-//			dom=(TipoDominio.VARCHAR).toString();
-//			tab.setDominio(dom); 
-//			tab.setListaRestricciones(new Vector()); 
-//			// Mandamos la entidad, el nuevo atributo y si hay tamano tambien
-//			Vector<Object> vb = new Vector<Object>();
-//			vb.add(teB);
-//			vb.add(tab);
-//			if (!tamanoB.isEmpty()) vb.add(tamanoB);
-//			c.mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_Click_BotonAnadir, vb);
-//			if (true){
-//				Vector<Object> v1= new Vector<Object>();
-//				TransferAtributo clon_atributo2 = tab.clonar();
-//				clon_atributo2.setClavePrimaria(false);
-//				v1.add(clon_atributo2);
-//			    v1.add(teB);
-//				c.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarClavePrimariaAtributo,v1);
-//			}  
-//		//TRANSFER ATRIBUTO (CLAVE PRIMARIA) PK_B ==/
-//			
-//			
-//		// TRANSFER RELATION A_B
-//			TransferRelacion tRelation = new TransferRelacion();
-//			tRelation.setNombre("A_B");
-//			tRelation.setTipo("Normal");
-//			tRelation.setRol(null);
-//			tRelation.setListaEntidadesYAridades(new Vector());
-//			tRelation.setListaAtributos(new Vector());
-//			tRelation.setListaRestricciones(new Vector());
-//			tRelation.setListaUniques(new Vector());
-//			tRelation.setPosicion(new Point2D.Float(0, (float) 1.0)); 
-//			tRelation.setVolumen(0);
-//			tRelation.setFrecuencia(0);
-//			tRelation.setOffsetAttr(0);
-//			c.mensajeDesde_GUI(TC.GUIInsertarRelacion_Click_BotonInsertar, tRelation);
-//			
-//		// TRANSFER RELATION A_B ==//
-//			
-//		// ASIGNAR A ENTIDAD UNA RELACION A
-//			Vector<Object> vData= new Vector<Object>();
-//			TransferEntidad clon_entidad = teB.clonar(); // transfer entidad B 
-//			TransferRelacion clon_rel= tRelation.clonar(); 
-//
-//			vData.add(tRelation);
-//			vData.add(clon_entidad);
-//			vData.add("0");
-//			vData.add("n");
-//			vData.add("rol1");
-//			
-//			c.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ClickBotonAnadir, vData);
-//			
-//		// ASIGNAR A ENTIDAD UNA RELACION ==//	
-//			
-//		// ASIGNAR A ENTIDAD UNA RELACION A
-//			Vector<Object> vData2= new Vector<Object>();
-//			TransferEntidad clon_entidad2 = te.clonar(); // transfer enidad A 
-//			TransferRelacion clon_rel2= tRelation.clonar(); 
-//
-//			vData2.add(tRelation);
-//			vData2.add(clon_entidad2);
-//			vData2.add("0");
-//			vData2.add("n");
-//			vData2.add("rol2");
-//			
-//			c.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ClickBotonAnadir, vData2);
+		} 
 			
 		// ASIGNAR A ENTIDAD UNA RELACION ==//	
 		GeneradorEsquema testGen = new GeneradorEsquema(messageSource);
@@ -415,6 +266,184 @@ public class GoogleserviceApplication {
 		return respuesta;
 	} 
 
+	public String updateLabelDom(String lblDom,String size){
+		switch(lblDom.toUpperCase()){
+			case "VARCHAR":
+				return  lblDom.toUpperCase()+"("+size+")"; 
+			default: 
+				return lblDom.toUpperCase();
+		} 
+	}
+
+	@RequestMapping(value = "/generateDataScriptSQL", method = RequestMethod.POST)
+	public String generateDataScriptSQL(@RequestBody Generic r, HttpServletRequest req, HttpServletResponse resp) {
+
+		// TransferConexion tc = (TransferConexion) datos;
+		// this.getTheServiciosSistema().generaScriptSQL(tc);
+		// break;
+
+		// r.getData1() Nodes
+		// r.getData2() Edges
+		// r.getData3() Label del tipo Esquema Fisico
+		// r.getData4() Index del tipo Esquema Fisico
+
+		Gson gson = new Gson(); 
+		//Node model = gson.fromJson(r.getData1(),Node.class);
+		
+		Type tipoNode = new TypeToken<List<Node>>(){}.getType();  
+		Type tipoEdge = new TypeToken<List<Edge>>(){}.getType(); 
+		
+		List<Node> nodes = gson.fromJson(r.getData1(), tipoNode); 
+		List<Edge> edges = gson.fromJson(r.getData2(), tipoEdge);
+		String lblPhySchema = r.getData3();
+		String idxPhySchema = r.getData4();
+
+		List<Object> dataParseada = new ArrayList<Object>();
+		 
+		Controlador c = null;
+		try {
+			c = new Controlador("debug");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// NO SE ESTA PASANDO CADENA LIMPIA.
+		for (int k = 0; k < nodes.size(); k++) {  
+			if(nodes.get(k).getLabel().contains("\n")) {
+				String auxText= nodes.get(k).getLabel();
+				String nameCleaned[]= auxText.split("\n");
+				nodes.get(k).setLabel(nameCleaned[0]); 
+			}
+			
+		}
+		
+		for (int i = 0; i < nodes.size(); i++) {
+			switch (nodes.get(i).getShape()) {
+				case "box":
+					TransferEntidad entityTransf = new TransferEntidad();
+					entityTransf.setPosicion(new Point2D.Float(0, (float) 1.0));
+					entityTransf.setNombre(nodes.get(i).getLabel());
+					entityTransf.setDebil(false);
+					entityTransf.setListaAtributos(new Vector());
+					entityTransf.setListaClavesPrimarias(new Vector());
+					entityTransf.setListaRestricciones(new Vector());
+					entityTransf.setListaUniques(new Vector()); 
+					c.mensajeDesde_GUI(TC.GUIInsertarEntidad_Click_BotonInsertar, entityTransf);
+					dataParseada.add(entityTransf);
+					break;
+					
+				case "ellipse":
+					TransferAtributo attributeTransf = new TransferAtributo(c);
+					 
+					attributeTransf.setNombre(nodes.get(i).getLabel()); 
+					
+					double x = 1.0;
+					double y = 1.0;
+					attributeTransf.setPosicion(new Point2D.Double(x,y));
+					attributeTransf.setListaComponentes(new Vector()); 
+					attributeTransf.setClavePrimaria(nodes.get(i).getDataAttribute().isPrimaryKey());  
+					attributeTransf.setCompuesto(false); 
+					// Si esta seleccionado la opcion multivalorado
+					attributeTransf.setMultivalorado(false); 
+					//Unique y Notnull
+					attributeTransf.setNotnull(false);
+					//ponemos unique a false, ya que en caso de ser Unique se hace la llamada abajo.
+					attributeTransf.setUnique(false); 
+					TipoDominio dominio;
+					String dom;  
+					// dom=(TipoDominio.VARCHAR).toString();
+					// dom += "("+nodes.get(i).getDataAttribute().getSize()+")";
+ 
+					dom= updateLabelDom(nodes.get(i).getDataAttribute().getDomain(), nodes.get(i).getDataAttribute().getSize());
+					attributeTransf.setDominio(dom); 
+					attributeTransf.setListaRestricciones(new Vector()); 
+					dataParseada.add(attributeTransf);
+					break;
+					
+				case "diamond":
+					TransferRelacion relationTransf = new TransferRelacion();
+					relationTransf.setNombre(nodes.get(i).getLabel());
+					relationTransf.setTipo("Normal");
+					relationTransf.setRol(null);
+					relationTransf.setListaEntidadesYAridades(new Vector());
+					relationTransf.setListaAtributos(new Vector());
+					relationTransf.setListaRestricciones(new Vector());
+					relationTransf.setListaUniques(new Vector());
+					relationTransf.setPosicion(new Point2D.Float(0, (float) 1.0)); 
+					relationTransf.setVolumen(0);
+					relationTransf.setFrecuencia(0);
+					relationTransf.setOffsetAttr(0);
+					c.mensajeDesde_GUI(TC.GUIInsertarRelacion_Click_BotonInsertar, relationTransf);
+					dataParseada.add(relationTransf);
+					break;
+			}
+		}
+		
+		for (int j = 0; j < edges.size(); j++) {
+			edges.get(j).updateLabelFromName();
+			if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferEntidad) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferAtributo)) {
+				// Mandamos la entidad, el nuevo atributo y si hay tamano tambien
+				Vector<Object> v = new Vector<Object>();
+				String tamano = "";
+				TransferEntidad te = (TransferEntidad)dataParseada.get(edges.get(j).getFrom());
+				TransferAtributo ta = (TransferAtributo)dataParseada.get(edges.get(j).getTo());
+				v.add(te);
+				v.add(ta);
+				if (!tamano.isEmpty()) v.add(tamano);
+				c.mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_Click_BotonAnadir, v);
+				if (true){
+					Vector<Object> v1= new Vector<Object>();
+					TransferAtributo clon_atributo2 = ta.clonar();
+					clon_atributo2.setClavePrimaria(false);
+					v1.add(clon_atributo2);
+				    v1.add(te);
+					c.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarClavePrimariaAtributo,v1);
+				}  
+			}
+			else if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferAtributo)) {
+				System.out.println("no implementado");
+			}
+			else if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferEntidad)) {
+				Vector<Object> vData= new Vector<Object>();
+				
+				TransferEntidad teB = (TransferEntidad)dataParseada.get(edges.get(j).getTo());
+				TransferRelacion tRelation = (TransferRelacion)dataParseada.get(edges.get(j).getFrom());
+				
+				TransferEntidad clon_entidad = teB.clonar(); // transfer entidad B 
+				TransferRelacion clon_rel= tRelation.clonar(); 
+
+				vData.add(tRelation);
+				vData.add(clon_entidad);
+				vData.add(edges.get(j).getLabelFrom().toLowerCase());
+				vData.add(edges.get(j).getLabelTo().toLowerCase());
+				vData.add(edges.get(j).getLabel());
+				
+				c.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ClickBotonAnadir, vData);
+			}
+			else {
+				System.err.println("problemas al parseo de las relaciones");
+			}
+		}
+
+		// ASIGNAR A ENTIDAD UNA RELACION ==//	
+		GeneradorEsquema testGen = new GeneradorEsquema(messageSource);
+		testGen.setControlador(c);
+		String respuesta = testGen.generaModeloRelacional_v3();
+
+
+		/*
+			v.add(CONECTOR_MYSQL, "MySQL");
+			v.add(CONECTOR_MSACCESS_MDB, "Microsoft Access .mdb");
+			v.add(CONECTOR_MSACCESS_ODBC, "Microsoft Access via ODBC");
+			v.add(CONECTOR_ORACLE, "Oracle");
+		*/
+  
+		TransferConexion tc = new TransferConexion(Integer.parseInt(idxPhySchema),lblPhySchema,false,"","","");
+		respuesta = testGen.generaScriptSQL(tc);
+		return respuesta;
+	} 
+ 
 //	@RequestMapping(value = "/generateData", method = RequestMethod.POST)
 //	public ModelAndView generateData(@RequestBody Generic r, HttpServletRequest req, HttpServletResponse resp) {
 //		
