@@ -146,22 +146,16 @@ var network = new vis.Network(container, data, options);
   function addAttribute(name, action, idSelected, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
 	  var id_node = getIdElement();
 	  var word_pk = name;
-	  var word_multi = 1;
 	  if(pk){
-		  var word = name;
-		  word = word.replace(/./gi, "¯");
-		  word_pk = name+'\n'+word;
+		  word_pk = name;
 	  }else{
 		  word_pk = name;
 		  if(!notNll){
 			  word_pk +="*";
-		  } 
-		  if(multi){
-			  word_multi = 3;
-		  } 
+		  }
 	  }
 	  
-	  var data_element = {widthConstraint:{ minimum: 50, maximum: 160},labelBackend:name, borderWidth:word_multi,label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, heightConstraint:29,physics:false};
+	  var data_element = {widthConstraint:{ minimum: 50, maximum: 160},labelBackend:name, label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, heightConstraint:29,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);

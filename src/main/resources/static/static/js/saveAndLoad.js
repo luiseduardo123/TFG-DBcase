@@ -33,7 +33,7 @@ function exportNetwork(type) {
 	        data: exportValue,
 	        contentType: "application/json",
 	        success: function (data) {
-	        	$("#testResult").html("bien");
+	        	$("#testResult").html("");
 	            $( "[functioninsert='downloadFile']").click();
 	            $("#urlFile").attr("href", "uploads/"+data);
 	            $("#formModalButton").hide();

@@ -621,7 +621,7 @@
 	 * Postfix '_vis' added to discern it from standard method ellipse().
 	 */
 
-	function drawEllipse(ctx, x, y, w, h, isMulti) {
+	function drawEllipse(ctx, x, y, w, h, isMulti, isPK) {
 	  var kappa = 0.5522848,
 	      ox = w / 2 * kappa,
 	      // control point offset horizontal
@@ -643,11 +643,24 @@
 		  ctx.bezierCurveTo(xe+3, ym + oy, xm + ox, ye+3, xm, ye+3);
 		  ctx.bezierCurveTo(xm - ox, ye+3, x-3, ym + oy, x-3, ym);
 	  }
+	  //ctx.stroke();
 	  ctx.moveTo(x, ym);
+	  //ctx.lineWidth = 1;
 	  ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
 	  ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
 	  ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
 	  ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+	  
+	  if(isPK){
+		  ctx.moveTo(x+15, ym+7);
+		  ctx.lineWidth = 2;
+		  //ctx.strokeStyle = "#000000";
+		  ctx.lineTo(xe-15, ym+7); 
+	  }
+	  //ctx.stroke();
+	  /*
+	  
+	  */
 	  ctx.closePath();
 	}
 	/**
@@ -27607,7 +27620,7 @@
 	      this.left = x - this.width * 0.5;
 	      this.top = y - this.height * 0.5;
 	      this.initContextForDraw(ctx, values);
-	      drawEllipse(ctx, this.left, this.top, this.width, this.height, this.options.dataAttribute.multivalued);
+	      drawEllipse(ctx, this.left, this.top, this.width, this.height, this.options.dataAttribute.multivalued, this.options.dataAttribute.primaryKey);
 	      this.performFill(ctx, values);
 	      this.updateBoundingBox(x, y, ctx, selected, hover);
 	      this.labelModule.draw(ctx, x, y, selected, hover);
