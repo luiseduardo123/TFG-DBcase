@@ -1,16 +1,11 @@
 package com.tfg.ucm.DBCaseWeb;
 
 import java.awt.geom.Point2D;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -625,26 +620,6 @@ public class GoogleserviceApplication {
    public RedirectView redirectWithUsingRedirectView(RedirectAttributes attributes) {
        return new RedirectView("/");
    }
-   
-   /**
-    * Download file
-    * @return
-    * @throws IOException
-    */
-   
-   @RequestMapping(value = "/writeFile", method = RequestMethod.POST)
-   public String downloadFile(@RequestBody String dataJson, Principal principal) throws IOException  {
-	   	Date now = new Date();
-	   	Path rootPath = Paths.get("uploads").resolve(now.getTime()+""+principal.getName()+".dbw");
-		Path rootAbsolutPath = rootPath.toAbsolutePath();
-		File fileData = new File(rootAbsolutPath.toString());
-		fileData.createNewFile();
-	    FileOutputStream fout = new FileOutputStream(fileData);
-	    fout.write(dataJson.getBytes());
-	    fout.close();
-	    
-	   return now.getTime()+""+principal.getName()+".dbw";
-	}
    
    /**
     * FIle upload read 

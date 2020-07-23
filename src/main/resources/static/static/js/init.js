@@ -87,7 +87,7 @@ $(document).ready(function () {
                		addConstrainst($('input[name=listText\\[\\]]').serializeArray(),$('#idSelected').val(), $('#typeAction').val());
       	          	    break;
       	          	case "addEntity":
-      	          		addEntity($('#recipient-name').val(), $('#weak-entity').prop('checked'),$('#typeAction').val(),$('#idSelected').val());
+      	          		addEntity($('#recipient-name').val(), $('#weak-entity').prop('checked'),$('#typeAction').val(),$('#idSelected').val(), $("#element").val(), $("#relationEntity").val());
       	          	    break;
       	          	case "addRelation":
       	          		addRelation($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val());
@@ -138,11 +138,15 @@ $(document).ready(function () {
             		  eventsAddConstrainst();
             	    break;
             	  case "addEntity":
+            		  nodo = getAllNodes(["box"]);
             		  var dataType = {
-            				temp_node_select: nodo_select
+            				temp_node_select: nodo_select,
+            				temp_ent_length: nodo.length,
+            				temp_nodes: nodo
             			};
             		  $('#formModal').html($('#templateAddEntity').tmpl(dataType));
             		  eventAddEventRecipient();
+            		  eventAddEntity();
             	    break;
             	  case "addRelation":
             		  var dataType = {

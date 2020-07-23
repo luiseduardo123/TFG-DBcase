@@ -40,9 +40,20 @@
 		           	<input type="hidden" id="tipoAdd" value="addEntity">
 		           	<input type="hidden" id="typeAction" value="create">
 				  	<input type="hidden" id="idSelected" value="${temp_node_select}">
+				  	<input type="hidden" id="ent_length" value="${temp_ent_length}">				  	
 		    </div>
 		    <div class="form-inline">
 		      	<label for="weak-entity"><input type="checkbox" class="mr-1" id="weak-entity" th:text="#{textos.isAEntityWeak}"></label>
+		    </div>
+		    <div class="form-group" id="tempWeakEntity" style="display:none;">
+		    	<label for="element" class="col-form-label" th:text="#{textosId.selectStrongEntity}"></label>
+				<select id="element" class="form-control">
+					{{each(i,v) temp_nodes}}
+							<option value="${v.id}">${v.label}</option>
+					{{/each}}
+	  			</select>
+	  			<label for="relation-entity" class="col-form-label" th:text="#{textosId.relation}"></label>
+	  			<input type="text" class="form-control" id="relationEntity">
 		    </div>
 		</form>
 	</div>

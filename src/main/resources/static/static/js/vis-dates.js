@@ -77,7 +77,7 @@ var network = new vis.Network(container, data, options);
 		  var nextId = dataIds[dataIds.length-1];
 	  return ++nextId;
   }
-  function addEntity(nombre, weakEntity,action, idSelected){
+  function addEntity(nombre, weakEntity,action, idSelected, elementWithRelation, relationEntity){
 	  var id_node = getIdElement();
 	  var data_element = {widthConstraint:{ minimum: 100, maximum: 200},label: nombre, isWeak: weakEntity, shape: 'box', scale:10, heightConstraint:25,physics:false};
 	  if(action == "edit"){
@@ -90,6 +90,12 @@ var network = new vis.Network(container, data, options);
 		  }
 		  data_element.id = id_node++;
 		  nodes.add(data_element);
+	  }
+	  
+	  if(weakEntity && elementWithRelation != null){
+		  idRelation = addRelation(relationEntity, "create", null, "back");
+		  addEntitytoRelation(data_element.id, "1to1", "", "", "", "create", idRelation);
+		  addEntitytoRelation(parseInt(elementWithRelation), "1toN", "", "", "", "create", idRelation);
 	  }
 	  updateTableElements();
   }
@@ -111,7 +117,7 @@ var network = new vis.Network(container, data, options);
 	  nodes.update(data_element);
   }
   
-  function addRelation(nombre, action, idSelected){
+  function addRelation(nombre, action, idSelected, origin = "front"){
 	  var id_node = getIdElement();
 	  var  tam = 30;
 	  if (nombre.length>5){
@@ -129,6 +135,9 @@ var network = new vis.Network(container, data, options);
 		  }
 		  data_element.id = id_node++;
 		  nodes.add(data_element);
+	  }
+	  if(origin != "front"){
+		  return data_element.id;
 	  }
   }
   
@@ -155,7 +164,7 @@ var network = new vis.Network(container, data, options);
 		  }
 	  }
 	  
-	  var data_element = {widthConstraint:{ minimum: 50, maximum: 160},labelBackend:name, label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, heightConstraint:29,physics:false};
+	  var data_element = {widthConstraint:{ minimum: 50, maximum: 160},labelBackend:name, label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, heightConstraint:23,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
@@ -172,6 +181,8 @@ var network = new vis.Network(container, data, options);
   }
   
   function addEntitytoRelation(idTo, cardinality, roleName, minCardinality, maxCardinality, action, idSelected){
+	  console.log(idTo+" "+cardinality+" "+roleName+" "+minCardinality+" "+maxCardinality+" "+action+" "+idSelected);
+	  	//			2 			maxN 	   wqsadadsa   										  create 		13
 	  var left;
 	  var center;
 	  var right;
@@ -186,6 +197,15 @@ var network = new vis.Network(container, data, options);
 	  	case 'maxN':
 		  	left = 'N';
 	  		right = '0';
+	  	break;
+	  	case '1toN':
+	  		direct1 = true;
+		  	left = 'N';
+	  		right = '1';
+	  	break;
+	  	case '1to1':
+		  	left = '1';
+	  		right = '1';
 	  	break;
 	  	case 'minMax':
 		  	left = maxCardinality;

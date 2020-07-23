@@ -48,6 +48,7 @@ $(document).ready(function(){
 		{text: $("#textRemoveEntitytoRelation").text(), href: '#', action: function(e){
 			$( "[functioninsert='removeEntitytoRelation']").click();
 			$('#insertModal').prop('disabled', false);
+			$('#insertModal').text($("#textRemove").text());
 		}},
 		{text: $("#textEditCardOrRol").text(), href: '#', action: function(e){
 			$( "[functioninsert='addEntitytoRelation']").click();

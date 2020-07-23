@@ -22,31 +22,15 @@ function exportNetwork(type) {
     var nodes = objectToArray(network.getPositions());
 
     nodes.forEach(addConnections);
-
     // pretty print node data
     var exportValue = JSON.stringify(nodes, undefined, 2);
     
     if(type != "session"){
-	    $.ajax({
-	        type: 'POST',
-	        url: '/writeFile',
-	        data: exportValue,
-	        contentType: "application/json",
-	        success: function (data) {
-	        	$("#testResult").html("");
-	            $( "[functioninsert='downloadFile']").click();
-	            $("#urlFile").attr("href", "uploads/"+data);
-	            $("#formModalButton").hide();
-	        },
-	        error: function (xhr, ajaxOptions, thrownError) {
-	        	console.log("Fallo al crear fichero");
-	        }
-	    });
+    	var blob = new Blob([exportValue], {type: "application/json"});
+		saveAs(blob, $('#idText').text()+""+(new Date().getMilliseconds())+".dbw");
     }else{
     	sessionStorage.setItem('codeSave', exportValue);
     }
-    
-//    document.getElementById("testResult").innerText = exportValue;
 }
 
 // load scheme
@@ -57,7 +41,6 @@ function importNetwork(type, value=null) {
 	}else{
 	    var inputValue = sessionStorage.getItem('codeSave');
 	}
-
     var inputData = JSON.parse(inputValue);
     getNodeData(inputData);
     getEdgeData(inputData);

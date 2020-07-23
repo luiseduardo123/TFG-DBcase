@@ -123,6 +123,31 @@ function eventEventPrimaryKeyAttribute(){
 	});
 }
 
+function eventAddEntity(){
+	$("#weak-entity").change(function() {
+		if( $('#weak-entity').prop('checked') ){
+			if($('#ent_length').val() == 0 || ($('#ent_length').val() == 1 && $('#typeAction').val() == "edit")){
+				alert($('#textCreateStrongEntity').text());
+				$('#weak-entity').prop('checked', false);
+			}else{
+				$("#tempWeakEntity").slideDown("slow");
+				$('#insertModal').prop('disabled',true);
+
+				$( "#relationEntity" ).on( "blur keyup", function(){
+					if($("#relationEntity").val() != "" && $("#recipient-name").val() != "")
+						$('#insertModal').prop('disabled', false);
+					else
+						$('#insertModal').prop('disabled', true);
+				});
+				
+			}
+		}else{
+			$("#tempWeakEntity").slideUp("slow");
+			$("#relation-entity").unbind("blur keyup");//terminar el select
+		}
+	});
+}
+
 function eventSubAttribute(){
 	$("#composite").change(function() {
 		if($("#composite").prop('checked')){
@@ -303,6 +328,8 @@ function updateTableElements(){
 	$('.insertarDatos').on('click', function() {
 		// Limpiar el modal cuando se cierra, se deshabilita el boton 
 		$('#modalAddItem').on('hidden.bs.modal', function (event) {
+			console.log("clean modal");
+			$('#insertModal').text($('#textInsert').text());
 			$('#formModal').html("");
 			$('#insertModal').prop('disabled', true);
 			$("#formModalButton").show();
