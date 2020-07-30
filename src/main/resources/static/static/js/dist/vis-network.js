@@ -25893,29 +25893,63 @@
 	            width += this.size.width - line.width;
 	          }
 
-	          for (var j = 0; j < line.blocks.length; j++) {
-	            var block = line.blocks[j];
-	            ctx.font = block.font;
-
-	            var _this$_getColor = this._getColor(block.color, viewFontSize, block.strokeColor),
-	                _this$_getColor2 = slicedToArray(_this$_getColor, 2),
-	                fontColor = _this$_getColor2[0],
-	                strokeColor = _this$_getColor2[1];
-
-	            if (block.strokeWidth > 0) {
-	              ctx.lineWidth = block.strokeWidth;
-	              ctx.strokeStyle = strokeColor;
-	              ctx.lineJoin = 'round';
-	            }
-
-	            ctx.fillStyle = fontColor;
-
-	            if (block.strokeWidth > 0) {
-	              ctx.strokeText(block.text, x + width, y + block.vadjust);
-	            }
-
-	            ctx.fillText(block.text, x + width, y + block.vadjust);
-	            width += block.width;
+	          for (var j = 0; j < line.blocks.length; j++) {	        	  
+	        	if(this.isEdgeLabel){
+		            var block = line.blocks[j];
+		            ctx.font = block.font;
+	
+		            var _this$_getColor = this._getColor(block.color, viewFontSize, block.strokeColor),
+		                _this$_getColor2 = slicedToArray(_this$_getColor, 2),
+		                fontColor = _this$_getColor2[0],
+		                strokeColor = _this$_getColor2[1];
+	
+		            if (block.strokeWidth > 0) {
+		              ctx.lineWidth = block.strokeWidth;
+		              ctx.strokeStyle = strokeColor;
+		              ctx.lineJoin = 'round';
+		            }
+		            ctx.strokeStyle = "green";
+		            if (block.strokeWidth > 0) {
+		            	if(this.elementOptions.state == "left" || this.elementOptions.state == "right"){
+		            		if(this.elementOptions.state == "left"){
+		            			ctx.fillStyle = 'green';
+		            			ctx.strokeText(block.text, x + width+45, y + block.vadjust);
+		            		}
+		      	    	  	if(this.elementOptions.state == "right"){
+		      	    	  		ctx.fillStyle = 'green';
+		      	    	  		ctx.strokeText(block.text, x + width-30, y + block.vadjust);
+		      	    	  	}
+		            	}else{
+		            		ctx.fillStyle = 'green';
+		            		ctx.strokeText(block.text, x + width, y + block.vadjust);
+		      	      	}
+		            }
+	
+		            //ctx.fillText(block.text, x + width, y + block.vadjust);
+		            width += block.width;
+	          	}else{
+	          		var block = line.blocks[j];
+		            ctx.font = block.font;
+	
+		            var _this$_getColor = this._getColor(block.color, viewFontSize, block.strokeColor),
+		                _this$_getColor2 = slicedToArray(_this$_getColor, 2),
+		                fontColor = _this$_getColor2[0],
+		                strokeColor = _this$_getColor2[1];
+	
+		            if (block.strokeWidth > 0) {
+		              ctx.lineWidth = block.strokeWidth;
+		              ctx.strokeStyle = strokeColor;
+		              ctx.lineJoin = 'round';
+		            }
+	
+		            ctx.fillStyle = fontColor;
+		            if (block.strokeWidth > 0) {
+		              ctx.strokeText(block.text, x + width, y + block.vadjust);
+		            }
+	
+		            ctx.fillText(block.text, x + width, y + block.vadjust);
+		            width += block.width;
+	          	}
 	          }
 
 	          y += line.height;
@@ -29042,7 +29076,6 @@
 	            break;
 
 	          case 'diamond':
-	        	  console.log(this.labelModule);
 	            this.shape = new Diamond(this.options, this.body, this.labelModule);
 	            break;
 
@@ -30240,13 +30273,43 @@
 	     * @param points - The point(s) to be transformed.
 	     * @param arrowData - The data determining the result of the transformation.
 	     */
-	    value: function transform(points, arrowData) {
+	    value: function transform(points, arrowData, edgeOption) {
 	      if (!isArray$5(points)) {
 	        points = [points];
 	      }
-
-	      var x = arrowData.point.x;
-	      var y = arrowData.point.y;
+	      
+	      if(edgeOption.options.state == "left" || edgeOption.options.state == "right"){
+	    	  var cat1 = Math.abs(edgeOption.toPoint.x - edgeOption.fromPoint.x); 
+		      var cat2 = Math.abs(edgeOption.toPoint.y - edgeOption.fromPoint.y);
+		      var calculo1 = Math.pow(cat1, 2);
+		      var calculo2 = Math.pow(cat2, 2);
+		      var hipo = Math.sqrt(calculo1+calculo2);
+		      var sen = Math.sin(cat2/hipo);
+		      var grad = Math.asin(sen) * (180/Math.PI);
+		      
+	    	  if(edgeOption.options.state == "left"){
+	    		  if(grad>45){
+	    			  var x = arrowData.point.x;
+	    		      var y = arrowData.point.y;
+			      }else{
+			    	  var x = arrowData.point.x;
+				      var y = arrowData.point.y;
+			      }
+	    	  }
+	    	  if(edgeOption.options.state == "right"){
+	    		  if(grad>45){
+	    			  var x = arrowData.point.x-30;
+	    		      var y = arrowData.point.y;
+			      }else{
+			    	  var x = arrowData.point.x;
+				      var y = arrowData.point.y+18;
+			      }
+	    	  }	    	  
+	      }else{
+	    	  var x = arrowData.point.x;
+		      var y = arrowData.point.y;
+	      }
+	      
 	      var angle = arrowData.angle;
 	      var length = arrowData.length;
 
@@ -30355,7 +30418,7 @@
 	     *
 	     * @returns True because ctx.fill() can be used to fill the arrow.
 	     */
-	    value: function draw(ctx, arrowData) {
+	    value: function draw(ctx, arrowData, options) {
 	      // Normalized points of closed path, in the order that they should be drawn.
 	      // (0, 0) is the attachment point, and the point around which should be rotated
 	      var points = [{
@@ -30371,7 +30434,7 @@
 	        x: -1,
 	        y: -0.3
 	      }];
-	      EndPoint.transform(points, arrowData);
+	      EndPoint.transform(points, arrowData, options);
 	      EndPoint.drawPath(ctx, points);
 	      return true;
 	    }
@@ -30838,7 +30901,7 @@
 	     *
 	     * @returns True if ctx.fill() can be used to fill the arrow, false otherwise.
 	     */
-	    value: function draw(ctx, arrowData) {
+	    value: function draw(ctx, arrowData, options) {
 	      var type;
 
 	      if (arrowData.type) {
@@ -30882,7 +30945,7 @@
 	        case "arrow": // fall-through
 
 	        default:
-	          return Arrow.draw(ctx, arrowData);
+	          return Arrow.draw(ctx, arrowData, options);
 	      }
 	    }
 	  }]);
@@ -31522,7 +31585,7 @@
 	      ctx.strokeStyle = this.getColor(ctx, values);
 	      ctx.fillStyle = ctx.strokeStyle;
 	      ctx.lineWidth = values.width;
-	      var canFill = EndPoints.draw(ctx, arrowData);
+	      var canFill = EndPoints.draw(ctx, arrowData, this);
 
 	      if (canFill) {
 	        // draw shadow if enabled
@@ -32519,9 +32582,37 @@
 	    value: function _line(ctx, values) {
 	      // draw a straight line
 	      ctx.beginPath();
-	      ctx.moveTo(this.fromPoint.x, this.fromPoint.y);
-	      ctx.lineTo(this.toPoint.x, this.toPoint.y); // draw shadow if enabled
-
+	      if(this.options.state == "left" || this.options.state == "right"){
+	    	  var cat1 = Math.abs(this.toPoint.x - this.fromPoint.x); 
+		      var cat2 = Math.abs(this.toPoint.y - this.fromPoint.y);
+		      var calculo1 = Math.pow(cat1, 2);
+		      var calculo2 = Math.pow(cat2, 2);
+		      var hipo = Math.sqrt(calculo1+calculo2);
+		      var sen = Math.sin(cat2/hipo);
+		      var grad = Math.asin(sen) * (180/Math.PI);
+		      
+	    	  if(this.options.state == "left"){
+	    		  if(grad>45){
+			    	  ctx.moveTo(this.fromPoint.x+30, this.fromPoint.y);
+				      ctx.lineTo(this.toPoint.x+30, this.toPoint.y); // draw shadow if enabled
+			      }else{
+			    	  ctx.moveTo(this.fromPoint.x, this.fromPoint.y-18);
+				      ctx.lineTo(this.toPoint.x, this.toPoint.y-18); // draw shadow if enabled
+			      }
+	    	  }
+	    	  if(this.options.state == "right"){
+	    		  if(grad>45){
+				      ctx.moveTo(this.fromPoint.x-30, this.fromPoint.y);
+				      ctx.lineTo(this.toPoint.x-30, this.toPoint.y); // draw shadow if enabled
+			      }else{
+				      ctx.moveTo(this.fromPoint.x, this.fromPoint.y+18);
+				      ctx.lineTo(this.toPoint.x, this.toPoint.y+18); // draw shadow if enabled
+			      }
+	    	  }	    	  
+	      }else{
+	    	  ctx.moveTo(this.fromPoint.x, this.fromPoint.y);
+		      ctx.lineTo(this.toPoint.x, this.toPoint.y); // draw shadow if enabled
+	      }
 	      this.enableShadow(ctx, values);
 	      ctx.stroke();
 	      this.disableShadow(ctx, values);
@@ -32616,8 +32707,8 @@
 	    this.labelDirty = true;
 	    this.baseWidth = this.options.width;
 	    this.baseFontSize = this.options.font.size;
-	    this.from = undefined; // a node
 
+	    this.from = undefined; // a node
 	    this.to = undefined; // a node
 
 	    this.edgeType = undefined;
@@ -32625,6 +32716,7 @@
 	    this.labelModule = new Label(this.body, this.options, true
 	    /* It's an edge label */
 	    );
+	    this.options.state = options.state;
 	    this.setOptions(options);
 	  }
 	  /**
@@ -32797,6 +32889,7 @@
 	      this.defaultOptions];
 	      this.labelModule.update(this.options, pile);
 
+	      this.options.state = options.state;
 	      if (this.labelModule.baseSize !== undefined) {
 	        this.baseFontSize = this.labelModule.baseSize;
 	      }
@@ -33100,7 +33193,6 @@
 	            ctx.translate(rotationPoint.x, rotationPoint.y);
 	            ctx.rotate(rotationPoint.angle);
 	          } // draw the label
-
 
 	          this.labelModule.draw(ctx, point.x, point.y, this.selected, this.hover);
 	          /*

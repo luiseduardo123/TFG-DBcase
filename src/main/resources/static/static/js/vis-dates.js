@@ -130,8 +130,13 @@ var network = new vis.Network(container, data, options);
 		  nodes.update(data_element);
 	  }else{
 		  if(poscSelection != null){
-			  data_element.x = poscSelection.x;
-			  data_element.y = poscSelection.y;
+			  if(origin != "front"){
+				  data_element.x = poscSelection.x;
+				  data_element.y = poscSelection.y-100;
+			  }else{
+				  data_element.x = poscSelection.x;
+				  data_element.y = poscSelection.y;
+			  }
 		  }
 		  data_element.id = id_node++;
 		  nodes.add(data_element);
@@ -218,12 +223,14 @@ var network = new vis.Network(container, data, options);
 	  else
 		  center = roleName;
 	  var idEdge = existEdge(idSelected, idTo);
-	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, smooth:false, arrows:{to: { enabled: direct1 }}};
-	  var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, arrows:{to: { enabled: direct1 }}, smooth: {type: "horizontal", forceDirection: "none", roundness: 0.7}};
+	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
+	  //var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, state: "false", arrows:{to: { enabled: direct1 }}};
+	  var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
 	  var data_element_update = {};
 	  if(idEdge != null){
 		  data_element_update.id = idEdge;
-		  data_element_update.smooth = {type: "vertical", forceDirection: "none", roundness: 0.7};
+		  data_element_update.state = "left";
+		  data_element1.state = "right";
 		  edges.update(data_element_update);
 		  edges.add(data_element1);
 	  }else{
@@ -276,7 +283,16 @@ var network = new vis.Network(container, data, options);
   }
   
   function removeEntitytoRelation(idEdge, action, idSelected){
+	  var idFrom = edges.get(idEdge).from;
+	  var idTo = edges.get(idEdge).to;
 	  edges.remove(idEdge);
+	  var idExist = existEdge(idFrom, idTo);
+	  if(idExist != null){
+		  var data_element_update = {};
+		  data_element_update.id = idExist;
+		  data_element_update.state = "false";
+		  edges.update(data_element_update);
+	  }
 	  updateTableElements();
   }
   
@@ -309,11 +325,13 @@ var network = new vis.Network(container, data, options);
 	  var idEdgeExist = null;
 	  var edgesFrom = network.getConnectedEdges(parseInt(idFrom));
 	  var edgesTo = network.getConnectedEdges(parseInt(idTo));
+	  var dataPush = [];
 	  edgesTo.forEach(function(idEdge) {
 		  if(edgesFrom.indexOf(idEdge) != -1)
-			  idEdgeExist = idEdge;		  
+			  idEdgeExist = idEdge;
 	  });
-	  return idEdgeExist
+	  
+	  return idEdgeExist;
   }
   
   function existElementName(oneNodeName, typeElement){
