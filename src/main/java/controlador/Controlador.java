@@ -1628,6 +1628,15 @@ public class Controlador {
 			this.getTheServiciosSistema().reset();
 			break;
 		}
+
+		case GUIInsertarRelacionIsA_Click_BotonInsertar:{
+			TransferRelacion tr = (TransferRelacion) datos;
+			this.getTheServiciosRelaciones().anadirRelacionIsA(tr);
+			ActualizaArbol(tr);
+			this.getTheServiciosSistema().reset();
+			break;
+		}
+
 		case GUIInsertarRelacionDebil_Click_BotonInsertar:{
 			TransferRelacion tr = (TransferRelacion) datos;
 			boolean exito =this.getTheServiciosRelaciones().SePuedeAnadirRelacion(tr);
@@ -2785,7 +2794,7 @@ public class Controlador {
 		}
 		case SR_EstablecerEntidadPadre_HECHO:{
 			setCambios(true);
-			this.getTheGUIEstablecerEntidadPadre().setInactiva();
+//			this.getTheGUIEstablecerEntidadPadre().setInactiva();
 			Vector<Transfer> vt = (Vector<Transfer>) datos;
 			vt.get(1);
 			
@@ -2893,7 +2902,7 @@ public class Controlador {
 			setCambios(true);
 			TransferRelacion tr = (TransferRelacion) datos;
 			
-			this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarRelacionIsA, tr);
+			//this.getTheGUIPrincipal().mensajesDesde_Controlador(TC.Controlador_InsertarRelacionIsA, tr);
 			ActualizaArbol(tr);
 			break;
 		}

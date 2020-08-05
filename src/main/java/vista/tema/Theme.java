@@ -39,7 +39,7 @@ public class Theme {
 
 	public static void loadDefaultTheme(){
 		current = Theme.DEFAULT;
-		loadTheme();
+		//loadTheme();
 	}
 	
 	

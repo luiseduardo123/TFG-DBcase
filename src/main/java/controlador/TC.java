@@ -70,6 +70,7 @@ public enum TC {
 	GUIEditarClavePrimariaAtributo_ActualizameListaAtributos,
 	GUIEditarClavePrimariaAtributo_Click_BotonAceptar,
 	GUIInsertarRelacion_Click_BotonInsertar,
+	GUIInsertarRelacionIsA_Click_BotonInsertar,
 	GUIInsertarRelacionDebil_Click_BotonInsertar,
 	GUIRenombrarRelacion_Click_BotonRenombrar,
 	GUIPonerRestriccionesAEntidad_Click_BotonAceptar,

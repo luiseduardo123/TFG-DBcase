@@ -150,18 +150,18 @@ public class Tabla {
 		atributos.add(trio);
 	}
 	
-	public Tabla creaClonSinAmbiguedadNiEspacios(){
+	public Tabla creaClonSinAmbiguedadNiEspacios(String sqlType){
 		//Crea la tabla con el mismo nombre
-		Tabla t = new Tabla(ponGuionesBajos(this.nombreTabla), this.getConstraints(), this.c);
+		Tabla t = new Tabla(ponGuionesBajos(this.nombreTabla,sqlType), this.getConstraints(), this.c);
 		
 		//Anade todos los atributos
 		for (int i=0;i<atributos.size();i++){
 			String repe="";
 			if (this.estaRepe(atributos.elementAt(i)[0], atributos)) 
 				repe +=atributos.elementAt(i)[2]+"_";
-			t.aniadeAtributo(ponGuionesBajos(repe+atributos.elementAt(i)[0]), 
+			t.aniadeAtributo(ponGuionesBajos(repe+atributos.elementAt(i)[0],sqlType), 
 				atributos.elementAt(i)[1], 
-				ponGuionesBajos(atributos.elementAt(i)[2]),
+				ponGuionesBajos(atributos.elementAt(i)[2],sqlType),
 				atributos.elementAt(i)[3].equalsIgnoreCase("1"),
 				atributos.elementAt(i)[4].equalsIgnoreCase("1"));
 		}
@@ -176,8 +176,8 @@ public class Tabla {
 						repe +=ref.substring(0, ref.indexOf("("))+"_";
 					else repe +=ref+"_";
 				}
-				t.aniadeClavePrimaria(ponGuionesBajos(repe+primaries.elementAt(i)[0]), 
-									primaries.elementAt(i)[1], ponGuionesBajos(primaries.elementAt(i)[2]));
+				t.aniadeClavePrimaria(ponGuionesBajos(repe+primaries.elementAt(i)[0],sqlType), 
+									primaries.elementAt(i)[1], ponGuionesBajos(primaries.elementAt(i)[2],sqlType));
 			}
 		}
 		
@@ -188,8 +188,8 @@ public class Tabla {
 				if (this.estaRepe(foreigns.elementAt(i)[0], atributos)) 
 					nombre =  foreigns.elementAt(i)[3]+"_"+nombreColumn(foreigns.elementAt(i)[2], foreigns.elementAt(i)[3]);
 				else nombre = foreigns.elementAt(i)[0];
-				t.aniadeClaveForanea(ponGuionesBajos(nombre), 
-									foreigns.elementAt(i)[1], ponGuionesBajos(foreigns.elementAt(i)[2]), foreigns.elementAt(i)[3]);
+				t.aniadeClaveForanea(ponGuionesBajos(nombre,sqlType), 
+									foreigns.elementAt(i)[1], ponGuionesBajos(foreigns.elementAt(i)[2],sqlType), foreigns.elementAt(i)[3]);
 			}
 		}
 		
@@ -216,8 +216,8 @@ public class Tabla {
 					if (this.estaRepe(unis[m], atributos)) unis[m] += "_" + tabla;
 					
 					// Anadir a la lista de uniques
-					if (m == 0) resul += ponGuionesBajos(unis[m].trim());
-					else resul += ", " + ponGuionesBajos(unis[m].trim());
+					if (m == 0) resul += ponGuionesBajos(unis[m].trim(),sqlType);
+					else resul += ", " + ponGuionesBajos(unis[m].trim(),sqlType);
 				}
 				t.getUniques().add(resul);
 			}
@@ -227,10 +227,10 @@ public class Tabla {
 	private String nombreColumn(String referencia, String tabla) {
 		return referencia.substring(tabla.length()+1);
 	}
-	public String modeloRelacionalDeTabla(boolean p){
+	public String modeloRelacionalDeTabla(boolean p,String sqlType){
 		String mr="";
 		if(p) mr+="<p>";
-		mr+=this.ponGuionesBajos(nombreTabla)+" (";
+		mr+=this.ponGuionesBajos(nombreTabla,sqlType)+" (";
 		Vector<String[]>definitivo= new Vector<String[]>();
 		//dejamos los elementos en las 3 listas sin duplicados.
 		definitivo=this.filtra(atributos, primaries);
@@ -240,31 +240,32 @@ public class Tabla {
 				String repe="";
 				if (this.estaRepe(primaries.elementAt(i)[0], atributos)) repe +=primaries.elementAt(i)[2]+"_";
 				if (i>0) mr+=", ";
-				mr+=this.ponGuionesBajos("<u>"+repe+primaries.elementAt(i)[0]+"</u>");
+				mr+=this.ponGuionesBajos("<u>"+repe+primaries.elementAt(i)[0]+"</u>",sqlType);
 			}
 		for (int j=0;j<definitivo.size();j++){
 			if (i>0||j>0) mr+=", ";
 			String repe="";
 			if (this.estaRepe(definitivo.elementAt(j)[0], atributos) && nombreTabla != definitivo.elementAt(j)[2]) repe +=definitivo.elementAt(j)[2]+"_";
-			mr+=this.ponGuionesBajos(repe+definitivo.elementAt(j)[0]+asterisco(definitivo.elementAt(j)));
+			mr+=this.ponGuionesBajos(repe+definitivo.elementAt(j)[0]+asterisco(definitivo.elementAt(j)),sqlType);
 		}	
 		mr+=")";
 		if(p)mr+="</p>";
 		return mr;
 	}
-	public String restriccionIR(boolean prim, String referencia){
+	
+	public String restriccionIR(boolean prim, String referencia,String sqlType){
 		String mr="";
 		boolean atr = false;
-		mr+=this.ponGuionesBajos(nombreTabla)+" (";
+		mr+=this.ponGuionesBajos(nombreTabla,sqlType)+" (";
 		//Vector<String[]>definitivo= new Vector<String[]>();
 		//dejamos los elementos en las 3 listas sin duplicados.
 		//definitivo=this.filtra(atributos, primaries);
 		for (int i=0;i<primaries.size();i++)
 			if (prim && primaries.elementAt(i)[2] == referencia) {
-				mr+=primaries.elementAt(i)[2] + "_" +this.ponGuionesBajos(primaries.elementAt(i)[0]);
+				mr+=primaries.elementAt(i)[2] + "_" +this.ponGuionesBajos(primaries.elementAt(i)[0],sqlType);
 				mr+=", ";atr = true;
 			}else if(nombreTabla == primaries.elementAt(i)[2]){
-				mr+=this.ponGuionesBajos(primaries.elementAt(i)[0]);
+				mr+=this.ponGuionesBajos(primaries.elementAt(i)[0],sqlType);
 				mr+=", ";atr = true;
 			}
 		/*for (int j=0;j<definitivo.size();j++)
@@ -286,9 +287,26 @@ public class Tabla {
 		this.nombreTabla = nombreTabla;
 	}
 	//metodos auxiliares:
-	private String ponGuionesBajos(String cadena){
-		cadena= cadena.replaceAll(" ", "_");
+	private String ponGuionesBajos(String cadena,String sqlType){
 		cadena= cadena.replaceAll("-", "_");
+
+		switch (sqlType.toUpperCase()) {
+			case "DEFAULT":
+				cadena = cadena.replaceAll(" ", "_");
+			break;	 
+			case "MICROSOFT ACCESS .MDB":
+			case "MICROSOFT ACCESS VIA ODBC":
+				cadena = "["+cadena+"]";
+			break; 
+			case "ORACLE":
+				cadena = "\""+cadena+"\"";
+			break;
+			case "MYSQL":
+				cadena = "`"+cadena+"`";
+			break;
+		} 
+		// cadena= cadena.replaceAll(" ", " ");
+		
 		return cadena;
 	}
 	public void aniadeListaAtributosComoSlave(Vector<String[]> listado){
@@ -339,32 +357,32 @@ public class Tabla {
 		return s;
 	}
 	public String codigoEstandarCreacionDeTabla(TransferConexion conexion){
-		Tabla t = creaClonSinAmbiguedadNiEspacios();
+		Tabla t = creaClonSinAmbiguedadNiEspacios(conexion.getRuta());
 		ConectorDBMS traductor = FactoriaConectores.obtenerConector(conexion.getTipoConexion());
 		return traductor.obtenerCodigoCreacionTabla(t);
 	}
 	public String codigoHTMLCreacionDeTabla(TransferConexion conexion){
-		Tabla t = creaClonSinAmbiguedadNiEspacios();
+		Tabla t = creaClonSinAmbiguedadNiEspacios(conexion.getRuta());
 		ConectorDBMS traductor = FactoriaConectores.obtenerConector(conexion.getTipoConexion());
 		return traductor.obtenerCodigoCreacionTablaHTML(t);
 	}
 	public String codigoEstandarRestriccionesDeTabla(TransferConexion conexion){
-		Tabla t = creaClonSinAmbiguedadNiEspacios();
+		Tabla t = creaClonSinAmbiguedadNiEspacios(conexion.getRuta());
 		ConectorDBMS traductor = FactoriaConectores.obtenerConector(conexion.getTipoConexion());
 		return traductor.obtenerCodigoRestriccionTabla(t);
 	}
 	public String codigoHTMLRestriccionesDeTabla(TransferConexion conexion){
-		Tabla t = creaClonSinAmbiguedadNiEspacios();
+		Tabla t = creaClonSinAmbiguedadNiEspacios(conexion.getRuta());
 		ConectorDBMS traductor = FactoriaConectores.obtenerConector(conexion.getTipoConexion());
 		return traductor.obtenerCodigoRestriccionTablaHTML(t);
 	}
 	public String codigoEstandarClavesDeTabla(TransferConexion conexion){
-		Tabla t = creaClonSinAmbiguedadNiEspacios();
+		Tabla t = creaClonSinAmbiguedadNiEspacios(conexion.getRuta());
 		ConectorDBMS traductor = FactoriaConectores.obtenerConector(conexion.getTipoConexion());
 		return traductor.obtenerCodigoClavesTabla(t);
 	}
 	public String codigoHTMLClavesDeTabla(TransferConexion conexion){
-		Tabla t = creaClonSinAmbiguedadNiEspacios();
+		Tabla t = creaClonSinAmbiguedadNiEspacios(conexion.getRuta());
 		ConectorDBMS traductor = FactoriaConectores.obtenerConector(conexion.getTipoConexion());
 		return traductor.obtenerCodigoClavesTablaHTML(t);
 	}

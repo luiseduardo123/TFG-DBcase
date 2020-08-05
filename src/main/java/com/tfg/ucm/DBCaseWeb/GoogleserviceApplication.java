@@ -128,7 +128,8 @@ public class GoogleserviceApplication {
 		List<Node> nodes = gson.fromJson(r.getData1(), tipoNode); 
 		List<Edge> edges = gson.fromJson(r.getData2(), tipoEdge);
 		
-		List<Object> dataParseada = new ArrayList<Object>();
+		//List<Object> dataParseada = new ArrayList<Object>();
+		HashMap dataParseada = new HashMap<Integer,Object>();
 		 
 		Controlador c = null;
 		try {
@@ -160,7 +161,8 @@ public class GoogleserviceApplication {
 					entityTransf.setListaRestricciones(new Vector());
 					entityTransf.setListaUniques(new Vector()); 
 					c.mensajeDesde_GUI(TC.GUIInsertarEntidad_Click_BotonInsertar, entityTransf);
-					dataParseada.add(entityTransf);
+					//dataParseada.add(entityTransf);
+					dataParseada.put(nodes.get(i).getId(),entityTransf);
 					break;
 					
 				case "ellipse":
@@ -185,7 +187,9 @@ public class GoogleserviceApplication {
 					dom=(TipoDominio.VARCHAR).toString();
 					attributeTransf.setDominio(dom); 
 					attributeTransf.setListaRestricciones(new Vector()); 
-					dataParseada.add(attributeTransf);
+
+					//dataParseada.add(attributeTransf);
+					dataParseada.put(nodes.get(i).getId(), attributeTransf);
 					break;
 					
 				case "diamond":
@@ -202,7 +206,28 @@ public class GoogleserviceApplication {
 					relationTransf.setFrecuencia(0);
 					relationTransf.setOffsetAttr(0);
 					c.mensajeDesde_GUI(TC.GUIInsertarRelacion_Click_BotonInsertar, relationTransf);
-					dataParseada.add(relationTransf);
+
+					//ataParseada.add(relationTransf);
+					dataParseada.put(nodes.get(i).getId(), relationTransf);
+					break;
+				
+				case "triangleDown":
+					TransferRelacion relationTransfIsA = new TransferRelacion();
+					relationTransfIsA.setNombre(nodes.get(i).getLabel());
+					relationTransfIsA.setTipo("IsA");
+					relationTransfIsA.setRol(null);
+					relationTransfIsA.setListaEntidadesYAridades(new Vector());
+					relationTransfIsA.setListaAtributos(new Vector());
+					relationTransfIsA.setListaRestricciones(new Vector());
+					relationTransfIsA.setListaUniques(new Vector());
+					relationTransfIsA.setPosicion(new Point2D.Float(0, (float) 1.0)); 
+					relationTransfIsA.setVolumen(0);
+					relationTransfIsA.setFrecuencia(0);
+					relationTransfIsA.setOffsetAttr(0);
+					c.mensajeDesde_GUI(TC.GUIInsertarRelacionIsA_Click_BotonInsertar, relationTransfIsA);
+
+					//ataParseada.add(relationTransf);
+					dataParseada.put(nodes.get(i).getId(), relationTransfIsA);
 					break;
 			}
 		}
@@ -231,7 +256,7 @@ public class GoogleserviceApplication {
 			else if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferAtributo)) {
 				System.out.println("no implementado");
 			}
-			else if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferEntidad)) {
+			else if(edges.get(j).getType() == null &&  (dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferEntidad)) {
 				Vector<Object> vData= new Vector<Object>();
 				
 				TransferEntidad teB = (TransferEntidad)dataParseada.get(edges.get(j).getTo());
@@ -248,6 +273,24 @@ public class GoogleserviceApplication {
 				
 				c.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ClickBotonAnadir, vData);
 			}
+			//RELACIONAMOS LAS RELACIONES IS_A con las entidades correspondientes habrá que parsear el tipo si es child or parent.
+			else if(edges.get(j).getType() != null &&  (dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferEntidad)) {
+				
+				Vector<Object> vData= new Vector<Object>();
+				TransferEntidad teB = (TransferEntidad)dataParseada.get(edges.get(j).getTo());
+				TransferRelacion tRelation = (TransferRelacion)dataParseada.get(edges.get(j).getFrom());
+				TransferEntidad clon_entidad = teB.clonar(); // transfer entidad B 
+
+				vData.add(tRelation);
+				vData.add(clon_entidad);
+
+				if(edges.get(j).getType().contains("parent"))
+					c.mensajeDesde_GUI(TC.GUIEstablecerEntidadPadre_ClickBotonAceptar, vData);
+
+				else // para los hijos
+					c.mensajeDesde_GUI(TC.GUIAnadirEntidadHija_ClickBotonAnadir,vData);
+				
+			}
 			else {
 				System.err.println("problemas al parseo de las relaciones");
 			}
@@ -256,7 +299,7 @@ public class GoogleserviceApplication {
 		// ASIGNAR A ENTIDAD UNA RELACION ==//	
 		GeneradorEsquema testGen = new GeneradorEsquema(messageSource);
 		testGen.setControlador(c);
-		String respuesta = testGen.generaModeloRelacional_v3();
+		String respuesta = testGen.generaModeloRelacional_v3("default");
 		System.err.println(respuesta);
 		return respuesta;
 	} 
@@ -423,8 +466,9 @@ public class GoogleserviceApplication {
 
 		// ASIGNAR A ENTIDAD UNA RELACION ==//	
 		GeneradorEsquema testGen = new GeneradorEsquema(messageSource);
+		TransferConexion tc = new TransferConexion(Integer.parseInt(idxPhySchema),lblPhySchema,false,"","","");
 		testGen.setControlador(c);
-		String respuesta = testGen.generaModeloRelacional_v3();
+		String respuesta = testGen.generaModeloRelacional_v3(tc.getRuta());
 
 
 		/*
@@ -434,7 +478,7 @@ public class GoogleserviceApplication {
 			v.add(CONECTOR_ORACLE, "Oracle");
 		*/
   
-		TransferConexion tc = new TransferConexion(Integer.parseInt(idxPhySchema),lblPhySchema,false,"","","");
+		
 		respuesta = testGen.generaScriptSQL(tc);
 		return respuesta;
 	} 

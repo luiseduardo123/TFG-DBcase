@@ -629,9 +629,11 @@ public class ServiciosRelaciones {
 		eya.setEntidad(te.getIdEntidad());
 		listaEntidades.add(0, eya);
 		DAORelaciones daoRelaciones = new DAORelaciones(this.controlador.getPath());
+		String g;
 		if (!daoRelaciones.modificarRelacion(tr))
-			controlador.mensajeDesde_SR(TC.SR_EstablecerEntidadPadre_ERROR_DAORelaciones, datos);
-		else controlador.mensajeDesde_SR(TC.SR_EstablecerEntidadPadre_HECHO, datos);
+			g="2";
+			//controlador.mensajeDesde_SR(TC.SR_EstablecerEntidadPadre_ERROR_DAORelaciones, datos);
+		//else controlador.mensajeDesde_SR(TC.SR_EstablecerEntidadPadre_HECHO, datos);
 	}
 	
 	/*
@@ -659,8 +661,9 @@ public class ServiciosRelaciones {
 		listaEntidades.add(eya);
 		DAORelaciones daoRelaciones = new DAORelaciones(this.controlador.getPath());
 		if (!daoRelaciones.modificarRelacion(tr))
-			controlador.mensajeDesde_SR(TC.SR_AnadirEntidadHija_ERROR_DAORelaciones, datos);
-		else controlador.mensajeDesde_SR(TC.SR_AnadirEntidadHija_HECHO, datos);	
+			System.out.println("sda");
+		// 	controlador.mensajeDesde_SR(TC.SR_AnadirEntidadHija_ERROR_DAORelaciones, datos);
+		// else controlador.mensajeDesde_SR(TC.SR_AnadirEntidadHija_HECHO, datos);	
 	}
 	
 		

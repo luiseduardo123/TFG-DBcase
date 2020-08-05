@@ -129,7 +129,7 @@ public class GeneradorEsquema {
 	}
 	
 	
-	private void generaTablasRelaciones() {
+	private void generaTablasRelaciones(String sqlType) {
 		DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
 		Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
 		// recorremos las relaciones creando sus tablas, en funcion de su tipo.
@@ -222,7 +222,7 @@ public class GeneradorEsquema {
 					}
 					//crea las restricciones perdidas (cuando rangoIni > 1 o rangoFin < N) || rangoIni == 1
 					if((eya.getPrincipioRango() > 0 && eya.getFinalRango() < Integer.MAX_VALUE && eya.getFinalRango() >1)||eya.getPrincipioRango()==1) {
-						Tabla aux = tabla.creaClonSinAmbiguedadNiEspacios();
+						Tabla aux = tabla.creaClonSinAmbiguedadNiEspacios(sqlType);
 						boolean recurs = false;
 						Vector<String[]> a = tabla.getPrimaries();
 						for(int j=0;j<a.size();j++) {
@@ -237,7 +237,7 @@ public class GeneradorEsquema {
 								}
 							}
 						}
-						restriccionesPerdidas.add(new restriccionPerdida(recurs?aux.restriccionIR(true,ent.getNombreTabla()):tabla.restriccionIR(true,ent.getNombreTabla()),ent.restriccionIR(false, ""), 
+						restriccionesPerdidas.add(new restriccionPerdida(recurs?aux.restriccionIR(true,ent.getNombreTabla(),sqlType):tabla.restriccionIR(true,ent.getNombreTabla(),sqlType),ent.restriccionIR(false, "",sqlType), 
 										eya.getPrincipioRango(), eya.getFinalRango(), restriccionPerdida.TOTAL));
 					}
 				}
@@ -363,7 +363,7 @@ public class GeneradorEsquema {
 		// Creamos las tablas
 		generaTiposEnumerados();
 		generaTablasEntidades();
-		generaTablasRelaciones();
+		generaTablasRelaciones(conexion.getRuta());
 		//sacamos el codigo de cada una de ellas recorriendo las hashtables e imprimiendo.
 		creaTablas(conexion);
 		creaEnums(conexion);
@@ -557,7 +557,7 @@ public class GeneradorEsquema {
 		Iterator tablasE=tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
-			if (esPadreEnIsa(t)){
+			if (esPadreEnIsa(t,conexion.getRuta())){
 				tablasEntidadHTML = t.codigoHTMLCreacionDeTabla(conexion) + tablasEntidadHTML;
 				tablasEntidad = t.codigoEstandarCreacionDeTabla(conexion) + tablasEntidad;
 			}else{
@@ -569,7 +569,7 @@ public class GeneradorEsquema {
 		sqlHTML+="<p></p></div>";
 	}
 	
-	private boolean esPadreEnIsa(Tabla tabla){
+	private boolean esPadreEnIsa(Tabla tabla,String sqlType){
 		boolean encontrado = false;
 		DAORelaciones daoRelaciones = new DAORelaciones(controlador.getPath());
 		Vector<TransferRelacion> relaciones = daoRelaciones.ListaDeRelaciones();
@@ -589,7 +589,7 @@ public class GeneradorEsquema {
 				te = daoEntidades.consultarEntidad(te);
 				
 				Tabla t = new Tabla(te.getNombre(), te.getListaRestricciones(), controlador);
-				t = t.creaClonSinAmbiguedadNiEspacios();
+				t = t.creaClonSinAmbiguedadNiEspacios(sqlType);
 				
 				encontrado = t.getNombreTabla().equalsIgnoreCase(tabla.getNombreTabla());
 			}
@@ -643,7 +643,7 @@ public class GeneradorEsquema {
 		Iterator tablasE=tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
-			if (esPadreEnIsa(t)){
+			if (esPadreEnIsa(t,conexion.getRuta())){
 				restEntidadHTML = t.codigoHTMLClavesDeTabla(conexion) + restEntidadHTML;
 				restEntidad = t.codigoEstandarClavesDeTabla(conexion) + restEntidad;
 			}else{
@@ -721,25 +721,25 @@ public class GeneradorEsquema {
 		if (!validadorBD.validaBaseDeDatos(true, warnings)) return;
 		restriccionesPerdidas = new RestriccionesPerdidas();
 		generaTablasEntidades();
-		generaTablasRelaciones();
+		generaTablasRelaciones("default");
 		mr = warnings.toString();
 		mr += "<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.relations", null, this.loc)+"</p>";
 		Iterator tablasE = tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
-			mr+=t.modeloRelacionalDeTabla(true);
+			mr+=t.modeloRelacionalDeTabla(true,"DEFAULT");
 		}
 		
 		Iterator tablasR = tablasRelaciones.values().iterator();
 		while (tablasR.hasNext()){
 			Tabla t =(Tabla)tablasR.next();
-			mr+=t.modeloRelacionalDeTabla(true);
+			mr+=t.modeloRelacionalDeTabla(true,"DEFAULT");
 		}
 		
 		Iterator tablasM = tablasMultivalorados.iterator();
 		while (tablasM.hasNext()){
 			Tabla t =(Tabla)tablasM.next();
-			mr+=t.modeloRelacionalDeTabla(true);
+			mr+=t.modeloRelacionalDeTabla(true,"DEFAULT");
 		}
 		mr += "<p></p></div><div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
 		mr += restriccionesIR();
@@ -863,32 +863,32 @@ public class GeneradorEsquema {
 		this.validadorBD.setControlador(controlador);
 	}
 	
-	public String generaModeloRelacional_v3() {
+	public String generaModeloRelacional_v3(String sqlType) {
 		reset();
 		StringBuilder warnings = new StringBuilder();
 		if (!validadorBD.validaBaseDeDatos(true, warnings))
 			return warnings.toString();
 		restriccionesPerdidas = new RestriccionesPerdidas();
 		generaTablasEntidades();
-		generaTablasRelaciones();
+		generaTablasRelaciones(sqlType);
 		mr = warnings.toString();
 		mr += "<div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.relations", null, this.loc)+"</p>";
 		Iterator tablasE = tablasEntidades.values().iterator();
 		while (tablasE.hasNext()) {
 			Tabla t = (Tabla) tablasE.next();
-			mr += t.modeloRelacionalDeTabla(true);
+			mr += t.modeloRelacionalDeTabla(true,sqlType);
 		}
 
 		Iterator tablasR = tablasRelaciones.values().iterator();
 		while (tablasR.hasNext()) {
 			Tabla t = (Tabla) tablasR.next();
-			mr += t.modeloRelacionalDeTabla(true);
+			mr += t.modeloRelacionalDeTabla(true,sqlType);
 		}
 
 		Iterator tablasM = tablasMultivalorados.iterator();
 		while (tablasM.hasNext()) {
 			Tabla t = (Tabla) tablasM.next();
-			mr += t.modeloRelacionalDeTabla(true);
+			mr += t.modeloRelacionalDeTabla(true,sqlType);
 		}
 		mr += "<p></p></div><div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
 		mr += restriccionesIR();

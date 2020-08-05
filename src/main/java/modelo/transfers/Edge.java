@@ -10,12 +10,13 @@ public class Edge {
 	String labelFrom;
 	String labelTo;
 	String name;
+	String type;
 	
 	public Edge() {
 		
 	} 
 	
-	public Edge(int from, int to, Color color, String id, String label, String labelFrom, String labelTo, String name) {
+	public Edge(int from, int to, Color color, String id, String label, String labelFrom, String labelTo, String name,String type) {
 		this.from = from;
 		this.to = to;
 		this.color = color;
@@ -92,6 +93,14 @@ public class Edge {
 	
 	public void updateLabelFromName() {
 		this.label = this.name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 }
