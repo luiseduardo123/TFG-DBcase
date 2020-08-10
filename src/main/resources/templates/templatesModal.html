@@ -453,7 +453,6 @@
 		    </div>
 		    <div id="collapse${idE}" class="collapse" data-parent="#accordion">
 		      <div id="childs-attribute${idE}" class="card-body pt-1 pb-1 pr-0 pl-3">
-		        Lorem ipsum..
 		      </div>
 		    </div>
 		  </div>
@@ -468,9 +467,15 @@
 		    </div>
 		    <div id="collapse${idE}" class="collapse" data-parent="#accordion2">
 		      <div id="childs-attribute${idE}" class="card-body pt-1 pb-1 pr-0 pl-3">
-		        Lorem ipsum..
 		      </div>
 		    </div>
 		  </div>
+	</div>
+	
+	<div class="d-none" id="templateSuperEntity" type="text/x-jquery-tmpl">
+		<p class="text-center"><button id="deleteSuper1" type="button" class="btn btn-primary btn-lg mb-3" style="font-size: 13px;" th:text="#{textos.deleteSuper1}" ></button></p>
+		<p class="text-center"><button id="deleteSuper2" type="button" class="btn btn-primary btn-lg" style="font-size: 13px;" th:text="#{textos.deleteSuper2}" ></button></p>
+		<input type="hidden" id="typeAction" value="create">
+	  	<input type="hidden" id="idSelected" value="${temp_node_select}">
 	</div>
 </div>

@@ -80,6 +80,8 @@ h2{
           				<div class="row pl-2 pt-2" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
 							  <div class="col-6 col-md-6"><p class="h5 mt-2" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{textos.conceptualSchema}"></p></div>
 						</div>
+						<div id="diagram_super" style="top: 0px;position: absolute;visibility: hidden;" class="w-100 h-100">
+						</div>
           				<div id="diagram" style="top: 0px;position: absolute;" class="w-100 h-100">
 						</div>
           			</div>
@@ -143,6 +145,10 @@ h2{
           				</div> 
           			</div>
           		</div>
+			</div>
+			<div class="col-md-12">
+				<div id="diagram_super" style="top: 500px;position: absolute;">
+				</div>
 			</div>
             <div th:replace="footer.html"> </div>
         </div>

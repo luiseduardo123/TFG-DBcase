@@ -1,13 +1,22 @@
 var nodes = new vis.DataSet([]);
+var nodes_super = new vis.DataSet([]);
 var nodoSelected;
 var poscSelection;
 var typeDomain = new Domains();
 // create an array with edges
 var edges = new vis.DataSet([]);
+var edges_super = new vis.DataSet([]);
 var changeDrawView = true;
+var nodes_selected_event = false;
  
   // create a network
 var container = document.getElementById('diagram');
+var container_super = document.getElementById('diagram_super');
+var data_super = {
+		nodes: nodes_super,
+	    edges: edges_super
+	};
+
 var data = {
 	nodes: nodes,
     edges: edges
@@ -65,6 +74,8 @@ var options = {
 //options = {};
 var network = new vis.Network(container, data, options);
 
+var network_super = new vis.Network(container_super, data_super, options);
+
 /**
  * 
  * @returns Devuelve un id unico para asignar a un nuevo elemento que se cree
@@ -77,9 +88,159 @@ var network = new vis.Network(container, data, options);
 		  var nextId = dataIds[dataIds.length-1];
 	  return ++nextId;
   }
+  
+  function deleteSuperEntity(idNodo){
+	  var idNode = parseInt(idNodo);
+	  nodes_super.forEach(function(nod) {
+		  nod.super_entity = false;
+		  nodes.add(nod);
+	  });
+	  deleteSuperEntityAndEelements(idNodo);
+	  updateTableElements();
+  }
+  
+  function deleteSuperEntityAndEelements(idNodo){
+	  var idNode = parseInt(idNodo);
+	  nodes.remove(idNode);
+	  nodes_super.clear();
+	  edges_super.clear();
+  }
+  
+  function simuleClickSuper(){
+		var event = new PointerEvent('pointerdown');
+		return new Promise(resolve => document.getElementsByClassName("vis-zoomExtendsScreen")[0].dispatchEvent(event));
+  }
+  
+  function createSuperEntity(width_super){
+	  var size_width = 170;
+	  if(width_super<170)
+		  size_width = width_super;
+	  var c = document.getElementsByTagName("canvas")[0];
+	  var ctx = c.getContext("2d");
+	  var img_super = ctx.canvas.toDataURL('image/png', 1.0);
+	  nodes.add({id: 9999999, label: "Entidad alto nivel", shape: 'image', image: img_super, size: size_width, borderWidth: 3, color: {
+			 border: '#000000', 
+			 background:'#fafafa',
+			 highlight: {
+			        border: '#000000',
+			        background: '#fafafa'
+			      },
+			 hover: {
+				 border: '#ffcc45',
+				 background: '#fafafa'
+					 }
+	  }, shapeProperties: { useBorderWithImage:true} });  
+  }
+  
+  function simuleClickSuper12(width_super){
+		var event = new PointerEvent('pointerdown');
+		return new Promise(resolve => createSuperEntity(width_super));
+}
+  
+  async function simuleClickAsync() {
+	  let promise = new Promise((resolve, reject) => {
+	    setTimeout(() => resolve("done!"), 1000)
+	  });
+	  let result = await promise; // wait until the promise resolves (*)
+	  await simuleClickSuper(); // "done!"
+	}
+  
+  async function simuleClickAsync12(width_super) {
+	  let promise = new Promise((resolve, reject) => {
+	    setTimeout(() => resolve("done!"), 1500)
+	  });
+	  let result = await promise;
+	  await simuleClickSuper12(width_super);
+	}
+  
+  async function updateTableElementsPromise() {
+	  let promise = new Promise((resolve, reject) => {
+	    setTimeout(() => resolve("done!"), 1700)
+	  });
+	  let result = await promise;
+	  await updateTableElements();
+	}
+
+  function addElementsWithRelationsToSuperEntity(idElement){
+	  nodes.update({id: idElement, super_entity: true});
+	  getNodesElementsWithSuperEntity(network.getConnectedNodes(idElement));
+	  var nodes_super_select = [];
+	  nodes.forEach(function(nod) {
+		  if(nod.super_entity){
+			  nodes_super.add(nod);
+			  nodes_super_select.push(nod.id);
+		  }
+	  });
+	  edges.forEach(function(edg) {
+		  edges_super.add(edg);
+	  });
+	  
+	  var left = 0;
+	  var right = 0;
+	  var top = 0;
+	  var bottom = 0;
+	  if(nodes_super.length>0){
+		  left = nodes_super.get()[0].x;
+		  right = nodes_super.get()[0].x;
+		  top = nodes_super.get()[0].y;
+		  bottom = nodes_super.get()[0].y;
+	  }
+	  nodes_super.forEach(function(nod) {
+		  if(left>nod.x){
+			  left = nod.x;
+		  }
+	  });
+	  
+	  nodes_super.forEach(function(nod) {
+		  if(right<nod.x){
+			  right = nod.x;
+		  }
+	  });
+	  
+	  nodes_super.forEach(function(nod) {
+		  if(top>nod.y){
+			  top = nod.y;
+		  }
+	  });
+	  
+	  nodes_super.forEach(function(nod) {
+		  if(bottom<nod.y){
+			  bottom = nod.y;
+		  }
+	  });
+	  var width_super = network.canvasToDOM({x:right,y:bottom}).x - network.canvasToDOM({x:left,y:top}).x;
+	  var height_super = network.canvasToDOM({x:right,y:bottom}).y - network.canvasToDOM({x:left,y:top}).y;
+	  
+	  if(width_super>40){
+		  width_super = (width_super+150);
+		  height_super = (((width_super+150)*height_super)/width_super);
+	  }else{
+		  width_super = (width_super+100);
+	  }
+	  document.getElementsByTagName("canvas")[0].style.width = width_super+"px";
+	  document.getElementsByTagName("canvas")[0].style.height = height_super+"px";
+	  simuleClickAsync();
+	  simuleClickAsync12(width_super);
+	  nodes_super_select.forEach(function(id_nd) {
+		  nodes.remove(id_nd);
+	  });
+	  updateTableElementsPromise();
+  }
+  
+  function getNodesElementsWithSuperEntity(nodesIds){
+	  nodesIds.forEach(function(nod) {
+		  if(!nodes.get(nod).super_entity){
+			  nodes.update({id: nod, super_entity: true});
+			  if(network.getConnectedNodes(nod).length!=1){
+				  getNodesElementsWithSuperEntity(network.getConnectedNodes(nod));
+			  }
+		  }
+	  });
+  }
+  
   function addEntity(nombre, weakEntity,action, idSelected, elementWithRelation, relationEntity){
 	  var id_node = getIdElement();
-	  var data_element = {widthConstraint:{ minimum: 100, maximum: 200},label: nombre, isWeak: weakEntity, shape: 'box', scale:10, heightConstraint:25,physics:false};
+	  var data_element = {widthConstraint:{ minimum: 100, maximum: 200}, super_entity:false, label: nombre, isWeak: weakEntity, shape: 'box', scale:10, heightConstraint:25,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
@@ -123,7 +284,7 @@ var network = new vis.Network(container, data, options);
 	  if (nombre.length>5){
 		  tam = 30+(nombre.length-5);
 	  }
-	  var data_element = {size:tam,label: nombre, shape: 'diamond', color:'#ff554b', scale:20, physics:false};
+	  var data_element = {size:tam,label: nombre, shape: 'diamond', super_entity:false, color:'#ff554b', scale:20, physics:false};
 	  
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
@@ -148,7 +309,7 @@ var network = new vis.Network(container, data, options);
   
   function addIsA(){
 	  var id_node = getIdElement();
-	  var data_element = {id: id_node++, label: 'IsA', shape: 'triangleDown', color:'#ff554b', scale:20, physics:false}
+	  var data_element = {id: id_node++, label: 'IsA', shape: 'triangleDown', super_entity:false, color:'#ff554b', scale:20, physics:false}
 	  if(poscSelection != null){
 		  data_element.x = poscSelection.x;
 		  data_element.y = poscSelection.y;
@@ -169,7 +330,7 @@ var network = new vis.Network(container, data, options);
 		  }
 	  }
 	  
-	  var data_element = {widthConstraint:{ minimum: 50, maximum: 160},labelBackend:name, label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, heightConstraint:23,physics:false};
+	  var data_element = {widthConstraint:{ minimum: 50, maximum: 160},labelBackend:name, super_entity:false, label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, heightConstraint:23,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
@@ -186,8 +347,6 @@ var network = new vis.Network(container, data, options);
   }
   
   function addEntitytoRelation(idTo, cardinality, roleName, minCardinality, maxCardinality, action, idSelected){
-	  console.log(idTo+" "+cardinality+" "+roleName+" "+minCardinality+" "+maxCardinality+" "+action+" "+idSelected);
-	  	//			2 			maxN 	   wqsadadsa   										  create 		13
 	  var left;
 	  var center;
 	  var right;
@@ -316,6 +475,26 @@ var network = new vis.Network(container, data, options);
 	  return data;
   }
   
+  /* 
+   * filter = array
+   * if (filter = null) return allNodes 
+   * else return nodes of type filter
+   * */
+  function getAllNodesSuper(filter = null){
+	  var data = [];
+	  if(filter != null){
+		  nodes_super.forEach(function(nod) {
+			  if(filter.indexOf(nod.shape) != -1)
+				  data.push(nod);				  
+		  });
+	  }else{
+		  nodes_super.forEach(function(nod) {
+			  data.push(nod);
+		  });
+	  }
+	  return data;
+  }
+  
   /*
    * Check if exist a edge between "idFrom" to "idTo" nodes
    * return "null" if it doesn't exist
@@ -325,6 +504,19 @@ var network = new vis.Network(container, data, options);
 	  var idEdgeExist = null;
 	  var edgesFrom = network.getConnectedEdges(parseInt(idFrom));
 	  var edgesTo = network.getConnectedEdges(parseInt(idTo));
+	  var dataPush = [];
+	  edgesTo.forEach(function(idEdge) {
+		  if(edgesFrom.indexOf(idEdge) != -1)
+			  idEdgeExist = idEdge;
+	  });
+	  
+	  return idEdgeExist;
+  }
+  
+  function existEdgeSuper(idFrom, idTo){
+	  var idEdgeExist = null;
+	  var edgesFrom = network_super.getConnectedEdges(parseInt(idFrom));
+	  var edgesTo = network_super.getConnectedEdges(parseInt(idTo));
 	  var dataPush = [];
 	  edgesTo.forEach(function(idEdge) {
 		  if(edgesFrom.indexOf(idEdge) != -1)
@@ -601,7 +793,6 @@ var network = new vis.Network(container, data, options);
 			          rect.w = (e.pageX - this.offsetLeft) - rect.startX;
 			          rect.h = (e.pageY - this.offsetTop) - rect.startY-80;
 			          ctx.setLineDash([5]);
-			          
 			          var colorRed = '';
 			          if(changeDrawView)
 			        	  colorRed = 'transparent';
@@ -615,7 +806,7 @@ var network = new vis.Network(container, data, options);
 			      }
 			  });
 			  $("#diagram").on("mousedown", function(e) {
-			      if (e.button == 0) { 
+			      if (e.button == 0) {
 			          selectedNodes = e.ctrlKey ? network.getSelectedNodes() : null;
 			          saveDrawingSurface();
 			          var that = this;
@@ -626,14 +817,41 @@ var network = new vis.Network(container, data, options);
 			        	  container.style.cursor = "default";
 			          else
 			        	  container.style.cursor = "crosshair";
+			          if(nodes_selected_event){
+			        	  $("#diagram").unbind("mousemove");
+			        	  container.style.cursor = "default";
+			          }else{
+			        	  $("#diagram").bind("mousemove", function(e) {
+						      if (drag) { 
+						          restoreDrawingSurface();
+						          rect.w = (e.pageX - this.offsetLeft) - rect.startX;
+						          rect.h = (e.pageY - this.offsetTop) - rect.startY-80;
+						          ctx.setLineDash([5]);
+						          var colorRed = '';
+						          if(changeDrawView)
+						        	  colorRed = 'transparent';
+								  else
+									  colorRed = 'rgb(255 0 0 / 27%)';
+						          ctx.strokeStyle = colorRed;
+						          ctx.strokeRect(rect.startX, rect.startY, rect.w, rect.h);
+						          ctx.setLineDash([]);
+						          ctx.fillStyle = colorRed;
+						          ctx.fillRect(rect.startX, rect.startY, rect.w, rect.h);
+						      }
+						  });
+			          }
 			      }
 			  });
 			  $("#diagram").on("mouseup", function(e) {
-			      if (e.button == 0) { 
+			      if (e.button == 0) {
 			          restoreDrawingSurface();
 			          drag = false;
 			          container.style.cursor = "default";
 			          selectNodesFromHighlight();
+			          if(network.getSelectedNodes().length>0)
+			        	  nodes_selected_event = true;
+			          else
+			        	  nodes_selected_event = false;
 			      }
 			  });
 		  }
@@ -718,6 +936,42 @@ var network = new vis.Network(container, data, options);
 	  }
 	  
   }
+  
+  function allEntitysToRelationSuper(nodo_select, onlyType=null){
+	  var data = [];
+	  var dataAll = [];
+	  var type = "all";
+	  
+	  if(onlyType != null){
+		  type = onlyType;
+	  }
+
+	  nodos = network_super.getConnectedEdges(parseInt(nodo_select));
+	  nodos.forEach(function(edg) {
+		  	idNodo = edges_super.get(edg).to;
+		  	roleName = edges_super.get(edg).label;
+		  	labelF = edges_super.get(edg).labelFrom;
+		  	labelT = edges_super.get(edg).labelTo;
+		  	if(nodes_super.get(idNodo).shape == type){
+		  		if(nodes_super.get(idNodo).shape == "box")
+		  			data.push({id:edg, label:nodes_super.get(idNodo).label, role:roleName, asoc:labelF+"-"+labelT});
+		  		else
+		  			data.push({id:edg, label:nodes_super.get(idNodo).label, role:roleName});
+		  	}
+		  	if(nodes_super.get(idNodo).shape == "box")
+		  		dataAll.push({id:edg, label:nodes_super.get(idNodo).label, role:roleName, asoc:labelF+"-"+labelT});
+	  		else
+	  			dataAll.push({id:edg, label:nodes_super.get(idNodo).label, role:roleName});
+		  		
+	  });
+	  
+	  if(onlyType != null){
+		  return data;
+	  }else{
+		  return dataAll;
+	  }
+	  
+  }
 
   function allAttributeOfEntity(nodo_select){
 	  var data = [];
@@ -727,6 +981,18 @@ var network = new vis.Network(container, data, options);
 		  	roleName = edges.get(edg).label;
 		  	if(nodes.get(idNodo).shape == "ellipse")
 		  		data.push({id:idNodo, label:nodes.get(idNodo).labelBackend, type:nodes.get(idNodo).dataAttribute.domain, size:nodes.get(idNodo).dataAttribute.size});				  
+	  });
+	  return data;
+  }
+  
+  function allAttributeOfEntitySuper(nodo_select){
+	  var data = [];
+	  nodos = network_super.getConnectedEdges(parseInt(nodo_select));
+	  nodos.forEach(function(edg) {
+		  	idNodo = edges_super.get(edg).to;
+		  	roleName = edges_super.get(edg).label;
+		  	if(nodes_super.get(idNodo).shape == "ellipse")
+		  		data.push({id:idNodo, label:nodes_super.get(idNodo).labelBackend, type:nodes_super.get(idNodo).dataAttribute.domain, size:nodes_super.get(idNodo).dataAttribute.size});				  
 	  });
 	  return data;
   }

@@ -25,6 +25,9 @@ $(document).ready(function(){
 			idSele = $("#idSelected").val();
 			fillEditEntity(idSele);
 		}},
+		{text: $("#textAddSuperEntity").text(), href: '#', action: function(e){
+			addElementsWithRelationsToSuperEntity(getNodeSelected());
+		}},
 		{text: $("#constraints").text(), href: '#', action: function(e){
 			$( "[functioninsert='addConstrainst']").click();
 			idSele = $("#idSelected").val();
@@ -63,6 +66,9 @@ $(document).ready(function(){
 			$( "#typeAction").val("edit");
 			idSele = $("#idSelected").val();
 			fillEditRelation(idSele);
+		}},
+		{text: $("#textAddSuperEntity").text(), href: '#', action: function(e){
+			addElementsWithRelationsToSuperEntity(getNodeSelected());
 		}},
 		{text: $("#constraints").text(), href: '#', action: function(e){
 			$( "[functioninsert='addConstrainst']").click();
@@ -107,7 +113,12 @@ $(document).ready(function(){
 		}},
 		{text: $("#removeEntity").text(), href: '#', action: function(e){
 			deleteNodeSelected(getNodeSelected());
-		}}
+		}},
+		//superEntity
+		{text: $("#deleteSuperEntity").text(), href: '#', action: function(e){
+			$( "[functioninsert='deleteSuperEntity']").click();
+			$('#insertModal').hide();
+		}},
 	];
 	
 	context.attach('#diagram', menu_options);

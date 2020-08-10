@@ -23,6 +23,14 @@ function inArray1(needle, haystack) {
     return false;
 }
 
+function inArray2(needle, haystack) {
+    var length = haystack.length;
+    for(var i = 0; i < length; i++) {
+        if(haystack[i] == needle) return true;
+    }
+    return false;
+}
+
 function editList(){
 	$("#addListUnique").click(function(){
 		var nodo = allAttributeOfEntity(parseInt($("#idSelected").val()));
@@ -49,6 +57,17 @@ function editList(){
 			};
   		$("#totalInputs").val(nextValue);
 		$("#inputList").append($('#templateSelectAddConstrainst').tmpl(dataType));
+	});
+}
+
+function eventAddSuperEntity(){
+	$("#deleteSuper1").click(function(){
+		deleteSuperEntity($("#idSelected").val());
+		$('#modalAddItem').modal('hide');
+	});
+	$("#deleteSuper2").click(function(){
+		deleteSuperEntityAndEelements($("#idSelected").val());
+		$('#modalAddItem').modal('hide');
 	});
 }
 
@@ -172,19 +191,57 @@ function eventAddEventRecipient(){
 	});
 }
 
+function updateTableElementsSuperEntity(){
+	var text = "";
+	var nodo = getAllNodesSuper(["box"]);
+	text += '<p class="h6 text-'+$("#textTheme").text()+'">Entidades</p>';
+	for(var i=0;i<nodo.length;i++){
+		text+='<p class="card-link small ml-0" href="#" aria-expanded="true"><img src="static/images/entidad-small.png" style="width: 25px;" class="rounded"><span class="pl-1 text-'+$("#textTheme").text()+'">'+nodo[i].label+'</span></p>';
+		var listAtributes = allAttributeOfEntitySuper(nodo[i].id);
+		for(var e=0;e<listAtributes.length;e++){
+			text+='<p class="card-link small ml-2" href="#" aria-expanded="true"><img src="static/images/attribute-small.png" class="rounded" style="width: 25px;"><span class="pl-1 text-'+$("#textTheme").text()+'">'+listAtributes[e].label+' : '+listAtributes[e].type+'('+listAtributes[e].size+')</span></p>';
+		}
+	}
+	text += '<p class="h6 mt-2 text-'+$("#textTheme").text()+'">Relaciones</p>';
+	
+	var nodo = getAllNodesSuper(["diamond", "triangleDown"]);
+	for(var i=0;i<nodo.length;i++){
+		text+='<p class="card-link small ml-0" href="#" aria-expanded="true"><img src="static/images/diamond-small.png" style="width: 25px;" class="rounded"><span class="pl-1 text-'+$("#textTheme").text()+'">'+nodo[i].label+'</span></p>';
+		var listAtributes = allEntitysToRelationSuper(nodo[i].id, "box");
+		for(var e=0;e<listAtributes.length;e++){
+			var asoc = "";
+			if(listAtributes[e].asoc.length<10)
+				asoc = ": "+listAtributes[e].asoc;
+			text+='<p class="card-link small ml-2" href="#" aria-expanded="true"><img src="static/images/entidad-small.png" style="width: 25px;" class="rounded"><span class="pl-1 text-'+$("#textTheme").text()+'">'+listAtributes[e].label+''+asoc+'</span></p>';
+		}
+		var listAtributes = allAttributeOfEntitySuper(nodo[i].id);
+		for(var e=0;e<listAtributes.length;e++){
+			text+='<p class="card-link small ml-0" href="#" aria-expanded="true"><img src="static/images/attribute-small.png" class="rounded"><span class="pl-1 text-'+$("#textTheme").text()+'">'+listAtributes[e].label+' : '+listAtributes[e].type+'('+listAtributes[e].size+')</span></p>';
+		}
+	}
+	return text;
+}
+
 function updateTableElements(){
 	$('#accordion').html("");
-	var nodo = getAllNodes(["box"]);
+	var nodo = getAllNodes(["box", "image"]);
 	for(var i=0;i<nodo.length;i++){
 		var dataType = {
 			nameE: nodo[i].label,
 			idE: nodo[i].id
 		};
 		$('#accordion').append($('#templateElementEntity').tmpl(dataType));
-		$('#childs-attribute'+nodo[i].id).html("");
-		var listAtributes = allAttributeOfEntity(nodo[i].id);
-		for(var e=0;e<listAtributes.length;e++){
-			$('#childs-attribute'+nodo[i].id).append('<p class="card-link small ml-0" href="#" aria-expanded="true"><img src="static/images/attribute-small.png" class="rounded"><span class="pl-1 text-'+$("#textTheme").text()+'">'+listAtributes[e].label+' : '+listAtributes[e].type+'('+listAtributes[e].size+')</span></p>');
+		
+		if(nodo[i].shape == "image"){
+			var htmlSuperEntity = updateTableElementsSuperEntity();
+			$('#childs-attribute'+nodo[i].id).append(htmlSuperEntity);
+//			$('#childs-attribute'+nodo[i].id).append('<p class="card-link small ml-0" href="#" aria-expanded="true"><img src="static/images/attribute-small.png" class="rounded"><span class="pl-1 text-'+$("#textTheme").text()+'">pepito</span></p>');
+		}else{
+			$('#childs-attribute'+nodo[i].id).html("");
+			var listAtributes = allAttributeOfEntity(nodo[i].id);
+			for(var e=0;e<listAtributes.length;e++){
+				$('#childs-attribute'+nodo[i].id).append('<p class="card-link small ml-0" href="#" aria-expanded="true"><img src="static/images/attribute-small.png" class="rounded"><span class="pl-1 text-'+$("#textTheme").text()+'">'+listAtributes[e].label+' : '+listAtributes[e].type+'('+listAtributes[e].size+')</span></p>');
+			}
 		}
 	}
 	
@@ -257,6 +314,11 @@ function updateTableElements(){
     
 	// cambiar tamaño de diagramas
 	$('.vis-zoomExtends').on('click', function () {
+		if($('.changeSizeWidth').hasClass('col-md-6'))
+			console.log("twoColums");
+		else
+			console.log("threeColums");
+		
 		$('.changeSizeWidth').toggleClass('col-md-6');
         $('.changeSizeWidth').toggleClass('col-md-10');
         $('.changeSizeWidthData').toggleClass('col-md-12');
@@ -265,6 +327,9 @@ function updateTableElements(){
 	
 	// cambiar distribución de la vista
 	$('.change-aparience').on('click', function () {
+		if(!$('.changeSizeWidth').hasClass('col-md-6'))
+			$("#diagram .vis-zoomExtends").click();
+		
 		//alert($(this).attr("value")+" is");
 		$('.change-aparience').removeClass("active");
 		$(this).addClass("active");
@@ -328,7 +393,8 @@ function updateTableElements(){
 			case "1":
 				break;
 			case "2":
-				$(".vis-zoomExtends").click();
+				if($('.changeSizeWidth').hasClass('col-md-6'))
+					$("#diagram .vis-zoomExtends").click();
 				break;
 			case "3":
 				$("#frame2").hide();
@@ -370,6 +436,7 @@ function updateTableElements(){
 		// Limpiar el modal cuando se cierra, se deshabilita el boton 
 		$('#modalAddItem').on('hidden.bs.modal', function (event) {
 			console.log("clean modal");
+			$('#insertModal').show();
 			$('#insertModal').text($('#textInsert').text());
 			$('#formModal').html("");
 			$('#insertModal').prop('disabled', true);
@@ -394,11 +461,11 @@ function updateTableElements(){
 	
 	function simuleClick(){
 		var event = new PointerEvent('pointerdown') ;
-		document.getElementsByClassName("vis-zoomExtendsScreen")[0].dispatchEvent(event);
+		document.getElementsByClassName("vis-zoomExtendsScreen")[1].dispatchEvent(event);
 	}
 	$("#general-print").on('click',function(){
 		$.when(simuleClick()).then(function(){
-			var c = document.getElementsByTagName("canvas")[0];
+			var c = document.getElementsByTagName("canvas")[1];
 			var ctx = c.getContext("2d");
 			var dataURL = ctx.canvas.toDataURL('image/png', 1.0);
 			var doc = new jsPDF()

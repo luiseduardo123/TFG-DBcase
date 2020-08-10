@@ -8,16 +8,6 @@ function addConnections(elem, index) {
     elem.connections = edgesWithOptions;
 }
 
-function addConnectionsSuper(elem, index) {
-    var nodesConected = network_super.getConnectedNodes(index);
-    var edgesWithOptions = new Array();
-    nodesConected.forEach(function(idTo){
-    	var idEdge = existEdgeSuper(parseInt(index), parseInt(idTo));
-    	edgesWithOptions.push(edges.get(idEdge));
-    });
-    elem.connections = edgesWithOptions;
-}
-
 function objectToArray(obj) {
     return Object.keys(obj).map(function (key) {
       obj[key].id = key;
@@ -28,27 +18,12 @@ function objectToArray(obj) {
     });
 }
 
-function objectToArraySuper(obj) {
-    return Object.keys(obj).map(function (key) {
-      obj[key].id = key;
-      obj[key].fullOptions = nodes_super.get(parseInt(key));
-      obj[key].fullOptions.x = obj[key].x;
-      obj[key].fullOptions.y = obj[key].y;
-      return obj[key];
-    });
-}
-
 function exportNetwork(type) {
     var nodes = objectToArray(network.getPositions());
-    var nodes_super = objectToArraySuper(network_super.getPositions());
+
     nodes.forEach(addConnections);
-    nodes_super.forEach(addConnectionsSuper);
-    var all_nodes = {
-    		nodesAll: nodes,
-    		nodesSuperAll: nodes_super
-    };
     // pretty print node data
-    var exportValue = JSON.stringify(all_nodes, undefined, 2);
+    var exportValue = JSON.stringify(nodes, undefined, 2);
     
     if(type != "session"){
     	var blob = new Blob([exportValue], {type: "application/json"});
@@ -67,22 +42,14 @@ function importNetwork(type, value=null) {
 	    var inputValue = sessionStorage.getItem('codeSave');
 	}
     var inputData = JSON.parse(inputValue);
-    getNodeData(inputData.nodesAll);
-    getEdgeData(inputData.nodesAll);
-    getNodeDataSuper(inputData.nodesSuperAll);
-    getEdgeDataSuper(inputData.nodesSuperAll);
-    updateTableElements();
+    getNodeData(inputData);
+    getEdgeData(inputData);
+    updateTableElements()
 }
 
 function getNodeData(data) {
     data.forEach(function(elem, index, array) {
     	nodes.add(elem.fullOptions);
-    });
-}
-
-function getNodeDataSuper(data) {
-    data.forEach(function(elem, index, array) {
-    	nodes_super.add(elem.fullOptions);
     });
 }
 
@@ -94,31 +61,6 @@ function getEdgeData(data) {
         	
         	if(idEdge == null){
         		edges.add(connId);
-        	}
-        	
-            let cNode = getNodeById(data, connId.to);
-            var elementConnections = cNode.connections;
-
-            // remove the connection from the other node to prevent duplicate connections
-            var duplicateIndex = elementConnections.findIndex(function(connection) {
-              return connection == connId.from; // double equals since id can be numeric or string
-            });
-
-            if (duplicateIndex != -1) {
-              elementConnections.splice(duplicateIndex, 1);
-            };
-      });
-    });
-}
-
-function getEdgeDataSuper(data) {
-    data.forEach(function(node) {
-        // add the connection
-        node.connections.forEach(function(connId, cIndex, conns) {
-        	var idEdge = existEdgeSuper(connId.from, connId.to);
-        	
-        	if(idEdge == null){
-        		edges_super.add(connId);
         	}
         	
             let cNode = getNodeById(data, connId.to);

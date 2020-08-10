@@ -199,7 +199,7 @@ $(document).ready(function () {
             		  eventSubAttribute();
               	    break;
             	  case "addEntitytoRelation":
-            		  nodo = getAllNodes(["box"]);
+            		  nodo = getAllNodes(["box", "image"]);
             		  var childs = allEntityOfRelation(nodo_select);
 	        		  var selection = -1;
 	        		  for(var i=0;i<nodo.length;i++){
@@ -313,6 +313,13 @@ $(document).ready(function () {
           					temp_node_select: nodo_select
           			  };
           		  	  $('#formModal').html($('#templateAbout').tmpl(dataType));
+      	    		break;
+            	  	case "deleteSuperEntity":
+            	  		var dataType = {
+          					temp_node_select: nodo_select
+          			  };
+          		  	  $('#formModal').html($('#templateSuperEntity').tmpl(dataType));
+          		  	  eventAddSuperEntity();
       	    		break;
             	  	case "removeParentIsA":
             	  		if(existParent(nodo_select))
