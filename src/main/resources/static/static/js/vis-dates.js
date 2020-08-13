@@ -76,28 +76,6 @@ var network = new vis.Network(container, data, options);
 
 var network_super = new vis.Network(container_super, data_super, options);
 
-var normalize = (function() {
-	  var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç", 
-	      to   = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc",
-	      mapping = {};
-	 
-	  for(var i = 0, j = from.length; i < j; i++ )
-	      mapping[ from.charAt( i ) ] = to.charAt( i );
-	 
-	  return function( str ) {
-	      var ret = [];
-	      for( var i = 0, j = str.length; i < j; i++ ) {
-	          var c = str.charAt( i );
-	          if( mapping.hasOwnProperty( str.charAt( i ) ) )
-	              ret.push( mapping[ c ] );
-	          else
-	              ret.push( c );
-	      }      
-	      return ret.join( '' );
-	  }
-	 
-	})();
-
 /**
  * 
  * @returns Devuelve un id unico para asignar a un nuevo elemento que se cree
@@ -294,7 +272,7 @@ var normalize = (function() {
   
   function addEntity(nombre, weakEntity,action, idSelected, elementWithRelation, relationEntity){
 	  var id_node = getIdElement();
-	  var data_element = {widthConstraint:{ minimum: 100, maximum: 200}, super_entity:false, label: normalize(nombre), isWeak: weakEntity, shape: 'box', scale:10, heightConstraint:25,physics:false};
+	  var data_element = {widthConstraint:{ minimum: 100, maximum: 200}, super_entity:false, label: nombre, isWeak: weakEntity, shape: 'box', scale:10, heightConstraint:25,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
@@ -338,7 +316,7 @@ var normalize = (function() {
 	  if (nombre.length>5){
 		  tam = 30+(nombre.length-5);
 	  }
-	  var data_element = {size:tam,label: normalize(nombre), shape: 'diamond', super_entity:false, color:'#ff554b', scale:20, physics:false};
+	  var data_element = {size:tam,label: nombre, shape: 'diamond', super_entity:false, color:'#ff554b', scale:20, physics:false};
 	  
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
@@ -375,19 +353,21 @@ var normalize = (function() {
   
   function addAttribute(name, action, idSelected, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
 	  var id_node = getIdElement();
-	  var word_pk = normalize(name);
+	  var word_pk = name;
 	  if(pk){
-		  word_pk = normalize(name);
+		  word_pk = name;
 	  }else{
-		  word_pk = normalize(name);
+		  word_pk = name;
 		  if(!notNll){
 			  word_pk +="*";
 		  }
 	  }
+	  var valueEntityWeak = nodes.get(parseInt(idEntity)).isWeak;
 	  
-	  var data_element = {widthConstraint:{ minimum: 50, maximum: 160},labelBackend:normalize(name), super_entity:false, label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, heightConstraint:23,physics:false};
+	  var data_element = {widthConstraint:{ minimum: 50, maximum: 160},labelBackend:name, super_entity:false, label: word_pk, dataAttribute:{entityWeak: valueEntityWeak, primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, heightConstraint:23,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
+		  data_element.dataAttribute.entityWeak = nodes.get(parseInt(idSelected)).dataAttribute.entityWeak;
 		  nodes.update(data_element);
 	  }else{
 		  if(poscSelection != null){
@@ -432,20 +412,22 @@ var normalize = (function() {
 	  	break;
 	  	default:
 	  }
+	  
+	  if(roleName == "")
+		  center = "  ";
+	  else
+		  center = roleName;
+	  
 	  if(cardinality == 'minMax'){
 		  labelText = right+" .. "+left+" "+center;
 	  }else{
 		  labelText = center;		  
 	  }
 	  
-	  if(roleName == "")
-		  center = "  ";
-	  else
-		  center = roleName;
 	  var idEdge = existEdge(idSelected, idTo);
-	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: normalize(labelText), labelFrom:right, labelTo:left, name:normalize(center), state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
+	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: labelText, labelFrom:right, labelTo:left, name:center, state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
 	  //var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, state: "false", arrows:{to: { enabled: direct1 }}};
-	  var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: normalize(labelText), labelFrom:right, labelTo:left, name:normalize(center), state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
+	  var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: labelText, labelFrom:right, labelTo:left, name:center, state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
 	  var data_element_update = {};
 	  if(idEdge != null){
 		  data_element_update.id = idEdge;

@@ -34,6 +34,10 @@ function exportNetwork(type) {
 // load scheme
 
 function importNetwork(type, value=null) {
+	nodes.clear();
+	edges.clear();
+	nodes_super.clear();
+	edges_super.clear();
 	if(type != "session"){
 	    var inputValue = value;
 	}else{

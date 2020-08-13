@@ -298,9 +298,7 @@ function updateTableElements(){
 	$(document).keydown(function(e) {
 		if(e.which == 46){
 			if(getNodesSelectedCount()!=0 && getNodesSelectedCount()>1){
-				if(confirm($("#textDeleteNodes").text())){
 					deleteNodeSelected();
-				}
 			}else{
 				if(getNodesSelectedCount()==1){
 					deleteNodeSelected();
