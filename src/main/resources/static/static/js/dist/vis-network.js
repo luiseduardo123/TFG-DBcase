@@ -548,13 +548,20 @@
 	 * http://www.html5canvastutorials.com/labs/html5-canvas-star-spinner/
 	 */
 
-	function drawDiamond(ctx, x, y, r) {
+	function drawDiamond(ctx, x, y, r, isWeak) {
 	  ctx.beginPath();
 	  ctx.lineTo(x, y + r-5);
 	  ctx.lineTo(x + r+15, y);
 	  ctx.lineTo(x, y - r+5);
 	  ctx.lineTo(x - r-15, y);
 	  ctx.closePath();
+	  if(isWeak == "active"){
+		  ctx.moveTo(x, y + r-5+4);
+		  ctx.lineTo(x + r+15+4, y);
+		  ctx.lineTo(x, y - r+5-4);
+		  ctx.lineTo(x - r-15-4, y);
+		  ctx.closePath();
+	  }
 	}
 	/**
 	 * Draw a rectangle with rounded corners.
@@ -27421,12 +27428,12 @@
 
 	  }, {
 	    key: "_drawShape",
-	    value: function _drawShape(ctx, shape, sizeMultiplier, x, y, selected, hover, values) {
+	    value: function _drawShape(ctx, shape, sizeMultiplier, x, y, selected, hover, values, isWeak) {
 	      this.resize(ctx, selected, hover, values);
 	      this.left = x - this.width / 2;
 	      this.top = y - this.height / 2;
 	      this.initContextForDraw(ctx, values);
-	      getShape(shape)(ctx, x, y, values.size);
+	      getShape(shape)(ctx, x, y, values.size, isWeak);
 	      this.performFill(ctx, values);
 
 	      if (this.options.icon !== undefined) {
@@ -27510,8 +27517,8 @@
 
 	  createClass(Diamond, [{
 	    key: "draw",
-	    value: function draw(ctx, x, y, selected, hover, values) {
-	      this._drawShape(ctx, 'diamond', 4, x, y, selected, hover, values);
+	    value: function draw(ctx, x, y, selected, hover, values, isWeak) {
+	      this._drawShape(ctx, 'diamond', 4, x, y, selected, hover, values, isWeak);
 	    }
 	    /**
 	     *
@@ -29258,7 +29265,7 @@
 	    key: "draw",
 	    value: function draw(ctx) {
 	      var values = this.getFormattingValues();
-	      this.shape.draw(ctx, this.x, this.y, this.selected, this.hover, values);
+	      this.shape.draw(ctx, this.x, this.y, this.selected, this.hover, values, this.options.isWeak);
 	    }
 	    /**
 	     * Update the bounding box of the shape

@@ -76,6 +76,28 @@ var network = new vis.Network(container, data, options);
 
 var network_super = new vis.Network(container_super, data_super, options);
 
+var normalize = (function() {
+	  var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç", 
+	      to   = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc",
+	      mapping = {};
+	 
+	  for(var i = 0, j = from.length; i < j; i++ )
+	      mapping[ from.charAt( i ) ] = to.charAt( i );
+	 
+	  return function( str ) {
+	      var ret = [];
+	      for( var i = 0, j = str.length; i < j; i++ ) {
+	          var c = str.charAt( i );
+	          if( mapping.hasOwnProperty( str.charAt( i ) ) )
+	              ret.push( mapping[ c ] );
+	          else
+	              ret.push( c );
+	      }      
+	      return ret.join( '' );
+	  }
+	 
+	})();
+
 /**
  * 
  * @returns Devuelve un id unico para asignar a un nuevo elemento que se cree
@@ -111,11 +133,17 @@ var network_super = new vis.Network(container_super, data_super, options);
 		return new Promise(resolve => document.getElementsByClassName("vis-zoomExtendsScreen")[0].dispatchEvent(event));
   }
   
-  function createSuperEntity(width_super){
-	  var size_width = 170;
-	  if(width_super<170)
-		  size_width = width_super;
+  function createSuperEntity(){
+	  var size_width = 110;
 	  var c = document.getElementsByTagName("canvas")[0];
+	  console.log("siuu "+c.style.width.slice(0, -2));
+	  var sizeWidth = c.style.width.slice(0, -2);
+	  console.log(parseInt(sizeWidth)+" veees");
+	  if(parseInt(sizeWidth)<120)
+		  size_width = sizeWidth;
+
+	  console.log(size_width+" orif");
+	  //if(document.getElementsByTagName("canvas")[0]<)
 	  var ctx = c.getContext("2d");
 	  var img_super = ctx.canvas.toDataURL('image/png', 1.0);
 	  nodes.add({id: 9999999, label: "Entidad alto nivel", shape: 'image', image: img_super, size: size_width, borderWidth: 3, color: {
@@ -132,49 +160,27 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  }, shapeProperties: { useBorderWithImage:true} });  
   }
   
-  function simuleClickSuper12(width_super){
-		var event = new PointerEvent('pointerdown');
-		return new Promise(resolve => createSuperEntity(width_super));
+  function simuleClickSuper12(){
+		return new Promise(resolve => createSuperEntity());
 }
   
   async function simuleClickAsync() {
 	  let promise = new Promise((resolve, reject) => {
-	    setTimeout(() => resolve("done!"), 1000)
+	    setTimeout(() => resolve("done!"), 200)
 	  });
 	  let result = await promise; // wait until the promise resolves (*)
 	  await simuleClickSuper(); // "done!"
 	}
   
-  async function simuleClickAsync12(width_super) {
+  async function simuleClickAsync1() {
 	  let promise = new Promise((resolve, reject) => {
-	    setTimeout(() => resolve("done!"), 1500)
+	    setTimeout(() => resolve("done!"), 2000)
 	  });
-	  let result = await promise;
-	  await simuleClickSuper12(width_super);
+	  let result = await promise; // wait until the promise resolves (*)
+	  await simuleClickSuper(); // "done!"
 	}
   
-  async function updateTableElementsPromise() {
-	  let promise = new Promise((resolve, reject) => {
-	    setTimeout(() => resolve("done!"), 1700)
-	  });
-	  let result = await promise;
-	  await updateTableElements();
-	}
-
-  function addElementsWithRelationsToSuperEntity(idElement){
-	  nodes.update({id: idElement, super_entity: true});
-	  getNodesElementsWithSuperEntity(network.getConnectedNodes(idElement));
-	  var nodes_super_select = [];
-	  nodes.forEach(function(nod) {
-		  if(nod.super_entity){
-			  nodes_super.add(nod);
-			  nodes_super_select.push(nod.id);
-		  }
-	  });
-	  edges.forEach(function(edg) {
-		  edges_super.add(edg);
-	  });
-	  
+  function simuleClickSuperNew(){
 	  var left = 0;
 	  var right = 0;
 	  var top = 0;
@@ -185,6 +191,7 @@ var network_super = new vis.Network(container_super, data_super, options);
 		  top = nodes_super.get()[0].y;
 		  bottom = nodes_super.get()[0].y;
 	  }
+	  console.log(left+" "+right+" "+ top+" "+bottom);
 	  nodes_super.forEach(function(nod) {
 		  if(left>nod.x){
 			  left = nod.x;
@@ -208,22 +215,69 @@ var network_super = new vis.Network(container_super, data_super, options);
 			  bottom = nod.y;
 		  }
 	  });
-	  var width_super = network.canvasToDOM({x:right,y:bottom}).x - network.canvasToDOM({x:left,y:top}).x;
-	  var height_super = network.canvasToDOM({x:right,y:bottom}).y - network.canvasToDOM({x:left,y:top}).y;
-	  
-	  if(width_super>40){
-		  width_super = (width_super+150);
-		  height_super = (((width_super+150)*height_super)/width_super);
-	  }else{
-		  width_super = (width_super+100);
-	  }
-	  document.getElementsByTagName("canvas")[0].style.width = width_super+"px";
-	  document.getElementsByTagName("canvas")[0].style.height = height_super+"px";
+	  console.log(left+" "+right+" "+ top+" "+bottom);
+	  var width_super = right - left;
+	  var height_super = top - bottom;
+	  width_super = Math.abs(width_super);
+	  height_super = Math.abs(height_super)+50;
+	  console.log(width_super+" width_super");
+	  console.log(height_super+" height_super");
+	  var widthTotal = (width_super+50);
+	  var heightTotal = ((height_super*(width_super+50))/width_super);
+	  console.log(widthTotal+" widthTotal");
+	  console.log(heightTotal+" heightTotal");
+	  document.getElementsByTagName("canvas")[0].style.width = widthTotal+"px";
+	  document.getElementsByTagName("canvas")[0].style.height = heightTotal+"px";
+  }
+  
+  async function simuleClickAsyncNew() {
+	  let promise = new Promise((resolve, reject) => {
+	    setTimeout(() => resolve("done!"), 1000)
+	  });
+	  let result = await promise;
+	  await simuleClickSuperNew();
+	  console.log("prueba12");
+  }
+  
+  async function simuleClickAsync12() {
+	  let promise = new Promise((resolve, reject) => {
+	    setTimeout(() => resolve("done!"), 2800)
+	  });
+	  let result = await promise;
+	  await createSuperEntity();
+	}
+  
+  async function updateTableElementsPromise() {
+	  let promise = new Promise((resolve, reject) => {
+	    setTimeout(() => resolve("done!"), 3000)
+	  });
+	  let result = await promise;
+	  await updateTableElements();
+	}
+  
+  function addElementsWithRelationsToSuperEntity(idElement){
+	  nodes.update({id: idElement, super_entity: true});
+	  getNodesElementsWithSuperEntity(network.getConnectedNodes(idElement));
+	  var nodes_super_select = [];
+	  nodes.forEach(function(nod) {
+		  if(nod.super_entity){
+			  nod.x = network.getPosition(nod.id).x;
+			  nod.y = network.getPosition(nod.id).y;
+			  nodes_super.add(nod);
+			  nodes_super_select.push(nod.id);
+		  }
+	  });
+	  edges.forEach(function(edg) {
+		  edges_super.add(edg);
+	  });
 	  simuleClickAsync();
-	  simuleClickAsync12(width_super);
+	  simuleClickAsyncNew();
+	  simuleClickAsync1();
+	  simuleClickAsync12();
 	  nodes_super_select.forEach(function(id_nd) {
 		  nodes.remove(id_nd);
 	  });
+	  
 	  updateTableElementsPromise();
   }
   
@@ -240,7 +294,7 @@ var network_super = new vis.Network(container_super, data_super, options);
   
   function addEntity(nombre, weakEntity,action, idSelected, elementWithRelation, relationEntity){
 	  var id_node = getIdElement();
-	  var data_element = {widthConstraint:{ minimum: 100, maximum: 200}, super_entity:false, label: nombre, isWeak: weakEntity, shape: 'box', scale:10, heightConstraint:25,physics:false};
+	  var data_element = {widthConstraint:{ minimum: 100, maximum: 200}, super_entity:false, label: normalize(nombre), isWeak: weakEntity, shape: 'box', scale:10, heightConstraint:25,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
@@ -284,7 +338,7 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  if (nombre.length>5){
 		  tam = 30+(nombre.length-5);
 	  }
-	  var data_element = {size:tam,label: nombre, shape: 'diamond', super_entity:false, color:'#ff554b', scale:20, physics:false};
+	  var data_element = {size:tam,label: normalize(nombre), shape: 'diamond', super_entity:false, color:'#ff554b', scale:20, physics:false};
 	  
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
@@ -293,6 +347,7 @@ var network_super = new vis.Network(container_super, data_super, options);
 		  if(poscSelection != null){
 			  if(origin != "front"){
 				  data_element.x = poscSelection.x;
+				  data_element.isWeak = "active";
 				  data_element.y = poscSelection.y-100;
 			  }else{
 				  data_element.x = poscSelection.x;
@@ -320,17 +375,17 @@ var network_super = new vis.Network(container_super, data_super, options);
   
   function addAttribute(name, action, idSelected, idEntity, pk, comp, notNll, uniq, multi, dom, sz){
 	  var id_node = getIdElement();
-	  var word_pk = name;
+	  var word_pk = normalize(name);
 	  if(pk){
-		  word_pk = name;
+		  word_pk = normalize(name);
 	  }else{
-		  word_pk = name;
+		  word_pk = normalize(name);
 		  if(!notNll){
 			  word_pk +="*";
 		  }
 	  }
 	  
-	  var data_element = {widthConstraint:{ minimum: 50, maximum: 160},labelBackend:name, super_entity:false, label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, heightConstraint:23,physics:false};
+	  var data_element = {widthConstraint:{ minimum: 50, maximum: 160},labelBackend:normalize(name), super_entity:false, label: word_pk, dataAttribute:{primaryKey: pk, composite: comp, notNull: notNll, unique: uniq, multivalued: multi, domain: dom, size: sz}, shape: 'ellipse', color:'#4de4fc', scale:20, heightConstraint:23,physics:false};
 	  if(action == "edit"){
 		  data_element.id = parseInt(idSelected);
 		  nodes.update(data_element);
@@ -377,14 +432,20 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  	break;
 	  	default:
 	  }
+	  if(cardinality == 'minMax'){
+		  labelText = right+" .. "+left+" "+center;
+	  }else{
+		  labelText = center;		  
+	  }
+	  
 	  if(roleName == "")
 		  center = "  ";
 	  else
 		  center = roleName;
 	  var idEdge = existEdge(idSelected, idTo);
-	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
+	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: normalize(labelText), labelFrom:right, labelTo:left, name:normalize(center), state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
 	  //var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, state: "false", arrows:{to: { enabled: direct1 }}};
-	  var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
+	  var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: normalize(labelText), labelFrom:right, labelTo:left, name:normalize(center), state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
 	  var data_element_update = {};
 	  if(idEdge != null){
 		  data_element_update.id = idEdge;

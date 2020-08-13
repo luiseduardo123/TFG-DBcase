@@ -222,6 +222,19 @@ function updateTableElementsSuperEntity(){
 	return text;
 }
 
+function restartPanel(){
+	$("#frame1").attr("class","changeSizeWidth col-md-6 pr-0 pl-0 h-100 border-top");
+	$("#frame2").attr("class","col-md-2 h-100 border-top border-left border-right");
+	$("#frame3").attr("class","col-md-4 changeSizeWidthData border-top");
+	$("#frame5").attr("class","col-md-12 pr-0 pl-0 h-50");
+	$("#frame4").attr("class","col-md-12 pr-0 pl-0 h-50 border-bottom");
+	$("#frame1").show();
+	$("#frame2").show();
+	$("#frame3").show();
+	$("#frame5").show();
+	$("#frame4").show();
+}
+
 function updateTableElements(){
 	$('#accordion').html("");
 	var nodo = getAllNodes(["box", "image"]);
@@ -271,7 +284,7 @@ function updateTableElements(){
 }
 
 (function ($) {
-	
+	$(".vis-zoomExtends").hide();
 	// sidebar lateral desplegar
 	$('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
@@ -313,12 +326,7 @@ function updateTableElements(){
     });
     
 	// cambiar tamaño de diagramas
-	$('.vis-zoomExtends').on('click', function () {
-		if($('.changeSizeWidth').hasClass('col-md-6'))
-			console.log("twoColums");
-		else
-			console.log("threeColums");
-		
+	$('.vis-zoomExtends').on('click', function () {		
 		$('.changeSizeWidth').toggleClass('col-md-6');
         $('.changeSizeWidth').toggleClass('col-md-10');
         $('.changeSizeWidthData').toggleClass('col-md-12');
@@ -327,10 +335,10 @@ function updateTableElements(){
 	
 	// cambiar distribución de la vista
 	$('.change-aparience').on('click', function () {
+		restartPanel();
 		if(!$('.changeSizeWidth').hasClass('col-md-6'))
 			$("#diagram .vis-zoomExtends").click();
-		
-		//alert($(this).attr("value")+" is");
+
 		$('.change-aparience').removeClass("active");
 		$(this).addClass("active");
 		
@@ -374,9 +382,9 @@ function updateTableElements(){
 			case "0":
 				$("#frame1").hide();
 				$("#frame2").removeClass("col-md-2");
-				$("#frame2").addClass("col-md-4");
+				$("#frame2").addClass("col-md-2");
 				$("#frame3").removeClass("col-md-4");
-				$("#frame3").addClass("col-md-8");
+				$("#frame3").addClass("col-md-10");
 				$("#frame4").removeClass("col-md-12");
 				$("#frame5").removeClass("col-md-12");
 				$("#frame4").addClass("col-md-6 float-left");
@@ -423,6 +431,12 @@ function updateTableElements(){
 				$("#frame4").removeClass("border-bottom");
 				$("#frame4").addClass("border-right");
 				$("#frame5").addClass("pl-2");
+				break;
+			case "5":
+				$("#frame2").hide();
+				$("#frame1").addClass("col-md-8");
+				$("#frame3").removeClass("col-md-6");
+				$("#frame3").addClass("border-left");
 				break;
 		}
     });
