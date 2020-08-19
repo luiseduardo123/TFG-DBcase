@@ -40,7 +40,8 @@ import com.google.gson.reflect.TypeToken;
 
 import controlador.Controlador;
 import controlador.TC;
-import modelo.servicios.GeneradorEsquema; 
+import modelo.servicios.GeneradorEsquema;
+import modelo.transfers.DataAttribute;
 import modelo.transfers.Edge;
 import modelo.transfers.Generic;
 import modelo.transfers.Node;
@@ -49,6 +50,7 @@ import modelo.transfers.TransferAtributo;
 import modelo.transfers.TransferConexion;
 import modelo.transfers.TransferEntidad;
 import modelo.transfers.TransferRelacion;
+import java.util.UUID;
 
 @SpringBootApplication
 @RestController
@@ -125,9 +127,274 @@ public class GoogleserviceApplication {
 		Type tipoNode = new TypeToken<List<Node>>(){}.getType();  
 		Type tipoEdge = new TypeToken<List<Edge>>(){}.getType(); 
 		
-		List<Node> nodes = gson.fromJson(r.getData1(), tipoNode); 
-		List<Edge> edges = gson.fromJson(r.getData2(), tipoEdge);
+
+		List<Node> nodes = new ArrayList<>();
+		List<Edge> edges = new ArrayList<>();
+
+		List<Node> nodesAltoNivel = gson.fromJson(r.getData3(), tipoNode); 
+		List<Edge> edgesAltoNivel = gson.fromJson(r.getData4(), tipoEdge);
+
+
+		if(!nodesAltoNivel.isEmpty() & !edgesAltoNivel.isEmpty()){
+			nodes = gson.fromJson(r.getData1(), tipoNode);
+			edges = gson.fromJson(r.getData2(), tipoEdge);
+			//BUSCAMOS LA IMAGEN DE ALTO NIVEL PARA ASIGNARLE UNA PRIMARY KEY COMPUESTA POR TODAS PRIMARY KEYS INTERNAS EN LA AGREGACION
+			String lblEntidadAltoNivel = "";
+			for(int nodeIdx = 0; nodeIdx < nodesAltoNivel.size(); nodeIdx++){
+				if(nodesAltoNivel.get(nodeIdx).getDataAttribute() != null && nodesAltoNivel.get(nodeIdx).getDataAttribute().isPrimaryKey()){
+					Node altoNivelPrimaryKey = new Node();
+					DataAttribute altoNivelDataAttribute = new DataAttribute();
+					//CREAMOS LA CLAVE PRIMARIA
+					altoNivelDataAttribute.setComposite(false);
+					altoNivelDataAttribute.setDomain("varchar");
+					altoNivelDataAttribute.setMultivalued(false);
+					altoNivelDataAttribute.setNotNull(false);
+					altoNivelDataAttribute.setPrimaryKey(true);
+					altoNivelDataAttribute.setSize("20");
+					altoNivelDataAttribute.setUnique(false);
+
+					altoNivelPrimaryKey.setId(999998-nodeIdx);
+					altoNivelPrimaryKey.setLabel(nodesAltoNivel.get(nodeIdx).getLabel());
+					altoNivelPrimaryKey.setPhysics(false);
+					altoNivelPrimaryKey.setShape("ellipse");
+					altoNivelPrimaryKey.setStrong(false);
+					altoNivelPrimaryKey.setDataAttribute(altoNivelDataAttribute);
+
+					nodes.add(altoNivelPrimaryKey); 
+
+					//  CREAMOS LA RELACIóN ENTRE LA CLAVE CREADA Y LA ENTIDAD
+					Edge altoNivelPrimaryKeyEdge = new Edge();
+
+					altoNivelPrimaryKeyEdge.setFrom(9999999);
+					altoNivelPrimaryKeyEdge.setId(UUID.randomUUID().toString());
+					altoNivelPrimaryKeyEdge.setTo(999998-nodeIdx); 
+
+					edges.add(altoNivelPrimaryKeyEdge);	
+
+					// if(!lblEntidadAltoNivel.equals(""))
+					// 	lblEntidadAltoNivel += "_";
+
+					// lblEntidadAltoNivel += nodesAltoNivel.get(nodeIdx).getLabel();
+				}
+				
+			}
+
+			// Node altoNivelPrimaryKey = new Node();
+			// DataAttribute altoNivelDataAttribute = new DataAttribute();
+			// //CREAMOS LA CLAVE PRIMARIA
+			// altoNivelDataAttribute.setComposite(true);
+			// altoNivelDataAttribute.setDomain("varchar");
+			// altoNivelDataAttribute.setMultivalued(false);
+			// altoNivelDataAttribute.setNotNull(false);
+			// altoNivelDataAttribute.setPrimaryKey(true);
+			// altoNivelDataAttribute.setSize("20");
+			// altoNivelDataAttribute.setUnique(false);
+
+			// altoNivelPrimaryKey.setId(999998);
+			// altoNivelPrimaryKey.setLabel(lblEntidadAltoNivel);
+			// altoNivelPrimaryKey.setPhysics(false);
+			// altoNivelPrimaryKey.setShape("ellipse");
+			// altoNivelPrimaryKey.setStrong(false);
+			// altoNivelPrimaryKey.setDataAttribute(altoNivelDataAttribute);
+
+			// nodes.add(altoNivelPrimaryKey);
+
+
+
+
+			// edges = gson.fromJson(r.getData2(), tipoEdge);
+			// //  CREAMOS LA RELCION ENTRE LA CLAVE CREADA Y LA ENTIDAD
+			// Edge altoNivelPrimaryKeyEdge = new Edge();
+
+			// altoNivelPrimaryKeyEdge.setFrom(9999999);
+			// altoNivelPrimaryKeyEdge.setId(UUID.randomUUID().toString());
+			// altoNivelPrimaryKeyEdge.setTo(999998); 
+
+			// edges.add(altoNivelPrimaryKeyEdge);
+		}
+		else{
+			nodes = gson.fromJson(r.getData1(), tipoNode);
+			edges = gson.fromJson(r.getData2(), tipoEdge);
+		}
 		
+		return generateEsquema(nodes,edges) + generateEsquema(nodesAltoNivel,edgesAltoNivel) ;
+		//List<Object> dataParseada = new ArrayList<Object>();
+		// HashMap dataParseada = new HashMap<Integer,Object>();
+		 
+		// Controlador c = null;
+		// try {
+		// 	c = new Controlador("debug");
+		// } catch (IOException e) {
+		// 	// TODO Auto-generated catch block
+		// 	e.printStackTrace();
+		// }
+		
+		// // NO SE ESTA PASANDO CADENA LIMPIA.
+		// for (int k = 0; k < nodes.size(); k++) {  
+		// 	if(nodes.get(k).getLabel().contains("\n")) {
+		// 		String auxText= nodes.get(k).getLabel();
+		// 		String nameCleaned[]= auxText.split("\n");
+		// 		nodes.get(k).setLabel(nameCleaned[0]); 
+		// 	}
+			
+		// }
+		
+		// for (int i = 0; i < nodes.size(); i++) {
+		// 	switch (nodes.get(i).getShape()) {
+		// 		case "box":
+		// 			TransferEntidad entityTransf = new TransferEntidad();
+		// 			entityTransf.setPosicion(new Point2D.Float(0, (float) 1.0));
+		// 			entityTransf.setNombre(nodes.get(i).getLabel());
+		// 			entityTransf.setDebil(false);
+		// 			entityTransf.setListaAtributos(new Vector());
+		// 			entityTransf.setListaClavesPrimarias(new Vector());
+		// 			entityTransf.setListaRestricciones(new Vector());
+		// 			entityTransf.setListaUniques(new Vector()); 
+		// 			c.mensajeDesde_GUI(TC.GUIInsertarEntidad_Click_BotonInsertar, entityTransf);
+		// 			//dataParseada.add(entityTransf);
+		// 			dataParseada.put(nodes.get(i).getId(),entityTransf);
+		// 			break;
+					
+		// 		case "ellipse":
+		// 			TransferAtributo attributeTransf = new TransferAtributo(c);
+					 
+		// 			attributeTransf.setNombre(nodes.get(i).getLabel()); 
+					
+		// 			double x = 1.0;
+		// 			double y = 1.0;
+		// 			attributeTransf.setPosicion(new Point2D.Double(x,y));
+		// 			attributeTransf.setListaComponentes(new Vector()); 
+		// 			attributeTransf.setClavePrimaria(nodes.get(i).getDataAttribute().isPrimaryKey());  
+		// 			attributeTransf.setCompuesto(false); 
+		// 			// Si esta seleccionado la opcion multivalorado
+		// 			attributeTransf.setMultivalorado(false); 
+		// 			//Unique y Notnull
+		// 			attributeTransf.setNotnull(false);
+		// 			//ponemos unique a false, ya que en caso de ser Unique se hace la llamada abajo.
+		// 			attributeTransf.setUnique(false); 
+		// 			TipoDominio dominio;
+		// 			String dom;  
+		// 			dom=(TipoDominio.VARCHAR).toString();
+		// 			attributeTransf.setDominio(dom); 
+		// 			attributeTransf.setListaRestricciones(new Vector()); 
+
+		// 			//dataParseada.add(attributeTransf);
+		// 			dataParseada.put(nodes.get(i).getId(), attributeTransf);
+		// 			break;
+					
+		// 		case "diamond":
+		// 			TransferRelacion relationTransf = new TransferRelacion();
+		// 			relationTransf.setNombre(nodes.get(i).getLabel());
+		// 			relationTransf.setTipo("Normal");
+		// 			relationTransf.setRol(null);
+		// 			relationTransf.setListaEntidadesYAridades(new Vector());
+		// 			relationTransf.setListaAtributos(new Vector());
+		// 			relationTransf.setListaRestricciones(new Vector());
+		// 			relationTransf.setListaUniques(new Vector());
+		// 			relationTransf.setPosicion(new Point2D.Float(0, (float) 1.0)); 
+		// 			relationTransf.setVolumen(0);
+		// 			relationTransf.setFrecuencia(0);
+		// 			relationTransf.setOffsetAttr(0);
+		// 			c.mensajeDesde_GUI(TC.GUIInsertarRelacion_Click_BotonInsertar, relationTransf);
+
+		// 			//ataParseada.add(relationTransf);
+		// 			dataParseada.put(nodes.get(i).getId(), relationTransf);
+		// 			break;
+				
+		// 		case "triangleDown":
+		// 			TransferRelacion relationTransfIsA = new TransferRelacion();
+		// 			relationTransfIsA.setNombre(nodes.get(i).getLabel());
+		// 			relationTransfIsA.setTipo("IsA");
+		// 			relationTransfIsA.setRol(null);
+		// 			relationTransfIsA.setListaEntidadesYAridades(new Vector());
+		// 			relationTransfIsA.setListaAtributos(new Vector());
+		// 			relationTransfIsA.setListaRestricciones(new Vector());
+		// 			relationTransfIsA.setListaUniques(new Vector());
+		// 			relationTransfIsA.setPosicion(new Point2D.Float(0, (float) 1.0)); 
+		// 			relationTransfIsA.setVolumen(0);
+		// 			relationTransfIsA.setFrecuencia(0);
+		// 			relationTransfIsA.setOffsetAttr(0);
+		// 			c.mensajeDesde_GUI(TC.GUIInsertarRelacionIsA_Click_BotonInsertar, relationTransfIsA);
+
+		// 			//ataParseada.add(relationTransf);
+		// 			dataParseada.put(nodes.get(i).getId(), relationTransfIsA);
+		// 			break;
+		// 	}
+		// }
+		
+		// for (int j = 0; j < edges.size(); j++) {
+		// 	edges.get(j).updateLabelFromName();
+		// 	if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferEntidad) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferAtributo)) {
+		// 		// Mandamos la entidad, el nuevo atributo y si hay tamano tambien
+		// 		Vector<Object> v = new Vector<Object>();
+		// 		String tamano = "";
+		// 		TransferEntidad te = (TransferEntidad)dataParseada.get(edges.get(j).getFrom());
+		// 		TransferAtributo ta = (TransferAtributo)dataParseada.get(edges.get(j).getTo());
+		// 		v.add(te);
+		// 		v.add(ta);
+		// 		if (!tamano.isEmpty()) v.add(tamano);
+		// 		c.mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_Click_BotonAnadir, v);
+		// 		if (true){
+		// 			Vector<Object> v1= new Vector<Object>();
+		// 			TransferAtributo clon_atributo2 = ta.clonar();
+		// 			clon_atributo2.setClavePrimaria(false);
+		// 			v1.add(clon_atributo2);
+		// 		    v1.add(te);
+		// 			c.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarClavePrimariaAtributo,v1);
+		// 		}  
+		// 	}
+		// 	else if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferAtributo)) {
+		// 		System.out.println("no implementado");
+		// 	}
+		// 	else if(edges.get(j).getType() == null &&  (dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferEntidad)) {
+		// 		Vector<Object> vData= new Vector<Object>();
+				
+		// 		TransferEntidad teB = (TransferEntidad)dataParseada.get(edges.get(j).getTo());
+		// 		TransferRelacion tRelation = (TransferRelacion)dataParseada.get(edges.get(j).getFrom());
+				
+		// 		TransferEntidad clon_entidad = teB.clonar(); // transfer entidad B 
+		// 		TransferRelacion clon_rel= tRelation.clonar(); 
+
+		// 		vData.add(tRelation);
+		// 		vData.add(clon_entidad);
+		// 		vData.add(edges.get(j).getLabelFrom().toLowerCase());
+		// 		vData.add(edges.get(j).getLabelTo().toLowerCase());
+		// 		vData.add(edges.get(j).getLabel());
+				
+		// 		c.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ClickBotonAnadir, vData);
+		// 	}
+		// 	//RELACIONAMOS LAS RELACIONES IS_A con las entidades correspondientes habrá que parsear el tipo si es child or parent.
+		// 	else if(edges.get(j).getType() != null &&  (dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferEntidad)) {
+				
+		// 		Vector<Object> vData= new Vector<Object>();
+		// 		TransferEntidad teB = (TransferEntidad)dataParseada.get(edges.get(j).getTo());
+		// 		TransferRelacion tRelation = (TransferRelacion)dataParseada.get(edges.get(j).getFrom());
+		// 		TransferEntidad clon_entidad = teB.clonar(); // transfer entidad B 
+
+		// 		vData.add(tRelation);
+		// 		vData.add(clon_entidad);
+
+		// 		if(edges.get(j).getType().contains("parent"))
+		// 			c.mensajeDesde_GUI(TC.GUIEstablecerEntidadPadre_ClickBotonAceptar, vData);
+
+		// 		else // para los hijos
+		// 			c.mensajeDesde_GUI(TC.GUIAnadirEntidadHija_ClickBotonAnadir,vData);
+				
+		// 	}
+		// 	else {
+		// 		System.err.println("problemas al parseo de las relaciones");
+		// 	}
+		// } 
+			
+		// // ASIGNAR A ENTIDAD UNA RELACION ==//	
+		// GeneradorEsquema testGen = new GeneradorEsquema(messageSource);
+		// testGen.setControlador(c);
+		// String respuesta = testGen.generaModeloRelacional_v3("default");
+		// System.err.println(respuesta);
+		// return respuesta;
+	} 
+
+	public String generateEsquema(List<Node>  nodes,List<Edge>  edges){
 		//List<Object> dataParseada = new ArrayList<Object>();
 		HashMap dataParseada = new HashMap<Integer,Object>();
 		 
@@ -175,7 +442,7 @@ public class GoogleserviceApplication {
 					attributeTransf.setPosicion(new Point2D.Double(x,y));
 					attributeTransf.setListaComponentes(new Vector()); 
 					attributeTransf.setClavePrimaria(nodes.get(i).getDataAttribute().isPrimaryKey());  
-					attributeTransf.setCompuesto(false); 
+					attributeTransf.setCompuesto(nodes.get(i).getDataAttribute().isComposite()); 
 					// Si esta seleccionado la opcion multivalorado
 					attributeTransf.setMultivalorado(false); 
 					//Unique y Notnull
@@ -299,10 +566,10 @@ public class GoogleserviceApplication {
 		// ASIGNAR A ENTIDAD UNA RELACION ==//	
 		GeneradorEsquema testGen = new GeneradorEsquema(messageSource);
 		testGen.setControlador(c);
-		String respuesta = testGen.generaModeloRelacional_v3("default");
+		String respuesta = testGen.generaModeloRelacional_v3("default",true);
 		System.err.println(respuesta);
 		return respuesta;
-	} 
+	}
 
 	public String updateLabelDom(String lblDom,String size){
 		switch(lblDom.toUpperCase()){
@@ -313,30 +580,8 @@ public class GoogleserviceApplication {
 		} 
 	}
 
-	@RequestMapping(value = "/generateDataScriptSQL", method = RequestMethod.POST)
-	public String generateDataScriptSQL(@RequestBody Generic r, HttpServletRequest req, HttpServletResponse resp) {
-
-		// TransferConexion tc = (TransferConexion) datos;
-		// this.getTheServiciosSistema().generaScriptSQL(tc);
-		// break;
-
-		// r.getData1() Nodes
-		// r.getData2() Edges
-		// r.getData3() Label del tipo Esquema Fisico
-		// r.getData4() Index del tipo Esquema Fisico
-
-		Gson gson = new Gson(); 
-		//Node model = gson.fromJson(r.getData1(),Node.class);
-		
-		Type tipoNode = new TypeToken<List<Node>>(){}.getType();  
-		Type tipoEdge = new TypeToken<List<Edge>>(){}.getType(); 
-		
-		List<Node> nodes = gson.fromJson(r.getData1(), tipoNode); 
-		List<Edge> edges = gson.fromJson(r.getData2(), tipoEdge);
-		String lblPhySchema = r.getData3();
-		String idxPhySchema = r.getData4();
-
-		List<Object> dataParseada = new ArrayList<Object>();
+	public String generateEsquemaScriptSQL(List<Node>  nodes,List<Edge>  edges,String lblPhySchema,String idxPhySchema){
+		HashMap dataParseada = new HashMap<Integer,Object>();
 		 
 		Controlador c = null;
 		try {
@@ -368,7 +613,8 @@ public class GoogleserviceApplication {
 					entityTransf.setListaRestricciones(new Vector());
 					entityTransf.setListaUniques(new Vector()); 
 					c.mensajeDesde_GUI(TC.GUIInsertarEntidad_Click_BotonInsertar, entityTransf);
-					dataParseada.add(entityTransf);
+					//dataParseada.add(entityTransf);
+					dataParseada.put(nodes.get(i).getId(), entityTransf);
 					break;
 					
 				case "ellipse":
@@ -396,7 +642,8 @@ public class GoogleserviceApplication {
 					dom= updateLabelDom(nodes.get(i).getDataAttribute().getDomain(), nodes.get(i).getDataAttribute().getSize());
 					attributeTransf.setDominio(dom); 
 					attributeTransf.setListaRestricciones(new Vector()); 
-					dataParseada.add(attributeTransf);
+					//dataParseada.add(attributeTransf);
+					dataParseada.put(nodes.get(i).getId(), attributeTransf);
 					break;
 					
 				case "diamond":
@@ -413,7 +660,27 @@ public class GoogleserviceApplication {
 					relationTransf.setFrecuencia(0);
 					relationTransf.setOffsetAttr(0);
 					c.mensajeDesde_GUI(TC.GUIInsertarRelacion_Click_BotonInsertar, relationTransf);
-					dataParseada.add(relationTransf);
+					//dataParseada.add(relationTransf);
+					dataParseada.put(nodes.get(i).getId(), relationTransf);
+					break;
+
+				case "triangleDown":
+					TransferRelacion relationTransfIsA = new TransferRelacion();
+					relationTransfIsA.setNombre(nodes.get(i).getLabel());
+					relationTransfIsA.setTipo("IsA");
+					relationTransfIsA.setRol(null);
+					relationTransfIsA.setListaEntidadesYAridades(new Vector());
+					relationTransfIsA.setListaAtributos(new Vector());
+					relationTransfIsA.setListaRestricciones(new Vector());
+					relationTransfIsA.setListaUniques(new Vector());
+					relationTransfIsA.setPosicion(new Point2D.Float(0, (float) 1.0)); 
+					relationTransfIsA.setVolumen(0);
+					relationTransfIsA.setFrecuencia(0);
+					relationTransfIsA.setOffsetAttr(0);
+					c.mensajeDesde_GUI(TC.GUIInsertarRelacionIsA_Click_BotonInsertar, relationTransfIsA);
+
+					//ataParseada.add(relationTransf);
+					dataParseada.put(nodes.get(i).getId(), relationTransfIsA);
 					break;
 			}
 		}
@@ -437,12 +704,12 @@ public class GoogleserviceApplication {
 					v1.add(clon_atributo2);
 				    v1.add(te);
 					c.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarClavePrimariaAtributo,v1);
-				}  
+				}
 			}
 			else if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferAtributo)) {
 				System.out.println("no implementado");
 			}
-			else if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferEntidad)) {
+			else if(edges.get(j).getType() == null &&  (dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferEntidad)) {
 				Vector<Object> vData= new Vector<Object>();
 				
 				TransferEntidad teB = (TransferEntidad)dataParseada.get(edges.get(j).getTo());
@@ -459,6 +726,24 @@ public class GoogleserviceApplication {
 				
 				c.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ClickBotonAnadir, vData);
 			}
+			//RELACIONAMOS LAS RELACIONES IS_A con las entidades correspondientes habrá que parsear el tipo si es child or parent.
+			else if(edges.get(j).getType() != null &&  (dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferEntidad)) {
+				
+				Vector<Object> vData= new Vector<Object>();
+				TransferEntidad teB = (TransferEntidad)dataParseada.get(edges.get(j).getTo());
+				TransferRelacion tRelation = (TransferRelacion)dataParseada.get(edges.get(j).getFrom());
+				TransferEntidad clon_entidad = teB.clonar(); // transfer entidad B 
+
+				vData.add(tRelation);
+				vData.add(clon_entidad);
+
+				if(edges.get(j).getType().contains("parent"))
+					c.mensajeDesde_GUI(TC.GUIEstablecerEntidadPadre_ClickBotonAceptar, vData);
+
+				else // para los hijos
+					c.mensajeDesde_GUI(TC.GUIAnadirEntidadHija_ClickBotonAnadir,vData);
+				
+			}
 			else {
 				System.err.println("problemas al parseo de las relaciones");
 			}
@@ -468,7 +753,7 @@ public class GoogleserviceApplication {
 		GeneradorEsquema testGen = new GeneradorEsquema(messageSource);
 		TransferConexion tc = new TransferConexion(Integer.parseInt(idxPhySchema),lblPhySchema,false,"","","");
 		testGen.setControlador(c);
-		String respuesta = testGen.generaModeloRelacional_v3(tc.getRuta());
+		String respuesta = testGen.generaModeloRelacional_v3(tc.getRuta(),false);
 
 
 		/*
@@ -479,9 +764,270 @@ public class GoogleserviceApplication {
 		*/
   
 		
-		respuesta = testGen.generaScriptSQL(tc);
-		return respuesta;
+		return testGen.generaScriptSQL(tc);
+	}
+
+	@RequestMapping(value = "/generateDataScriptSQL", method = RequestMethod.POST)
+	public String generateDataScriptSQL(@RequestBody Generic r, HttpServletRequest req, HttpServletResponse resp) {
+
+		// TransferConexion tc = (TransferConexion) datos;
+		// this.getTheServiciosSistema().generaScriptSQL(tc);
+		// break;
+
+		// r.getData1() Nodes
+		// r.getData2() Edges
+		// r.getData3() Label del tipo Esquema Fisico
+		// r.getData4() Index del tipo Esquema Fisico
+
+		Gson gson = new Gson(); 
+		//Node model = gson.fromJson(r.getData1(),Node.class);
+		
+		Type tipoNode = new TypeToken<List<Node>>(){}.getType();  
+		Type tipoEdge = new TypeToken<List<Edge>>(){}.getType(); 
+		
+		List<Node> nodes = gson.fromJson(r.getData1(), tipoNode); 
+		List<Edge> edges = gson.fromJson(r.getData2(), tipoEdge);
+		String lblPhySchema = r.getData5();
+		String idxPhySchema = r.getData6();
+
+		List<Node> nodesAltoNivel = gson.fromJson(r.getData3(), tipoNode); 
+		List<Edge> edgesAltoNivel = gson.fromJson(r.getData4(), tipoEdge);
+
+
+		if(!nodesAltoNivel.isEmpty() & !edgesAltoNivel.isEmpty()){
+			nodes = gson.fromJson(r.getData1(), tipoNode);
+			edges = gson.fromJson(r.getData2(), tipoEdge);
+			//BUSCAMOS LA IMAGEN DE ALTO NIVEL PARA ASIGNARLE UNA PRIMARY KEY COMPUESTA POR TODAS PRIMARY KEYS INTERNAS EN LA AGREGACION
+			String lblEntidadAltoNivel = "";
+			for(int nodeIdx = 0; nodeIdx < nodesAltoNivel.size(); nodeIdx++){
+				if(nodesAltoNivel.get(nodeIdx).getDataAttribute() != null && nodesAltoNivel.get(nodeIdx).getDataAttribute().isPrimaryKey()){
+					Node altoNivelPrimaryKey = new Node();
+					DataAttribute altoNivelDataAttribute = new DataAttribute();
+					//CREAMOS LA CLAVE PRIMARIA
+					altoNivelDataAttribute.setComposite(false);
+					altoNivelDataAttribute.setDomain("varchar");
+					altoNivelDataAttribute.setMultivalued(false);
+					altoNivelDataAttribute.setNotNull(false);
+					altoNivelDataAttribute.setPrimaryKey(true);
+					altoNivelDataAttribute.setSize("20");
+					altoNivelDataAttribute.setUnique(false);
+
+					altoNivelPrimaryKey.setId(999998-nodeIdx);
+					altoNivelPrimaryKey.setLabel(nodesAltoNivel.get(nodeIdx).getLabel());
+					altoNivelPrimaryKey.setPhysics(false);
+					altoNivelPrimaryKey.setShape("ellipse");
+					altoNivelPrimaryKey.setStrong(false);
+					altoNivelPrimaryKey.setDataAttribute(altoNivelDataAttribute);
+
+					nodes.add(altoNivelPrimaryKey); 
+
+					//  CREAMOS LA RELACIóN ENTRE LA CLAVE CREADA Y LA ENTIDAD
+					Edge altoNivelPrimaryKeyEdge = new Edge();
+
+					altoNivelPrimaryKeyEdge.setFrom(9999999);
+					altoNivelPrimaryKeyEdge.setId(UUID.randomUUID().toString());
+					altoNivelPrimaryKeyEdge.setTo(999998-nodeIdx); 
+
+					edges.add(altoNivelPrimaryKeyEdge);	
+				}
+				
+			}
+		}
+		else{
+			nodes = gson.fromJson(r.getData1(), tipoNode);
+			edges = gson.fromJson(r.getData2(), tipoEdge);
+		}
+	
+
+		return generateEsquemaScriptSQL(nodes ,edges ,lblPhySchema ,idxPhySchema) + generateEsquemaScriptSQL(nodesAltoNivel ,edgesAltoNivel ,lblPhySchema ,idxPhySchema);
+		// HashMap dataParseada = new HashMap<Integer,Object>();
+		 
+		// Controlador c = null;
+		// try {
+		// 	c = new Controlador("debug");
+		// } catch (IOException e) {
+		// 	// TODO Auto-generated catch block
+		// 	e.printStackTrace();
+		// }
+		
+		// // NO SE ESTA PASANDO CADENA LIMPIA.
+		// for (int k = 0; k < nodes.size(); k++) {  
+		// 	if(nodes.get(k).getLabel().contains("\n")) {
+		// 		String auxText= nodes.get(k).getLabel();
+		// 		String nameCleaned[]= auxText.split("\n");
+		// 		nodes.get(k).setLabel(nameCleaned[0]); 
+		// 	}
+			
+		// }
+		
+		// for (int i = 0; i < nodes.size(); i++) {
+		// 	switch (nodes.get(i).getShape()) {
+		// 		case "box":
+		// 			TransferEntidad entityTransf = new TransferEntidad();
+		// 			entityTransf.setPosicion(new Point2D.Float(0, (float) 1.0));
+		// 			entityTransf.setNombre(nodes.get(i).getLabel());
+		// 			entityTransf.setDebil(false);
+		// 			entityTransf.setListaAtributos(new Vector());
+		// 			entityTransf.setListaClavesPrimarias(new Vector());
+		// 			entityTransf.setListaRestricciones(new Vector());
+		// 			entityTransf.setListaUniques(new Vector()); 
+		// 			c.mensajeDesde_GUI(TC.GUIInsertarEntidad_Click_BotonInsertar, entityTransf);
+		// 			//dataParseada.add(entityTransf);
+		// 			dataParseada.put(nodes.get(i).getId(), entityTransf);
+		// 			break;
+					
+		// 		case "ellipse":
+		// 			TransferAtributo attributeTransf = new TransferAtributo(c);
+					 
+		// 			attributeTransf.setNombre(nodes.get(i).getLabel()); 
+					
+		// 			double x = 1.0;
+		// 			double y = 1.0;
+		// 			attributeTransf.setPosicion(new Point2D.Double(x,y));
+		// 			attributeTransf.setListaComponentes(new Vector()); 
+		// 			attributeTransf.setClavePrimaria(nodes.get(i).getDataAttribute().isPrimaryKey());  
+		// 			attributeTransf.setCompuesto(false); 
+		// 			// Si esta seleccionado la opcion multivalorado
+		// 			attributeTransf.setMultivalorado(false); 
+		// 			//Unique y Notnull
+		// 			attributeTransf.setNotnull(false);
+		// 			//ponemos unique a false, ya que en caso de ser Unique se hace la llamada abajo.
+		// 			attributeTransf.setUnique(false); 
+		// 			TipoDominio dominio;
+		// 			String dom;  
+		// 			// dom=(TipoDominio.VARCHAR).toString();
+		// 			// dom += "("+nodes.get(i).getDataAttribute().getSize()+")";
+ 
+		// 			dom= updateLabelDom(nodes.get(i).getDataAttribute().getDomain(), nodes.get(i).getDataAttribute().getSize());
+		// 			attributeTransf.setDominio(dom); 
+		// 			attributeTransf.setListaRestricciones(new Vector()); 
+		// 			//dataParseada.add(attributeTransf);
+		// 			dataParseada.put(nodes.get(i).getId(), attributeTransf);
+		// 			break;
+					
+		// 		case "diamond":
+		// 			TransferRelacion relationTransf = new TransferRelacion();
+		// 			relationTransf.setNombre(nodes.get(i).getLabel());
+		// 			relationTransf.setTipo("Normal");
+		// 			relationTransf.setRol(null);
+		// 			relationTransf.setListaEntidadesYAridades(new Vector());
+		// 			relationTransf.setListaAtributos(new Vector());
+		// 			relationTransf.setListaRestricciones(new Vector());
+		// 			relationTransf.setListaUniques(new Vector());
+		// 			relationTransf.setPosicion(new Point2D.Float(0, (float) 1.0)); 
+		// 			relationTransf.setVolumen(0);
+		// 			relationTransf.setFrecuencia(0);
+		// 			relationTransf.setOffsetAttr(0);
+		// 			c.mensajeDesde_GUI(TC.GUIInsertarRelacion_Click_BotonInsertar, relationTransf);
+		// 			//dataParseada.add(relationTransf);
+		// 			dataParseada.put(nodes.get(i).getId(), relationTransf);
+		// 			break;
+
+		// 		case "triangleDown":
+		// 			TransferRelacion relationTransfIsA = new TransferRelacion();
+		// 			relationTransfIsA.setNombre(nodes.get(i).getLabel());
+		// 			relationTransfIsA.setTipo("IsA");
+		// 			relationTransfIsA.setRol(null);
+		// 			relationTransfIsA.setListaEntidadesYAridades(new Vector());
+		// 			relationTransfIsA.setListaAtributos(new Vector());
+		// 			relationTransfIsA.setListaRestricciones(new Vector());
+		// 			relationTransfIsA.setListaUniques(new Vector());
+		// 			relationTransfIsA.setPosicion(new Point2D.Float(0, (float) 1.0)); 
+		// 			relationTransfIsA.setVolumen(0);
+		// 			relationTransfIsA.setFrecuencia(0);
+		// 			relationTransfIsA.setOffsetAttr(0);
+		// 			c.mensajeDesde_GUI(TC.GUIInsertarRelacionIsA_Click_BotonInsertar, relationTransfIsA);
+
+		// 			//ataParseada.add(relationTransf);
+		// 			dataParseada.put(nodes.get(i).getId(), relationTransfIsA);
+		// 			break;
+		// 	}
+		// }
+		
+		// for (int j = 0; j < edges.size(); j++) {
+		// 	edges.get(j).updateLabelFromName();
+		// 	if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferEntidad) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferAtributo)) {
+		// 		// Mandamos la entidad, el nuevo atributo y si hay tamano tambien
+		// 		Vector<Object> v = new Vector<Object>();
+		// 		String tamano = "";
+		// 		TransferEntidad te = (TransferEntidad)dataParseada.get(edges.get(j).getFrom());
+		// 		TransferAtributo ta = (TransferAtributo)dataParseada.get(edges.get(j).getTo());
+		// 		v.add(te);
+		// 		v.add(ta);
+		// 		if (!tamano.isEmpty()) v.add(tamano);
+		// 		c.mensajeDesde_GUI(TC.GUIAnadirAtributoEntidad_Click_BotonAnadir, v);
+		// 		if (true){
+		// 			Vector<Object> v1= new Vector<Object>();
+		// 			TransferAtributo clon_atributo2 = ta.clonar();
+		// 			clon_atributo2.setClavePrimaria(false);
+		// 			v1.add(clon_atributo2);
+		// 		    v1.add(te);
+		// 			c.mensajeDesde_PanelDiseno(TC.PanelDiseno_Click_EditarClavePrimariaAtributo,v1);
+		// 		}  
+		// 	}
+		// 	else if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferAtributo)) {
+		// 		System.out.println("no implementado");
+		// 	}
+		// 	else if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferEntidad)) {
+		// 		Vector<Object> vData= new Vector<Object>();
+				
+		// 		TransferEntidad teB = (TransferEntidad)dataParseada.get(edges.get(j).getTo());
+		// 		TransferRelacion tRelation = (TransferRelacion)dataParseada.get(edges.get(j).getFrom());
+				
+		// 		TransferEntidad clon_entidad = teB.clonar(); // transfer entidad B 
+		// 		TransferRelacion clon_rel= tRelation.clonar(); 
+
+		// 		vData.add(tRelation);
+		// 		vData.add(clon_entidad);
+		// 		vData.add(edges.get(j).getLabelFrom().toLowerCase());
+		// 		vData.add(edges.get(j).getLabelTo().toLowerCase());
+		// 		vData.add(edges.get(j).getLabel());
+				
+		// 		c.mensajeDesde_GUI(TC.GUIAnadirEntidadARelacion_ClickBotonAnadir, vData);
+		// 	}
+		// 	//RELACIONAMOS LAS RELACIONES IS_A con las entidades correspondientes habrá que parsear el tipo si es child or parent.
+		// 	else if(edges.get(j).getType() != null &&  (dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferEntidad)) {
+						
+		// 		Vector<Object> vData= new Vector<Object>();
+		// 		TransferEntidad teB = (TransferEntidad)dataParseada.get(edges.get(j).getTo());
+		// 		TransferRelacion tRelation = (TransferRelacion)dataParseada.get(edges.get(j).getFrom());
+		// 		TransferEntidad clon_entidad = teB.clonar(); // transfer entidad B 
+
+		// 		vData.add(tRelation);
+		// 		vData.add(clon_entidad);
+
+		// 		if(edges.get(j).getType().contains("parent"))
+		// 			c.mensajeDesde_GUI(TC.GUIEstablecerEntidadPadre_ClickBotonAceptar, vData);
+
+		// 		else // para los hijos
+		// 			c.mensajeDesde_GUI(TC.GUIAnadirEntidadHija_ClickBotonAnadir,vData);
+				
+		// 	}
+		// 	else {
+		// 		System.err.println("problemas al parseo de las relaciones");
+		// 	}
+		// }
+
+		// // ASIGNAR A ENTIDAD UNA RELACION ==//	
+		// GeneradorEsquema testGen = new GeneradorEsquema(messageSource);
+		// TransferConexion tc = new TransferConexion(Integer.parseInt(idxPhySchema),lblPhySchema,false,"","","");
+		// testGen.setControlador(c);
+		// String respuesta = testGen.generaModeloRelacional_v3(tc.getRuta());
+
+
+		// /*
+		// 	v.add(CONECTOR_MYSQL, "MySQL");
+		// 	v.add(CONECTOR_MSACCESS_MDB, "Microsoft Access .mdb");
+		// 	v.add(CONECTOR_MSACCESS_ODBC, "Microsoft Access via ODBC");
+		// 	v.add(CONECTOR_ORACLE, "Oracle");
+		// */
+  
+		
+		// return testGen.generaScriptSQL(tc);
 	} 
+
+
+
  
 //	@RequestMapping(value = "/generateData", method = RequestMethod.POST)
 //	public ModelAndView generateData(@RequestBody Generic r, HttpServletRequest req, HttpServletResponse resp) {

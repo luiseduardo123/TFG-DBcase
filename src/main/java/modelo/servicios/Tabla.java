@@ -227,10 +227,10 @@ public class Tabla {
 	private String nombreColumn(String referencia, String tabla) {
 		return referencia.substring(tabla.length()+1);
 	}
-	public String modeloRelacionalDeTabla(boolean p,String sqlType){
+	public String modeloRelacionalDeTabla(boolean p, String sqlType, boolean scriptSQL){
 		String mr="";
 		if(p) mr+="<p>";
-		mr+=this.ponGuionesBajos(nombreTabla,sqlType)+" (";
+		mr+=this.ponGuionesBajos(nombreTabla,"DEFAULT")+" (";
 		Vector<String[]>definitivo= new Vector<String[]>();
 		//dejamos los elementos en las 3 listas sin duplicados.
 		definitivo=this.filtra(atributos, primaries);
@@ -246,7 +246,7 @@ public class Tabla {
 			if (i>0||j>0) mr+=", ";
 			String repe="";
 			if (this.estaRepe(definitivo.elementAt(j)[0], atributos) && nombreTabla != definitivo.elementAt(j)[2]) repe +=definitivo.elementAt(j)[2]+"_";
-			mr+=this.ponGuionesBajos(repe+definitivo.elementAt(j)[0]+asterisco(definitivo.elementAt(j)),sqlType);
+			mr+=this.ponGuionesBajos(repe+definitivo.elementAt(j)[0]+asterisco(definitivo.elementAt(j),scriptSQL),sqlType);
 		}	
 		mr+=")";
 		if(p)mr+="</p>";
@@ -256,7 +256,7 @@ public class Tabla {
 	public String restriccionIR(boolean prim, String referencia,String sqlType){
 		String mr="";
 		boolean atr = false;
-		mr+=this.ponGuionesBajos(nombreTabla,sqlType)+" (";
+		mr+=this.ponGuionesBajos(nombreTabla,"DEFAULT")+" (";
 		//Vector<String[]>definitivo= new Vector<String[]>();
 		//dejamos los elementos en las 3 listas sin duplicados.
 		//definitivo=this.filtra(atributos, primaries);
@@ -277,8 +277,8 @@ public class Tabla {
 		if(atr)mr+=")";
 		return mr;
 	}
-	private String asterisco(String[] a) {
-		return c.isNullAttrs() && a[4]=="0"?"*":"";
+	private String asterisco(String[] a,boolean scriptSQL) {
+		return c.isNullAttrs() && a[4]=="0" && scriptSQL?"*":"";
 	}
 	public String getNombreTabla() {
 		return nombreTabla;

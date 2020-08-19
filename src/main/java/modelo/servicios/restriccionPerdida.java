@@ -66,15 +66,26 @@ public class restriccionPerdida {
 			return s;
 	}
 	private String descTotal() {
+		// String res=" ";
+		// boolean c = false;
+		// if(card[0]==1) res+=Lenguaje.text(Lenguaje.PART_TOTAL);
+		// else if(card[0]>1 && card[0]<Integer.MAX_VALUE) {
+		// 	res+=res.equals(" ") ? (Lenguaje.text(Lenguaje.CARDMINDE) + card[0]) : (Lenguaje.text(Lenguaje.YCARDMINDE) + card[0]);
+		// 	c=true;
+		// }
+		// if(card[1]>1 && card[1]<Integer.MAX_VALUE)
+		// 	res+=res.equals(" ") ? (Lenguaje.text(Lenguaje.CARDMAXDE) + card[1]) : (c?Lenguaje.text(Lenguaje.YMAXDE)+ card[1] :Lenguaje.text(Lenguaje.YCARDMAXDE) + card[1]);
+		// return res+=Lenguaje.text(Lenguaje.OF) + entidad.split("\\(")[0] + Lenguaje.text(Lenguaje.FOR) + relacion.split("\\(")[0];
+
 		String res=" ";
 		boolean c = false;
-		if(card[0]==1) res+=Lenguaje.text(Lenguaje.PART_TOTAL);
+		if(card[0]==1) res+="Total Participation";
 		else if(card[0]>1 && card[0]<Integer.MAX_VALUE) {
-			res+=res.equals(" ") ? (Lenguaje.text(Lenguaje.CARDMINDE) + card[0]) : (Lenguaje.text(Lenguaje.YCARDMINDE) + card[0]);
+			res+=res.equals(" ") ? ("Minimum cardinality of " + card[0]) : (" and minimum cardinality of " + card[0]);
 			c=true;
 		}
 		if(card[1]>1 && card[1]<Integer.MAX_VALUE)
-			res+=res.equals(" ") ? (Lenguaje.text(Lenguaje.CARDMAXDE) + card[1]) : (c?Lenguaje.text(Lenguaje.YMAXDE)+ card[1] :Lenguaje.text(Lenguaje.YCARDMAXDE) + card[1]);
-		return res+=Lenguaje.text(Lenguaje.OF) + entidad.split("\\(")[0] + Lenguaje.text(Lenguaje.FOR) + relacion.split("\\(")[0];
+			res+=res.equals(" ") ? ("Maximum cardinality of "+ card[1]) : (c?" and maximum of "+ card[1] :" and maximum cardinality of " + card[1]);
+		return res+=" of " + entidad.split("\\(")[0] + " in " + relacion.split("\\(")[0];
 	}
 }

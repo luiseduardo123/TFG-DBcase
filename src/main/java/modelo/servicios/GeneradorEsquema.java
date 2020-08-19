@@ -89,7 +89,8 @@ public class GeneradorEsquema {
 			//recorremos los atributos aniadiendolos a la tabla
 			for (int j=0;j<atribs.size();j++){
 				TransferAtributo ta=atribs.elementAt(j);
-				if(ta.getUnique()) restriccionesPerdidas.add(new restriccionPerdida(te.getNombre(), ta+" "+this.msgSrc.getMessage("textosId.isUnique", null, this.loc), restriccionPerdida.TABLA));
+				if(ta.getUnique()) 
+					restriccionesPerdidas.add(new restriccionPerdida(te.getNombre(), ta+" "+this.msgSrc.getMessage("textosId.isUnique", null, this.loc), restriccionPerdida.TABLA));
 				if (ta.getCompuesto()) 
 					tabla.aniadeListaAtributos(this.atributoCompuesto(ta, te.getNombre(),""),te.getListaRestricciones(),tiposEnumerados);
 				else if (ta.isMultivalorado()) multivalorados.add(ta);
@@ -148,7 +149,8 @@ public class GeneradorEsquema {
 				Vector<TransferAtributo> ats = this.dameAtributosEnTransfer(tr.getListaAtributos());
 				for (int a = 0; a < ats.size(); a++) {
 					TransferAtributo ta = ats.elementAt(a);
-					if(ta.getUnique()) restriccionesPerdidas.add(new restriccionPerdida(tr.getNombre(), ta+" "+this.msgSrc.getMessage("textosId.isUnique", null, this.loc), restriccionPerdida.TABLA));
+					if(ta.getUnique()) 
+						restriccionesPerdidas.add(new restriccionPerdida(tr.getNombre(), ta+" "+this.msgSrc.getMessage("textosId.isUnique", null, this.loc), restriccionPerdida.TABLA));
 					if (ta.getCompuesto())
 						tabla.aniadeListaAtributos(this.atributoCompuesto(ta, tr.getNombre(), ""), ta.getListaRestricciones(), tiposEnumerados);
 					else if (ta.isMultivalorado()) multivalorados.add(ta);
@@ -237,7 +239,8 @@ public class GeneradorEsquema {
 								}
 							}
 						}
-						restriccionesPerdidas.add(new restriccionPerdida(recurs?aux.restriccionIR(true,ent.getNombreTabla(),sqlType):tabla.restriccionIR(true,ent.getNombreTabla(),sqlType),ent.restriccionIR(false, "",sqlType), 
+						restriccionesPerdidas.add(
+									new restriccionPerdida(recurs?aux.restriccionIR(true,ent.getNombreTabla(),sqlType):tabla.restriccionIR(true,ent.getNombreTabla(),sqlType),ent.restriccionIR(false, "",sqlType), 
 										eya.getPrincipioRango(), eya.getFinalRango(), restriccionPerdida.TOTAL));
 					}
 				}
@@ -727,19 +730,19 @@ public class GeneradorEsquema {
 		Iterator tablasE = tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
-			mr+=t.modeloRelacionalDeTabla(true,"DEFAULT");
+			mr+=t.modeloRelacionalDeTabla(true,"DEFAULT",true);
 		}
 		
 		Iterator tablasR = tablasRelaciones.values().iterator();
 		while (tablasR.hasNext()){
 			Tabla t =(Tabla)tablasR.next();
-			mr+=t.modeloRelacionalDeTabla(true,"DEFAULT");
+			mr+=t.modeloRelacionalDeTabla(true,"DEFAULT",true);
 		}
 		
 		Iterator tablasM = tablasMultivalorados.iterator();
 		while (tablasM.hasNext()){
 			Tabla t =(Tabla)tablasM.next();
-			mr+=t.modeloRelacionalDeTabla(true,"DEFAULT");
+			mr+=t.modeloRelacionalDeTabla(true,"DEFAULT",true);
 		}
 		mr += "<p></p></div><div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
 		mr += restriccionesIR();
@@ -863,7 +866,7 @@ public class GeneradorEsquema {
 		this.validadorBD.setControlador(controlador);
 	}
 	
-	public String generaModeloRelacional_v3(String sqlType) {
+	public String generaModeloRelacional_v3(String sqlType,boolean scriptSQL) {
 		reset();
 		StringBuilder warnings = new StringBuilder();
 		if (!validadorBD.validaBaseDeDatos(true, warnings))
@@ -876,19 +879,19 @@ public class GeneradorEsquema {
 		Iterator tablasE = tablasEntidades.values().iterator();
 		while (tablasE.hasNext()) {
 			Tabla t = (Tabla) tablasE.next();
-			mr += t.modeloRelacionalDeTabla(true,sqlType);
+			mr += t.modeloRelacionalDeTabla(true,sqlType, scriptSQL);
 		}
 
 		Iterator tablasR = tablasRelaciones.values().iterator();
 		while (tablasR.hasNext()) {
 			Tabla t = (Tabla) tablasR.next();
-			mr += t.modeloRelacionalDeTabla(true,sqlType);
+			mr += t.modeloRelacionalDeTabla(true,sqlType, scriptSQL);
 		}
 
 		Iterator tablasM = tablasMultivalorados.iterator();
 		while (tablasM.hasNext()) {
 			Tabla t = (Tabla) tablasM.next();
-			mr += t.modeloRelacionalDeTabla(true,sqlType);
+			mr += t.modeloRelacionalDeTabla(true,sqlType, scriptSQL);
 		}
 		mr += "<p></p></div><div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.ric", null, this.loc)+"</p>";
 		mr += restriccionesIR();

@@ -30,37 +30,96 @@ $(document).ready(function () {
 			
        	 	$('#btnTest').on('click', function () {
        		  //var url = "<c:url value="/generateData"/>";
-       		  var f= 2;
-       		  var myObj = {}; 
-              myObj["data1"] = JSON.stringify(nodes.get()); 
-              myObj["data2"] = JSON.stringify(edges.get()); 
-              var json = JSON.stringify(myObj);
-                
-       		  $.ajax({
-                     type: 'POST',
-                     url: '/generateData',
-                     data: json,
-                     contentType: "application/json",
-                     success: function (data) {
-                         $("#testResult").html(data);
-                     },
-                     error: function (xhr, ajaxOptions, thrownError) {
-                         console.log(xhr.status);
-                         console.log(xhr.responseText);
-                         console.log(thrownError);
-                     }
+       		  	var f= 2;
+				var myObj = {}; 
+				 
+				var auxNodesTotal = nodes.get();
+				var resultNodes =[];
 
-                 });
+				auxNodesTotal.forEach(function(item, index) {
+					var auxItem= item;
+					if(item.shape == "image"){
+						auxItem = {
+							heightConstraint: 25,
+							id: item.id,
+							isWeak: false,
+							label: (item.label).replace(/ /g,'_'),
+							physics: false,
+							scale: 10,
+							shape: "box",
+							super_entity: false,
+							widthConstraint:'',
+							maximum: 200,
+							minimum: 100,
+							x: item.x,
+							y: item.y,
+						};
+					}
+					resultNodes.push(auxItem);
+				});
+
+				// tomamos la informacion de las entidades externas a la agregación
+				myObj["data1"] = JSON.stringify(resultNodes); 
+				myObj["data2"] = JSON.stringify(edges.get()); 
+
+				//tomamos la data de la entidad relacion de alto nivel
+				myObj["data3"] = JSON.stringify(nodes_super.get()); 
+				myObj["data4"] = JSON.stringify(edges_super.get()); 
+				var json = JSON.stringify(myObj);
+
+				$.ajax({
+					type: 'POST',
+					url: '/generateData',
+					data: json,
+					contentType: "application/json",
+					success: function (data) {
+						$("#testResult").html(data);
+					},
+					error: function (xhr, ajaxOptions, thrownError) {
+						console.log(xhr.status);
+						console.log(xhr.responseText);
+						console.log(thrownError);
+					}
+
+				});
 			});
 			
 			$('#btnTestScriptSQL').on('click', function () {
 				//var url = "<c:url value="/generateData"/>";
 				var f= 2;
 				var myObj = {}; 
-				myObj["data1"] = JSON.stringify(nodes.get()); 
+
+				var auxNodesTotal = nodes.get();
+				var resultNodes =[];
+
+				auxNodesTotal.forEach(function(item, index) {
+					var auxItem= item;
+					if(item.shape == "image"){
+						auxItem = {
+							heightConstraint: 25,
+							id: item.id,
+							isWeak: false,
+							label: (item.label).replace(/ /g,'_'),
+							physics: false,
+							scale: 10,
+							shape: "box",
+							super_entity: false,
+							widthConstraint:'',
+							maximum: 200,
+							minimum: 100,
+							x: item.x,
+							y: item.y,
+						};
+					}
+					resultNodes.push(auxItem);
+				});
+
+				myObj["data1"] = JSON.stringify(resultNodes); 
 				myObj["data2"] = JSON.stringify(edges.get()); 
-				myObj["data3"] = $("#selectLenguage option:selected").text();
-				myObj["data4"] = $("#selectLenguage option:selected").index(); 
+				myObj["data3"] = JSON.stringify(nodes_super.get()); 
+				myObj["data4"] = JSON.stringify(edges_super.get()); 
+				myObj["data5"] = $("#selectLenguage option:selected").text();
+				myObj["data6"] = $("#selectLenguage option:selected").index(); 
 
 			 	var json = JSON.stringify(myObj);
 			   
