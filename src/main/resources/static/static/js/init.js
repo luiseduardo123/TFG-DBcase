@@ -1,3 +1,25 @@
+var normalize = (function() {
+	  var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç", 
+	      to   = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc",
+	      mapping = {};
+	 
+	  for(var i = 0, j = from.length; i < j; i++ )
+	      mapping[ from.charAt( i ) ] = to.charAt( i );
+	 
+	  return function( str ) {
+	      var ret = [];
+	      for( var i = 0, j = str.length; i < j; i++ ) {
+	          var c = str.charAt( i );
+	          if( mapping.hasOwnProperty( str.charAt( i ) ) )
+	              ret.push( mapping[ c ] );
+	          else
+	              ret.push( c );
+	      }      
+	      return ret.join( '' );
+	  }
+	 
+	})();
+
 $(document).ready(function () {
 			$('#modalAddItem').on('shown.bs.modal', function () {
 				switch($("#tipoAdd").val()){
@@ -59,12 +81,60 @@ $(document).ready(function () {
 				});
 
 				// tomamos la informacion de las entidades externas a la agregación
+				var traduct = {};
+				for(var i = 0;i<resultNodes.length;i++){
+					var tempLabel = resultNodes[i].label;
+					resultNodes[i].label = normalize(resultNodes[i].label);
+					var nameLabel = resultNodes[i].label;
+					traduct[nameLabel] = tempLabel;
+				}
+				var edgesData = edges.get();
+				for(var i = 0;i<edgesData.length;i++){
+					var tempLabel = edgesData[i].label;
+					if(edgesData[i].label){
+						edgesData[i].label = normalize(edgesData[i].label);
+					}
+					var nameLabel = edgesData[i].label;
+					traduct[nameLabel] = tempLabel;
+					
+					var tempName = edgesData[i].name;
+					if(edgesData[i].name){
+						edgesData[i].name = normalize(edgesData[i].name);
+					}
+					var nameName = edgesData[i].name;
+					traduct[nameName] = tempName;
+				}
+				
+				var nodesSuper = nodes_super.get();
+				for(var i = 0;i<nodesSuper.length;i++){
+					var tempLabel = nodesSuper[i].label;
+					nodesSuper[i].label = normalize(nodesSuper[i].label);
+					var nameLabel = nodesSuper[i].label;
+					traduct[nameLabel] = tempLabel;
+				}
+				
+				var edgesSuperData = edges_super.get();
+				for(var i = 0;i<edgesSuperData.length;i++){
+					var tempLabel = edgesSuperData[i].label;
+					if(edgesData[i].label){
+						edgesSuperData[i].label = normalize(edgesSuperData[i].label);
+					}
+					var nameLabel = edgesSuperData[i].label;
+					traduct[nameLabel] = tempLabel;
+					
+					var tempName = edgesSuperData[i].name;
+					if(edgesData[i].name){
+						edgesSuperData[i].name = normalize(edgesSuperData[i].name);
+					}
+					var nameName = edgesSuperData[i].name;
+					traduct[nameName] = tempName;
+				}
 				myObj["data1"] = JSON.stringify(resultNodes); 
-				myObj["data2"] = JSON.stringify(edges.get()); 
+				myObj["data2"] = JSON.stringify(edgesData); 
 
 				//tomamos la data de la entidad relacion de alto nivel
-				myObj["data3"] = JSON.stringify(nodes_super.get()); 
-				myObj["data4"] = JSON.stringify(edges_super.get()); 
+				myObj["data3"] = JSON.stringify(nodesSuper); 
+				myObj["data4"] = JSON.stringify(edgesSuperData); 
 				var json = JSON.stringify(myObj);
 
 				$.ajax({
@@ -73,6 +143,11 @@ $(document).ready(function () {
 					data: json,
 					contentType: "application/json",
 					success: function (data) {
+						data = data.replace(/\*/g, "");
+						for (const prop in traduct) {
+							var re = new RegExp(prop,"g");
+							data = data.replace(re, traduct[prop]);
+						};
 						$("#testResult").html(data);
 					},
 					error: function (xhr, ajaxOptions, thrownError) {
@@ -113,11 +188,60 @@ $(document).ready(function () {
 					}
 					resultNodes.push(auxItem);
 				});
-
+				
+				var traduct = {};
+				for(var i = 0;i<resultNodes.length;i++){
+					var tempLabel = resultNodes[i].label;
+					resultNodes[i].label = normalize(resultNodes[i].label);
+					var nameLabel = resultNodes[i].label;
+					traduct[nameLabel] = tempLabel;
+				}
+				var edgesData = edges.get();
+				for(var i = 0;i<edgesData.length;i++){
+					var tempLabel = edgesData[i].label;
+					if(edgesData[i].label){
+						edgesData[i].label = normalize(edgesData[i].label);
+					}
+					var nameLabel = edgesData[i].label;
+					traduct[nameLabel] = tempLabel;
+					
+					var tempName = edgesData[i].name;
+					if(edgesData[i].name){
+						edgesData[i].name = normalize(edgesData[i].name);
+					}
+					var nameName = edgesData[i].name;
+					traduct[nameName] = tempName;
+				}
+				
+				var nodesSuper = nodes_super.get();
+				for(var i = 0;i<nodesSuper.length;i++){
+					var tempLabel = nodesSuper[i].label;
+					nodesSuper[i].label = normalize(nodesSuper[i].label);
+					var nameLabel = nodesSuper[i].label;
+					traduct[nameLabel] = tempLabel;
+				}
+				
+				var edgesSuperData = edges_super.get();
+				for(var i = 0;i<edgesSuperData.length;i++){
+					var tempLabel = edgesSuperData[i].label;
+					if(edgesData[i].label){
+						edgesSuperData[i].label = normalize(edgesSuperData[i].label);
+					}
+					var nameLabel = edgesSuperData[i].label;
+					traduct[nameLabel] = tempLabel;
+					
+					var tempName = edgesSuperData[i].name;
+					if(edgesData[i].name){
+						edgesSuperData[i].name = normalize(edgesSuperData[i].name);
+					}
+					var nameName = edgesSuperData[i].name;
+					traduct[nameName] = tempName;
+				}
+				
 				myObj["data1"] = JSON.stringify(resultNodes); 
-				myObj["data2"] = JSON.stringify(edges.get()); 
-				myObj["data3"] = JSON.stringify(nodes_super.get()); 
-				myObj["data4"] = JSON.stringify(edges_super.get()); 
+				myObj["data2"] = JSON.stringify(edgesData); 
+				myObj["data3"] = JSON.stringify(nodesSuper); 
+				myObj["data4"] = JSON.stringify(edgesSuperData); 
 				myObj["data5"] = $("#selectLenguage option:selected").text();
 				myObj["data6"] = $("#selectLenguage option:selected").index(); 
 
@@ -129,6 +253,11 @@ $(document).ready(function () {
 					data: json,
 					contentType: "application/json",
 					success: function (data) {
+						data = data.replace(/\*/g, "");
+						for (const prop in traduct) {
+							var re = new RegExp(prop,"g");
+							data = data.replace(re, traduct[prop]);
+						};
 						$("#resultSPhysicalSchema").html(data);
 					},
 					error: function (xhr, ajaxOptions, thrownError) {
@@ -155,7 +284,7 @@ $(document).ready(function () {
       	          		addAttribute($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val(), $('#element').val(), $('#primaryKey').prop('checked'), $('#composite').prop('checked'), $('#notNull').prop('checked'), $('#unique').prop('checked'), $('#multivalued').prop('checked'), $('#domain').val(), $('#size').val());
       	            	break;
       	          	case "addEntitytoRelation":
-      	          		addEntitytoRelation($('#element').val(), $('[name=cardinality]:checked').val(), $('#roleName').val(), $('#minCardinality').val(), $('#maxCardinality').val(), $('#typeAction').val(),$('#idSelected').val());
+      	          		addEntitytoRelation($('#element').val(), $('[name=cardinality]:checked').val(), $('#roleName').val(), $('#minCardinality').val(), $('#maxCardinality').val(), $('#typeAction').val(),$('#idSelected').val(), $("#minMax").prop('checked'));
       	            	break;
       	          	case "addEntityParent":
       	          		addEntityParent($('#element').val(), $('#typeAction').val(), $('#idSelected').val());

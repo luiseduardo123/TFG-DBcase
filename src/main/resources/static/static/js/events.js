@@ -90,8 +90,8 @@ function eventsEntityToRelation(){
 		}
 	});
 	
-	$( "input[name='cardinality']" ).click(function(){
-		if($(this).attr('id') == 'minMax'){
+	$( "#minMax" ).click(function(){
+		if($("#minMax").prop('checked')){
 			$("#minCardinality").prop("disabled", false);
 			$("#maxCardinality").prop("disabled", false);
         }else{

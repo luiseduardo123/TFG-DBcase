@@ -287,8 +287,8 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  
 	  if(weakEntity && elementWithRelation != null){
 		  idRelation = addRelation(relationEntity, "create", null, "back");
-		  addEntitytoRelation(data_element.id, "1to1", "", "", "", "create", idRelation);
-		  addEntitytoRelation(parseInt(elementWithRelation), "1toN", "", "", "", "create", idRelation);
+		  addEntitytoRelation(data_element.id, "1to1", "", "", "", "create", idRelation, false);
+		  addEntitytoRelation(parseInt(elementWithRelation), "1toN", "", "", "", "create", idRelation, false);
 	  }
 	  updateTableElements();
   }
@@ -381,7 +381,8 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  updateTableElements();
   }
   
-  function addEntitytoRelation(idTo, cardinality, roleName, minCardinality, maxCardinality, action, idSelected){
+  function addEntitytoRelation(idTo, cardinality, roleName, minCardinality, maxCardinality, action, idSelected, partActive){
+	  console.log(partActive);
 	  var left;
 	  var center;
 	  var right;
@@ -418,16 +419,16 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  else
 		  center = roleName;
 	  
-	  if(cardinality == 'minMax'){
-		  labelText = right+" .. "+left+" "+center;
+	  if(partActive){
+		  labelText = minCardinality+" .. "+maxCardinality+" "+center;
 	  }else{
-		  labelText = center;		  
+		  labelText = center;
 	  }
 	  
 	  var idEdge = existEdge(idSelected, idTo);
-	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: labelText, labelFrom:right, labelTo:left, name:center, state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
+	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: labelText, labelFrom:right, labelTo:left, name:center, participation:partActive ,participationFrom: minCardinality, participationTo: maxCardinality, state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
 	  //var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, state: "false", arrows:{to: { enabled: direct1 }}};
-	  var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: labelText, labelFrom:right, labelTo:left, name:center, state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
+	  var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: labelText, labelFrom:right, labelTo:left, name:center, participation:partActive ,participationFrom: minCardinality, participationTo: maxCardinality, state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
 	  var data_element_update = {};
 	  if(idEdge != null){
 		  data_element_update.id = idEdge;
