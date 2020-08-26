@@ -129,17 +129,19 @@ h2{
           				</div>
           				<div class="col-md-12 pr-0 pl-0 h-50" style="overflow-y: auto;overflow-x: hidden;" id="frame5">
           					<div class="row pt-2 sticky-top" th:classappend="${theme=='dark'} ? bg-dark : bg-light">
-							  <div class="col-6 col-md-6"><p class="h5" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{textos.PhysicalSchema}"></p></div>
-							  <div class="col-6 col-md-6">
-							  	<select class="float-right ml-2 form-control" id="selectLenguage" th:classappend="${theme=='dark'} ? 'bg-dark text-white' : 'bg-light text-dark'">
-							  		<option>MySQL</option>
-							  		<option>Microsoft Access .mdb</option>
-							  		<option>Microsoft Access via ODBC</option>
-							  		<option>Oracle</option>
-							  	</select>
-							  	<button type="button" class="btn float-right ml-2" th:classappend="${theme=='dark'} ? btn-dark : btn-light" id="down_schema_physical" th:text="#{button.saveAs}"></button>
-							  	<button type="button" id="btnTestScriptSQL" class="btn float-right" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.generate}"></button>
-							  </div>
+								<div class="col-4 col-md-4"><p class="h5" th:classappend="${theme=='dark'} ? 'text-white' : 'text-dark'" th:text="#{textos.PhysicalSchema}"></p></div>
+								<div class="col-8 col-md-8">
+									<select class="float-right ml-2 form-control" id="selectLenguage" th:classappend="${theme=='dark'} ? 'bg-dark text-white' : 'bg-light text-dark'">
+										<option value="0">MySQL</option>
+										<option value="1">Microsoft Access .mdb</option>
+										<option value="2">Microsoft Access via ODBC</option>
+										<option value="3">Oracle</option>
+									</select>
+									<button type="button" class="btn float-right" th:classappend="${theme=='dark'} ? btn-dark : btn-light" data-toggle="modal" data-target="#executeModal" th:text="#{button.execute}"></button>
+									<button type="button" class="btn float-right ml-2" th:classappend="${theme=='dark'} ? btn-dark : btn-light" id="down_schema_physical" th:text="#{button.saveAs}"></button>
+									<button type="button" id="btnTestScriptSQL" class="btn float-right" th:classappend="${theme=='dark'} ? btn-dark : btn-light" th:text="#{button.generate}"></button>
+
+								</div>
 							</div>
 							<div class="w-100" id="resultSPhysicalSchema" style="position: absolute;">
 							</div>
@@ -147,6 +149,63 @@ h2{
           			</div>
           		</div>
 			</div>
+			<!-- Modal -->
+			<style>
+				.dark-modal {
+					color: #fff !important;
+					background-color: #343a40 !important;
+					border-color: #343a40 !important;
+				}
+				.light-modal {
+					color: #343a40 !important;
+					background-color: #fff !important;
+					border-color: #fff !important;
+				}
+				.executeInputs::placeholder {
+					opacity: 0.4;
+				}
+			</style>
+			<div class="modal fade" id="executeModal" tabindex="-1" role="dialog"  aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content" th:classappend="${theme=='dark'} ? dark-modal : light-modal">
+					<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLongTitle">Configure DBMS Connection</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="serverInput">Server</label>
+							<input type="text" class="form-control executeInputs" id="serverInput" placeholder="localhost">
+						</div>
+						<div class="form-group">
+							<label for="portInput">Port</label>
+							<input type="text" class="form-control executeInputs" id="portInput" placeholder="3306">
+						</div>
+						<div class="form-group">
+							<label for="databaseInput">Database</label>
+							<input type="text" class="form-control executeInputs" id="databaseInput" placeholder="test">
+						</div>
+						<div class="form-group">
+							<label for="usernameInput">User</label>
+							<input type="text" class="form-control executeInputs" id="usernameInput" placeholder="root">
+						</div>
+						<div class="form-group">
+							<label for="passInput">Password</label>
+							<input type="text" class="form-control executeInputs" id="passInput" placeholder="">
+						</div>
+					</div>
+					<div class="modal-footer">
+					<!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+					<button type="button" class="btn btn-secondary" id="btnHit">Hit</button>
+					<button type="button" class="btn btn-success" id="testConnection">Test</button>
+					<button type="button" class="btn btn-primary disabled" id="executeScriptSQL">Execute</button>
+					</div>
+				</div>
+				</div>
+			</div>
+
 			<div class="col-md-12">
 				<div id="diagram_super" style="top: 500px;position: absolute;">
 				</div>

@@ -98,7 +98,14 @@ public class Tabla {
 			String[] trio = listado.elementAt(i);
 			if (trio.length < 4) 
 				aniadeAtributo(trio[0], trio[1], trio[2], dominios, rest, false, false);
-			else aniadeAtributo(trio[0], trio[1], trio[2], dominios,rest, trio[3].equalsIgnoreCase("1"), trio[4].equalsIgnoreCase("1"));
+			else{
+				if(trio.length == 4)
+					aniadeAtributo(trio[0], trio[1], trio[2], dominios,rest, trio[3].equalsIgnoreCase("1"),false);
+				else
+					aniadeAtributo(trio[0], trio[1], trio[2], dominios,rest, trio[3].equalsIgnoreCase("1"), trio[4].equalsIgnoreCase("1"));
+			} 
+			// else
+			// 	aniadeAtributo(trio[0], trio[1], trio[2], dominios,rest, trio[3].equalsIgnoreCase("1"), trio[4].equalsIgnoreCase("1"));
 		}
 	}
 	
@@ -118,11 +125,24 @@ public class Tabla {
 		}
 	}
 
-	public void aniadeClavePrimaria(String nombre,String dominio,String tablaReferencia){
-		String [] trio=new String[3];
+	public void aniadeListaClavesForaneas(Vector<String[]> listado,Vector<String> listadoEntidades, String[] atributosReferenciados){
+		for (int i=0;i<listado.size();i++){
+			String []trio=new String[4];
+			String []par=listado.elementAt(i);
+			trio[0]=par[0];
+			trio[1]=par[1];
+			trio[2]=listadoEntidades.elementAt(i) + "." + atributosReferenciados[i];
+			trio[3]=listadoEntidades.elementAt(i);
+			foreigns.add(trio);
+		}
+	}
+
+	public void aniadeClavePrimaria(String nombre,String dominio,String tablaReferencia,String tablaReferencia_origen){
+		String [] trio=new String[4];
 		trio[0]=nombre;
 		trio[1]=dominio;
 		trio[2]= tablaReferencia;
+		trio[3]= tablaReferencia_origen;
 		primaries.add(trio);
 	}
 	
@@ -177,7 +197,7 @@ public class Tabla {
 					else repe +=ref+"_";
 				}
 				t.aniadeClavePrimaria(ponGuionesBajos(repe+primaries.elementAt(i)[0],sqlType), 
-									primaries.elementAt(i)[1], ponGuionesBajos(primaries.elementAt(i)[2],sqlType));
+									primaries.elementAt(i)[1], ponGuionesBajos(primaries.elementAt(i)[2],sqlType),"nombreorigin");
 			}
 		}
 		
@@ -230,25 +250,27 @@ public class Tabla {
 	public String modeloRelacionalDeTabla(boolean p, String sqlType, boolean scriptSQL){
 		String mr="";
 		if(p) mr+="<p>";
-		mr+=this.ponGuionesBajos(nombreTabla,"DEFAULT")+" (";
-		Vector<String[]>definitivo= new Vector<String[]>();
-		//dejamos los elementos en las 3 listas sin duplicados.
-		definitivo=this.filtra(atributos, primaries);
-		int i=0;
-		if(!primaries.isEmpty())
-			for (i=0;i<primaries.size();i++){
+		if(!nombreTabla.equals("Entidad_alto_nivel")){
+			mr+=this.ponGuionesBajos(nombreTabla,"DEFAULT")+" (";
+			Vector<String[]>definitivo= new Vector<String[]>();
+			//dejamos los elementos en las 3 listas sin duplicados.
+			definitivo=this.filtra(atributos, primaries);
+			int i=0;
+			if(!primaries.isEmpty())
+				for (i=0;i<primaries.size();i++){
+					String repe="";
+					if (this.estaRepe(primaries.elementAt(i)[0], atributos)) repe +=primaries.elementAt(i)[2]+"_";
+					if (i>0) mr+=", ";
+					mr+=this.ponGuionesBajos("<u>"+repe+primaries.elementAt(i)[0]+"</u>",sqlType);
+				}
+			for (int j=0;j<definitivo.size();j++){
+				if (i>0||j>0) mr+=", ";
 				String repe="";
-				if (this.estaRepe(primaries.elementAt(i)[0], atributos)) repe +=primaries.elementAt(i)[2]+"_";
-				if (i>0) mr+=", ";
-				mr+=this.ponGuionesBajos("<u>"+repe+primaries.elementAt(i)[0]+"</u>",sqlType);
-			}
-		for (int j=0;j<definitivo.size();j++){
-			if (i>0||j>0) mr+=", ";
-			String repe="";
-			if (this.estaRepe(definitivo.elementAt(j)[0], atributos) && nombreTabla != definitivo.elementAt(j)[2]) repe +=definitivo.elementAt(j)[2]+"_";
-			mr+=this.ponGuionesBajos(repe+definitivo.elementAt(j)[0]+asterisco(definitivo.elementAt(j),scriptSQL),sqlType);
-		}	
-		mr+=")";
+				if (this.estaRepe(definitivo.elementAt(j)[0], atributos) && nombreTabla != definitivo.elementAt(j)[2]) repe +=definitivo.elementAt(j)[2]+"_";
+				mr+=this.ponGuionesBajos(repe+definitivo.elementAt(j)[0]+asterisco(definitivo.elementAt(j),scriptSQL),sqlType);
+			}	
+			mr+=")";
+		}
 		if(p)mr+="</p>";
 		return mr;
 	}
@@ -262,7 +284,7 @@ public class Tabla {
 		//definitivo=this.filtra(atributos, primaries);
 		for (int i=0;i<primaries.size();i++)
 			if (prim && primaries.elementAt(i)[2] == referencia) {
-				mr+=primaries.elementAt(i)[2] + "_" +this.ponGuionesBajos(primaries.elementAt(i)[0],sqlType);
+				mr+=primaries.elementAt(i)[2] + "_" +this.ponGuionesBajos(primaries.elementAt(i)[0],sqlType); 
 				mr+=", ";atr = true;
 			}else if(nombreTabla == primaries.elementAt(i)[2]){
 				mr+=this.ponGuionesBajos(primaries.elementAt(i)[0],sqlType);
@@ -278,7 +300,7 @@ public class Tabla {
 		return mr;
 	}
 	private String asterisco(String[] a,boolean scriptSQL) {
-		return c.isNullAttrs() && a[4]=="0" && scriptSQL?"*":"";
+		return c.isNullAttrs() && a[4]=="0" && !scriptSQL?"*":"";
 	}
 	public String getNombreTabla() {
 		return nombreTabla;

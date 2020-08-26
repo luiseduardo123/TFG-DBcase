@@ -8,7 +8,8 @@ public class Generic {
 	String data4;
 	String data5;
 	String data6;
-	
+	String data7;
+
 	public Generic() {
 		
 	}
@@ -61,5 +62,11 @@ public class Generic {
 		this.data6 = data6;
 	}
 	
-	
+	public String getData7() {
+		return data7;
+	}
+
+	public void setData7(String data7) {
+		this.data7 = data7;
+	}	
 }

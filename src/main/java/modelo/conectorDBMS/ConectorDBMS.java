@@ -140,6 +140,6 @@ public abstract class ConectorDBMS {
 	}
 	
 	protected String nombreColumn(String referencia, String tabla) {
-		return referencia.substring(tabla.length()+1);
+			return referencia.substring(0,1) + referencia.substring(tabla.length()+2);
 	}
 }

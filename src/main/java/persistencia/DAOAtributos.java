@@ -104,6 +104,14 @@ public class DAOAtributos{
 		elem.appendChild(doc.createTextNode((int)(tc.getPosicion().getX())+","+(int)(tc.getPosicion().getY())));
 		raiz.appendChild(elem);
 		
+		elem = doc.createElement("entidadOrigin_ID");
+		elem.appendChild(doc.createTextNode(String.valueOf(tc.getEntidad_origenID())));
+		raiz.appendChild(elem);
+
+		elem = doc.createElement("entidadOrigin_Name");
+		elem.appendChild(doc.createTextNode(String.valueOf(tc.getEntidad_origenName())));
+		raiz.appendChild(elem);
+		
 		// Lo anadimos a la lista de Atributos
 		ListaAtributos.appendChild(raiz);
 		// Actualizamos el resultado
@@ -323,6 +331,9 @@ public class DAOAtributos{
 		transfer.setPosicion(posicion);
 		transfer.setMultivalorado(multivalorado);
 		transfer.setListaRestricciones(listaR);
+		transfer.setEntidad_origenID(Integer.parseInt(dameValorDelElemento(dameNodoPedidoDeAtributo(nodo,"entidadOrigin_ID"))));
+		transfer.setEntidad_origenName(dameValorDelElemento(dameNodoPedidoDeAtributo(nodo,"entidadOrigin_Name")));
+		
 		// Lo devolvemos
 		return transfer;
 	}

@@ -935,7 +935,7 @@ public class Controlador {
 		}
 		case PanelDiseno_Click_AnadirSubAtributoAAtributo:{
 			TransferAtributo ta = (TransferAtributo) datos;
-			this.getTheGUIAnadirSubAtributoAtributo().setAtributo(ta);
+			this.getTheGUIAnadirSubAtributoAtributo().setAtributo(ta); 
 			this.getTheGUIAnadirSubAtributoAtributo().setActiva();
 			break;
 		}

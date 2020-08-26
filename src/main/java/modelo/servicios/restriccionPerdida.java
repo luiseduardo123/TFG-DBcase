@@ -79,13 +79,13 @@ public class restriccionPerdida {
 
 		String res=" ";
 		boolean c = false;
-		if(card[0]==1) res+="Total Participation";
+		if(card[0]==1) res+="participacion total";
 		else if(card[0]>1 && card[0]<Integer.MAX_VALUE) {
-			res+=res.equals(" ") ? ("Minimum cardinality of " + card[0]) : (" and minimum cardinality of " + card[0]);
+			res+=res.equals(" ") ? ("cardinalidad minima de " + card[0]) : (" y una cardinalidad minima de " + card[0]);
 			c=true;
 		}
 		if(card[1]>1 && card[1]<Integer.MAX_VALUE)
-			res+=res.equals(" ") ? ("Maximum cardinality of "+ card[1]) : (c?" and maximum of "+ card[1] :" and maximum cardinality of " + card[1]);
-		return res+=" of " + entidad.split("\\(")[0] + " in " + relacion.split("\\(")[0];
+			res+=res.equals(" ") ? ("Máxima cardinalidad de "+ card[1]) : (c?" y máximo de "+ card[1] :" y una cardinalidad máxima de " + card[1]);
+		return res+=" de " + entidad.split("\\(")[0] + " en " + relacion.split("\\(")[0];
 	}
 }

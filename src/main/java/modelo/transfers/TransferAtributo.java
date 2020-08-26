@@ -24,9 +24,12 @@ public class TransferAtributo extends Transfer{
 	private Vector listaRestricciones;
 	private Point2D posicion;
 	private Controlador c;
-	
+	private int entidad_origenID;
+	private String entidad_origenName;
+
 	public TransferAtributo(Controlador c) {
 		this.c = c;
+		this.entidad_origenID = -1;
 	}
 	
 	public TransferAtributo clonar (){
@@ -44,6 +47,8 @@ public class TransferAtributo extends Transfer{
 		clon_ta.setClavePrimaria(this.isClavePrimaria());
 		clon_ta.setVolumen(this.getVolumen());
 		clon_ta.setFrecuencia(this.getFrecuencia());
+		clon_ta.setEntidad_origenID(this.getEntidad_origenID());
+		clon_ta.setEntidad_origenName(this.getEntidad_origenName());
 		return clon_ta;
 	}
 
@@ -62,6 +67,9 @@ public class TransferAtributo extends Transfer{
 		this.posicion = new Point2D.Double(arg0.getPosicion().getX(),
 				   arg0.getPosicion().getY());
 		this.ClavePrimaria = arg0.isClavePrimaria();
+		this.entidad_origenID = arg0.getEntidad_origenID();
+		this.entidad_origenName = arg0.getEntidad_origenName();
+
 	}
 	
 	@Override
@@ -185,4 +193,22 @@ public class TransferAtributo extends Transfer{
 		figura = new Ellipse2D.Double(-anchura,-altura,anchura * 2,altura*2);
 		return figura;
 	}
+
+	public int getEntidad_origenID() {
+		return entidad_origenID;
+	}
+
+	public void setEntidad_origenID(int entidad_origenID) {
+		this.entidad_origenID = entidad_origenID;
+	}
+
+	public String getEntidad_origenName() {
+		return entidad_origenName;
+	}
+
+	public void setEntidad_origenName(String entidad_origenName) {
+		this.entidad_origenName = entidad_origenName;
+	}
+
+	
 }

@@ -525,7 +525,9 @@ function updateTableElements(){
 			res = res.replace(/<\/div>/g, "");
 			res = res.replace(/<u>/g, "");
 			res = res.replace(/<\/u>/g, "");
+			res = res.replace(/\*/g, "");
 			res = res.replace(/<p>/g, "");
+			res = res.replace(/&gt;/g, ">");
 			res = "#"+$("#textGeneratedBy").text()+"\r\n"+res;
 			var blob = new Blob([res], {type: "text/plain;charset=utf-8"});
 			saveAs(blob, $('#idText').text()+""+(new Date().getMilliseconds())+".txt");

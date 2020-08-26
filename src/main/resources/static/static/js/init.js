@@ -50,8 +50,102 @@ $(document).ready(function () {
 				
 			});
 			
+			$('#btnHit').on('click', function () {
+				$("#serverInput").val("localhost");
+				$("#portInput").val("3306");
+				$("#databaseInput").val("test");
+				$("#usernameInput").val("root");
+				$("#executeScriptSQL").addClass("disabled");	
+			});
+			
+			$('#serverInput, #portInput, #databaseInput, #usernameInput, #passInput').on('change', function () {
+				$("#executeScriptSQL").addClass("disabled");	
+			});
+
+			$('#executeScriptSQL').on('click', function () {
+
+				var myObj = {}; 
+				// tomamos la informacion de la conexión ingresada en el modal
+				myObj["data1"] = $("#serverInput").val();
+				myObj["data2"] = $("#portInput").val();
+				myObj["data3"] = $("#databaseInput").val();
+				myObj["data4"] = $("#usernameInput").val();
+				myObj["data5"] = $("#passInput").val();
+				myObj["data6"] = $("#selectLenguage").val();
+				myObj["data7"] = $("#resultSPhysicalSchema").html();
+				var json = JSON.stringify(myObj);
+
+				$.ajax({
+					type: 'POST',
+					url: '/executeQueries',
+					data: json,
+					contentType: "application/json",
+					success: function (data) {
+						var dataResponse = JSON.parse(data);
+						if(dataResponse.data2 == true){
+							alert(dataResponse.data1);
+							$("#executeScriptSQL").removeClass("disabled");
+						}
+						else{
+							alert(dataResponse.data1);
+							$("#executeScriptSQL").addClass("disabled");
+						}
+					},
+					error: function (xhr, ajaxOptions, thrownError) {
+						console.log(xhr.status);
+						console.log(xhr.responseText);
+						console.log(thrownError);
+					}
+
+				});
+			});
+
+			$('#testConnection').on('click', function () {
+
+				var myObj = {}; 
+				
+				// tomamos la informacion de la conexión ingresada en el modal
+				myObj["data1"] = $("#serverInput").val();
+				myObj["data2"] = $("#portInput").val();
+				myObj["data3"] = $("#databaseInput").val();
+				myObj["data4"] = $("#usernameInput").val();
+				myObj["data5"] = $("#passInput").val();
+				myObj["data6"] = $("#selectLenguage").val();
+				var json = JSON.stringify(myObj);
+
+				$.ajax({
+					type: 'POST',
+					url: '/checkConnection',
+					data: json,
+					contentType: "application/json",
+					success: function (data) {
+						var dataResponse = JSON.parse(data);
+						if(dataResponse.data2 == true){
+							alert(dataResponse.data1);
+							$("#executeScriptSQL").removeClass("disabled");
+						}
+						else{
+							alert(dataResponse.data1);
+							$("#executeScriptSQL").addClass("disabled");
+						}
+							
+						 
+					},
+					error: function (xhr, ajaxOptions, thrownError) {
+						console.log(xhr.status);
+						console.log(xhr.responseText);
+						console.log(thrownError);
+					}
+
+				});
+			});
+
+			$('#executeScriptSQL').on('click', function () {
+			
+			});
+
        	 	$('#btnTest').on('click', function () {
-       		  //var url = "<c:url value="/generateData"/>";
+         		  //var url = "<c:url value="/generateData"/>";
        		  	var f= 2;
 				var myObj = {}; 
 				 
@@ -65,7 +159,8 @@ $(document).ready(function () {
 							heightConstraint: 25,
 							id: item.id,
 							isWeak: false,
-							label: (item.label).replace(/ /g,'_'),
+							//label: (item.label).replace(/ /g,'_'),
+							label: 'agregacion',
 							physics: false,
 							scale: 10,
 							shape: "box",
@@ -143,11 +238,11 @@ $(document).ready(function () {
 					data: json,
 					contentType: "application/json",
 					success: function (data) {
-						data = data.replace(/\*/g, "");
 						for (const prop in traduct) {
 							var re = new RegExp(prop,"g");
 							data = data.replace(re, traduct[prop]);
 						};
+						data = data.replace(/\*/g, "");
 						$("#testResult").html(data);
 					},
 					error: function (xhr, ajaxOptions, thrownError) {
@@ -253,11 +348,11 @@ $(document).ready(function () {
 					data: json,
 					contentType: "application/json",
 					success: function (data) {
-						data = data.replace(/\*/g, "");
 						for (const prop in traduct) {
 							var re = new RegExp(prop,"g");
 							data = data.replace(re, traduct[prop]);
 						};
+						data = data.replace(/\*/g, "");
 						$("#resultSPhysicalSchema").html(data);
 					},
 					error: function (xhr, ajaxOptions, thrownError) {

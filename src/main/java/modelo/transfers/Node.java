@@ -11,9 +11,10 @@ public class Node {
 	boolean physics;
 	int id;
 	DataAttribute dataAttribute;
-	
+	int id_origin;
+
 	public Node() {
-		 
+		this.id_origin = -1;
 	}
 	
 	public Node(String label, boolean strong, String shape, String color, int scale, int widthConstraints,
@@ -28,6 +29,7 @@ public class Node {
 		this.physics = physics;
 		this.id = id;
 		this.dataAttribute = dataAttribute;
+		this.id_origin = -1;
 	}
 
 	public String getLabel() {
@@ -109,5 +111,13 @@ public class Node {
 	public void setDataAttribute(DataAttribute dataAttribute) {
 		this.dataAttribute = dataAttribute;
 	}
-	 
+
+	public int getId_origin() {
+		return id_origin;
+	}
+
+	public void setId_origin(int id_origin) {
+		this.id_origin = id_origin;
+	}
+	
 }

@@ -112,7 +112,7 @@ public class GeneradorEsquema {
 						tabla.aniadeListaClavesPrimarias(this.atributoCompuesto(ta,te.getNombre(),""));
 					//else if(te.isDebil()) tabla.aniadeListaClavesPrimarias(claves);
 					else //si es normal, lo aniadimos como clave primaria.
-						tabla.aniadeClavePrimaria(ta.getNombre(),ta.getDominio(),te.getNombre());
+						tabla.aniadeClavePrimaria(ta.getNombre(),ta.getDominio(),te.getNombre(),ta.getEntidad_origenName());
 			}
 			
 			//aniadimos a las tablas del sistema.
@@ -178,11 +178,14 @@ public class GeneradorEsquema {
 					EntidadYAridad eya = veya.elementAt(m);
 					Tabla ent = tablasEntidades.get(eya.getEntidad());
 					Vector<String[]> previasPrimarias;
-					if (ent.getPrimaries().isEmpty()) previasPrimarias = ent.getAtributos();
-					else previasPrimarias = ent.getPrimaries();
+					if (ent.getPrimaries().isEmpty()) 
+						previasPrimarias = ent.getAtributos();
+					else 
+						previasPrimarias = ent.getPrimaries();
 					
 					//...pero antes renombrarla con el rol
 					Vector<String[]> primarias = new Vector<String[]>();
+					Vector<String> primariasEntidades = new Vector<>();
 					String[] referenciadas = new String[previasPrimarias.size()];
 					
 					for (int q=0; q<previasPrimarias.size(); q++){
@@ -194,14 +197,21 @@ public class GeneradorEsquema {
 						clave[1] = previasPrimarias.get(q)[1];
 						clave[2] = previasPrimarias.get(q)[2];
 						primarias.add(clave);
+						
+						if(previasPrimarias.get(q)[2].equals("Entidad_alto_nivel"))
+							primariasEntidades.add(previasPrimarias.get(q)[3]);
+						else
+							primariasEntidades.add(previasPrimarias.get(q)[2]);
+
 						referenciadas[q] = previasPrimarias.get(q)[0];
 					}
 					
 					tabla.aniadeListaAtributos(primarias, tr.getListaRestricciones(), tiposEnumerados);
-					tabla.aniadeListaClavesForaneas(primarias, ent.getNombreTabla(), referenciadas);
+					tabla.aniadeListaClavesForaneas(primarias, primariasEntidades, referenciadas);
+					//tabla.aniadeListaClavesForaneas(primarias, ent.getNombreTabla(), referenciadas);
 					
 					// Si es 0..1 o 1..1 poner como clave
-					if (eya.getFinalRango() > 1) tabla.aniadeListaClavesPrimarias(primarias);
+					if (eya.getFinalRango() >= 1) tabla.aniadeListaClavesPrimarias(primarias);
 					else{
 						if (soloHayUnos && esLaPrimeraDel1a1){
 							tabla.aniadeListaClavesPrimarias(primarias);
@@ -209,7 +219,8 @@ public class GeneradorEsquema {
 						}else if (soloHayUnos){
 							for(String[] clave : (Vector<String[]>)ent.getPrimaries())
 								restriccionesPerdidas.add(
-										new restriccionPerdida(ent.getNombreTabla()+"_"+clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
+		//								new restriccionPerdida(ent.getNombreTabla()+"_"+clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
+										new restriccionPerdida(clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
 							String uniques = "";
 							for (int q = 0; q < primarias.size(); q++){
 								if (q == 0) uniques += primarias.get(q)[0];
@@ -220,7 +231,8 @@ public class GeneradorEsquema {
 						}else if(eya.getPrincipioRango() == 1 && eya.getFinalRango() == Integer.MAX_VALUE)
 							for(String[] clave : (Vector<String[]>)ent.getPrimaries())
 								restriccionesPerdidas.add(
-										new restriccionPerdida(ent.getNombreTabla()+"_"+clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
+									//	new restriccionPerdida(ent.getNombreTabla()+"_"+clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
+										new restriccionPerdida(clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
 					}
 					//crea las restricciones perdidas (cuando rangoIni > 1 o rangoFin < N) || rangoIni == 1
 					if((eya.getPrincipioRango() > 0 && eya.getFinalRango() < Integer.MAX_VALUE && eya.getFinalRango() >1)||eya.getPrincipioRango()==1) {
@@ -441,6 +453,90 @@ public class GeneradorEsquema {
 		return conexiones;
 	}
 
+
+	public String[] ejecutarScriptEnDBMS_new(TransferConexion tc, String sql) {
+
+		// Comprobaciones previas
+		// if (tc.getTipoConexion() != conexionScriptGenerado.getTipoConexion()) {
+		// 	return new String[] { this.msgSrc.getMessage("textosId.warning", null, this.loc)+".\n" +
+		// 			this.msgSrc.getMessage("textosId.scriptGeneratedFor", null, this.loc)+": \n" +
+		// 			"     " + conexionScriptGenerado.getRuta() + " \n" +
+		// 			this.msgSrc.getMessage("textosId.conexionTypeIs", null, this.loc)+": \n" + 
+		// 			"     " + tc.getRuta() + "\n" +
+		// 			this.msgSrc.getMessage("textosId.possibleErrorScript", null, this.loc)+" \n" +
+		// 			this.msgSrc.getMessage("textosId.shouldGenerateScript", null, this.loc)+" \n" +
+		// 			this.msgSrc.getMessage("textosId.ofConexion", null, this.loc)+"\n"+
+		// 			this.msgSrc.getMessage("textosId.continueAnyway", null, this.loc),String.valueOf(JOptionPane.CANCEL_OPTION)};
+		// }
+		
+		// Ejecutar en DBMS
+		System.out.println("Datos de conexion a la base de datos");
+		System.out.println("------------------------------------");
+		System.out.println("DBMS: " + tc.getRuta() + "(" + tc.getTipoConexion() + ")");
+		System.out.println("Usuario: " + tc.getUsuario());
+		// System.out.println("Password: " + tc.getPassword());
+		
+		System.out.println("Intentando conectar...");
+		ConectorDBMS conector = FactoriaConectores.obtenerConector(tc.getTipoConexion());
+		try {
+			conector.abrirConexion(tc.getRuta(), tc.getUsuario(), tc.getPassword());
+		} catch (SQLException e) {
+			// Avisar por consola
+			System.out.println("ERROR: No se pudo abrir una conexion con la base de datos");
+			System.out.println("MOTIVO");
+			System.out.println(e.getMessage());
+			
+			// Avisar por GUI
+			return new String[] {
+					this.msgSrc.getMessage("textosId.error", null, this.loc)+".\n" +
+					this.msgSrc.getMessage("textosId.noDBConexion", null, this.loc)+" \n" +
+					this.msgSrc.getMessage("textosId.reason", null, this.loc)+": \n" + e.getMessage(),
+					this.msgSrc.getMessage("textosId.dbcase", null, this.loc), String.valueOf(JOptionPane.PLAIN_MESSAGE)};
+		}
+		String ordenActual = null;
+		try {
+			// Crear la base de datos
+			conector.usarDatabase(tc.getDatabase());
+			// Ejecutar cada orden
+			
+			String[] orden = sql.split(";");
+			for (int i=0; i < orden.length; i++){
+				if ((orden[i] != null) && (!orden[i].trim().equals("")) && (!orden[i].trim().equals("\n"))){
+					ordenActual = orden[i].trim() + ";";
+					
+					// Eliminar los comentarios y lineas en blanco
+					if (ordenActual.startsWith("--") && !ordenActual.contains("\n")) continue;
+					while (ordenActual.startsWith("--") || ordenActual.startsWith("\n"))
+						ordenActual = ordenActual.substring(ordenActual.indexOf("\n") + 1);
+					// Ejecutar la orden
+					conector.ejecutarOrden(ordenActual);	
+				}
+			}
+		} catch (SQLException e) {	
+			// Avisar por GUI
+			return new String[] {
+					this.msgSrc.getMessage("textosId.error", null, this.loc)+".\n" +
+					this.msgSrc.getMessage("textosId.cantExecuteScript", null, this.loc)+" \n" +
+					this.msgSrc.getMessage("textosId.enquiryError", null, this.loc)+": \n" + ordenActual + "\n" + 
+					this.msgSrc.getMessage("textosId.reason", null, this.loc)+": \n" + e.getMessage(), String.valueOf(JOptionPane.PLAIN_MESSAGE)};
+			
+		}
+		try {
+			conector.cerrarConexion();
+		} catch (SQLException e) {
+			return new String[] {
+					this.msgSrc.getMessage("textosId.error", null, this.loc)+".\n" +
+					this.msgSrc.getMessage("textosId.cantCloseConexion", null, this.loc)+" \n" +
+					this.msgSrc.getMessage("textosId.reason", null, this.loc)+" \n" + e.getMessage(),
+					String.valueOf(JOptionPane.PLAIN_MESSAGE)};
+		}
+		System.out.println("Conexion cerrada correctamente");
+		return new String[] {
+				this.msgSrc.getMessage("textosId.info", null, this.loc)+"\n" +
+				this.msgSrc.getMessage("textosId.okScriptExecut", null, this.loc),
+				String.valueOf(JOptionPane.PLAIN_MESSAGE)};
+	}
+
 	public void ejecutarScriptEnDBMS(TransferConexion tc, String sql) {
 
 		// Comprobaciones previas
@@ -545,13 +641,15 @@ public class GeneradorEsquema {
 		Iterator tablasM=tablasMultivalorados.iterator();
 		while (tablasM.hasNext()){
 			Tabla t =(Tabla)tablasM.next();
-			sqlHTML+=t.codigoHTMLCreacionDeTabla(conexion);
+			if(!t.getNombreTabla().equals("Entidad_alto_nivel"))
+				sqlHTML+=t.codigoHTMLCreacionDeTabla(conexion);
 		}
 	
 		Iterator tablasR=tablasRelaciones.values().iterator();
 		while (tablasR.hasNext()){
 			Tabla t =(Tabla)tablasR.next();
-			sqlHTML+=t.codigoHTMLCreacionDeTabla(conexion);
+			if(!t.getNombreTabla().equals("Entidad_alto_nivel"))
+				sqlHTML+=t.codigoHTMLCreacionDeTabla(conexion);
 		}
 		
 		String tablasEntidad = "";
@@ -560,12 +658,14 @@ public class GeneradorEsquema {
 		Iterator tablasE=tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
-			if (esPadreEnIsa(t,conexion.getRuta())){
-				tablasEntidadHTML = t.codigoHTMLCreacionDeTabla(conexion) + tablasEntidadHTML;
-				tablasEntidad = t.codigoEstandarCreacionDeTabla(conexion) + tablasEntidad;
-			}else{
-				tablasEntidadHTML+=t.codigoHTMLCreacionDeTabla(conexion);
-				tablasEntidad+=t.codigoEstandarCreacionDeTabla(conexion);
+			if(!t.getNombreTabla().equals("Entidad_alto_nivel")){
+				if (esPadreEnIsa(t,conexion.getRuta())){
+					tablasEntidadHTML = t.codigoHTMLCreacionDeTabla(conexion) + tablasEntidadHTML;
+					tablasEntidad = t.codigoEstandarCreacionDeTabla(conexion) + tablasEntidad;
+				}else{
+					tablasEntidadHTML+=t.codigoHTMLCreacionDeTabla(conexion);
+					tablasEntidad+=t.codigoEstandarCreacionDeTabla(conexion);
+				}
 			}
 		}
 		sqlHTML += tablasEntidadHTML;
@@ -618,21 +718,25 @@ public class GeneradorEsquema {
 		Iterator tablasE=tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
-			sqlHTML += t.codigoHTMLRestriccionesDeTabla(conexion);
+			if(!t.getNombreTabla().equals("Entidad_alto_nivel"))
+				sqlHTML += t.codigoHTMLRestriccionesDeTabla(conexion);
+			
 		}
 		
 		// Escribir restricciones de relacion
 		Iterator tablasR=tablasRelaciones.values().iterator();
 		while (tablasR.hasNext()){
 			Tabla t =(Tabla)tablasR.next();
-			sqlHTML += t.codigoHTMLRestriccionesDeTabla(conexion);
+			if(!t.getNombreTabla().equals("Entidad_alto_nivel"))
+				sqlHTML += t.codigoHTMLRestriccionesDeTabla(conexion);
 		}
 		
 		// Escribir restricciones de atributo
 		Iterator tablasA=tablasMultivalorados.iterator();
 		while (tablasA.hasNext()){
 			Tabla t =(Tabla)tablasA.next();
-			sqlHTML += t.codigoHTMLRestriccionesDeTabla(conexion);
+			if(!t.getNombreTabla().equals("Entidad_alto_nivel"))
+				sqlHTML += t.codigoHTMLRestriccionesDeTabla(conexion);
 		}
 		sqlHTML+="<p></p></div>";
 	}
@@ -646,12 +750,14 @@ public class GeneradorEsquema {
 		Iterator tablasE=tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
-			if (esPadreEnIsa(t,conexion.getRuta())){
-				restEntidadHTML = t.codigoHTMLClavesDeTabla(conexion) + restEntidadHTML;
-				restEntidad = t.codigoEstandarClavesDeTabla(conexion) + restEntidad;
-			}else{
-				restEntidadHTML+=t.codigoHTMLClavesDeTabla(conexion);
-				restEntidad+=t.codigoEstandarClavesDeTabla(conexion);
+			if(!t.getNombreTabla().equals("Entidad_alto_nivel")){
+				if (esPadreEnIsa(t,conexion.getRuta())){
+					restEntidadHTML = t.codigoHTMLClavesDeTabla(conexion) + restEntidadHTML;
+					restEntidad = t.codigoEstandarClavesDeTabla(conexion) + restEntidad;
+				}else{
+					restEntidadHTML+=t.codigoHTMLClavesDeTabla(conexion);
+					restEntidad+=t.codigoEstandarClavesDeTabla(conexion);
+				}
 			}
 		}
 		
@@ -698,7 +804,8 @@ public class GeneradorEsquema {
 					code+="<p>";
 					abierto=true;
 				}
-				claves+= t.getNombreTabla()+"."+foreigns.elementAt(j)[3]+"_"+foreigns.elementAt(j)[0];
+				//claves+= t.getNombreTabla()+"."+foreigns.elementAt(j)[3]+"_"+foreigns.elementAt(j)[0];
+				claves+= t.getNombreTabla()+"."+foreigns.elementAt(j)[0];
 				valores+=foreigns.elementAt(j)[2];
 				if(foreigns.size()-j>1) {
 					if(foreigns.elementAt(j+1)[3]!=foreigns.elementAt(j)[3] || foreigns.elementAt(j+1)[2].equals(foreigns.elementAt(j)[2])) {
@@ -714,6 +821,7 @@ public class GeneradorEsquema {
 					abierto = false;claves="";valores="";
 				}
 			}
+			
 		}
 		return code;
 	}
@@ -830,7 +938,25 @@ public class GeneradorEsquema {
 		}
 		return claves;	
 	}	
-	
+
+	public String[] compruebaConexionNew(TransferConexion tc){
+		System.out.println("Datos de conexion a la base de datos");
+		System.out.println("------------------------------------");
+		System.out.println("DBMS: " + tc.getRuta() + "(" + tc.getTipoConexion() + ")");
+		System.out.println("Usuario: " + tc.getUsuario());
+		System.out.println("Intentando conectar...");
+		ConectorDBMS conector = FactoriaConectores.obtenerConector(tc.getTipoConexion());
+		try {
+			conector.abrirConexion(tc.getRuta(), tc.getUsuario(), tc.getPassword());
+			conector.cerrarConexion();
+		} catch (SQLException e) { 
+			return new String[] {this.msgSrc.getMessage("textosId.error", null, this.loc)+".\n" +
+				this.msgSrc.getMessage("textosId.noDBConexion", null, this.loc)+" \n" +
+				this.msgSrc.getMessage("textosId.reason", null, this.loc)+": \n" + e.getMessage(),"0"};
+		}
+		return new String[] {this.msgSrc.getMessage("textosId.okScriptExecut", null, this.loc),"1"};
+	}
+
 	public void compruebaConexion(TransferConexion tc){
 		System.out.println("Datos de conexion a la base de datos");
 		System.out.println("------------------------------------");
