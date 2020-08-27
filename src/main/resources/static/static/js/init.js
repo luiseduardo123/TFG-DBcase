@@ -242,7 +242,8 @@ $(document).ready(function () {
 							var re = new RegExp(prop,"g");
 							data = data.replace(re, traduct[prop]);
 						};
-						data = data.replace(/\*/g, "");
+						data = data.replace(/\*\*/g, "*");
+						data = data.replace(/\_/g, " ");
 						$("#testResult").html(data);
 					},
 					error: function (xhr, ajaxOptions, thrownError) {
@@ -598,6 +599,13 @@ $(document).ready(function () {
           		  	  $('#formModal').html($('#templateAbout').tmpl(dataType));
       	    		break;
             	  	case "deleteSuperEntity":
+            	  		var dataType = {
+          					temp_node_select: nodo_select
+          			  };
+          		  	  $('#formModal').html($('#templateSuperEntity').tmpl(dataType));
+          		  	  eventAddSuperEntity();
+      	    		break;
+            	  	case "addTextAgregation":
             	  		var dataType = {
           					temp_node_select: nodo_select
           			  };

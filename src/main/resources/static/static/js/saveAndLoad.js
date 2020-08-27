@@ -91,6 +91,11 @@ $(document).ready(function () {
 		importNetwork("session");
 	}
 	
+	var layoutActive = sessionStorage.getItem('layoutActive');
+	if(layoutActive){
+		$('.change-aparience[value="'+layoutActive+'"]').click()
+	}
+	
 	$(".changeOptions").click(function() {
 		exportNetwork("session");
 	});

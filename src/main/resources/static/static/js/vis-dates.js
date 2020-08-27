@@ -124,7 +124,7 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  //if(document.getElementsByTagName("canvas")[0]<)
 	  var ctx = c.getContext("2d");
 	  var img_super = ctx.canvas.toDataURL('image/png', 1.0);
-	  nodes.add({id: 9999999, label: "Entidad alto nivel", shape: 'image', image: img_super, size: size_width, borderWidth: 3, color: {
+	  nodes.add({id: 9999999, label: "Entidad alto nivel", shape: 'image', font: {color: '#2aba06'}, image: img_super, size: size_width, borderWidth: 3, color: {
 			 border: '#000000', 
 			 background:'#fafafa',
 			 highlight: {

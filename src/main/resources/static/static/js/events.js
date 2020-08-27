@@ -376,6 +376,7 @@ function updateTableElements(){
 		if($("#frame1").hasClass("col-md-10")){
 			$(".vis-zoomExtends").click();
 		}
+		sessionStorage.setItem('layoutActive', $(this).attr("value"));
 		switch($(this).attr("value")){
 			case "0":
 				$("#frame1").hide();
@@ -525,7 +526,6 @@ function updateTableElements(){
 			res = res.replace(/<\/div>/g, "");
 			res = res.replace(/<u>/g, "");
 			res = res.replace(/<\/u>/g, "");
-			res = res.replace(/\*/g, "");
 			res = res.replace(/<p>/g, "");
 			res = res.replace(/&gt;/g, ">");
 			res = "#"+$("#textGeneratedBy").text()+"\r\n"+res;
