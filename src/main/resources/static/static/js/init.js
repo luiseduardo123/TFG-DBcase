@@ -27,6 +27,7 @@ $(document).ready(function () {
 					case "addRelation":
 					case "addDomain":
 					case "addAttribute":
+					case "addSuperEntity":
 						$("#recipient-name").focus();
 					break;
 					case "addConstrainst":
@@ -403,6 +404,9 @@ $(document).ready(function () {
 	      	        case "addSubAtribute":
 	      	        	addSubAttribute($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val(), $('#element').val(), $('#composite').prop('checked'), $('#notNull').prop('checked'), $('#unique').prop('checked'), $('#multivalued').prop('checked'), $('#domain').val(), $('#size').val());
 		            	break;
+	      	        case "addSuperEntity":
+	      	        	addElementsWithRelationsToSuperEntity(parseInt($('#idSelected').val()), $('#recipient-name').val());
+	      	        	break;
       	          	case "addIsA":
       	            	break;
       	          	  default:
@@ -484,6 +488,8 @@ $(document).ready(function () {
               	    break;
             	  case "addEntitytoRelation":
             		  nodo = getAllNodes(["box", "image"]);
+            		  nodoRoles = allEntitysToRelation(nodo_select, "box");
+            		  console.log(nodoRoles);
             		  var childs = allEntityOfRelation(nodo_select);
 	        		  var selection = -1;
 	        		  for(var i=0;i<nodo.length;i++){
@@ -609,8 +615,8 @@ $(document).ready(function () {
             	  		var dataType = {
           					temp_node_select: nodo_select
           			  };
-          		  	  $('#formModal').html($('#templateSuperEntity').tmpl(dataType));
-          		  	  eventAddSuperEntity();
+          		  	  $('#formModal').html($('#templateAddSuperEntity').tmpl(dataType));
+          		  	  eventAddEventRecipient();
       	    		break;
             	  	case "removeParentIsA":
             	  		if(existParent(nodo_select))

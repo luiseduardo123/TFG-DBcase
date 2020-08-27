@@ -26,7 +26,7 @@ $(document).ready(function(){
 			fillEditEntity(idSele);
 		}},
 		{text: $("#textAddSuperEntity").text(), href: '#', action: function(e){
-			addElementsWithRelationsToSuperEntity(getNodeSelected());
+			$( "[functioninsert='addTextAgregation']").click();
 		}},
 		{text: $("#constraints").text(), href: '#', action: function(e){
 			$( "[functioninsert='addConstrainst']").click();
@@ -68,7 +68,7 @@ $(document).ready(function(){
 			fillEditRelation(idSele);
 		}},
 		{text: $("#textAddSuperEntity").text(), href: '#', action: function(e){
-			addElementsWithRelationsToSuperEntity(getNodeSelected());
+			$( "[functioninsert='addTextAgregation']").click();
 		}},
 		{text: $("#constraints").text(), href: '#', action: function(e){
 			$( "[functioninsert='addConstrainst']").click();

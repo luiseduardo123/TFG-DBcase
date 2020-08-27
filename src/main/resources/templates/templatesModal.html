@@ -255,7 +255,7 @@
             		<label for="element" class="col-form-label" th:text="#{textos.quitTheEntity}"></label>
             		<select id="element" class="form-control">
             			{{each(i,v) temp_nodes}}
-							<option value='${v.id}'>${v.label} - ${v.role}</option>
+							<option value='${v.id}'>${v.label} - ${v.asoc} - ${v.role}</option>
 						{{/each}}
   					</select>
             		<input type="hidden" id="tipoAdd" value="removeEntitytoRelation">
@@ -477,5 +477,18 @@
 		<p class="text-center"><button id="deleteSuper2" type="button" class="btn btn-primary btn-lg" style="font-size: 13px;" th:text="#{textos.deleteSuper2}" ></button></p>
 		<input type="hidden" id="typeAction" value="create">
 	  	<input type="hidden" id="idSelected" value="${temp_node_select}">
+	</div>
+	
+	<div class="d-none" id="templateAddSuperEntity" type="text/x-jquery-tmpl">
+		<form id="formInsert">
+        	<div class="form-group">
+				<label for="recipient-name" class="col-form-label" th:text="#{item.nombre}"></label>
+		    	<input type="text" class="form-control" id="recipient-name">
+		        <div class="invalid-feedback" th:text="#{textos.errorNameExist}"></div>
+		           	<input type="hidden" id="tipoAdd" value="addSuperEntity">
+		           	<input type="hidden" id="typeAction" value="create">
+				  	<input type="hidden" id="idSelected" value="${temp_node_select}">			  	
+		    </div>
+		</form>
 	</div>
 </div>

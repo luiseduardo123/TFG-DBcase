@@ -38,7 +38,7 @@ var options = {
 				 background:'#ffcc45', 
 				 highlight: {
 				        border: '#000000',
-				        background: '#ffcc45eb'
+				        background: '#ffce4d'
 				      },
 				 hover: {
 					 border: '#ffcc45',
@@ -111,7 +111,7 @@ var network_super = new vis.Network(container_super, data_super, options);
 		return new Promise(resolve => document.getElementsByClassName("vis-zoomExtendsScreen")[0].dispatchEvent(event));
   }
   
-  function createSuperEntity(){
+  function createSuperEntity(labelName){
 	  var size_width = 110;
 	  var c = document.getElementsByTagName("canvas")[0];
 	  console.log("siuu "+c.style.width.slice(0, -2));
@@ -124,7 +124,7 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  //if(document.getElementsByTagName("canvas")[0]<)
 	  var ctx = c.getContext("2d");
 	  var img_super = ctx.canvas.toDataURL('image/png', 1.0);
-	  nodes.add({id: 9999999, label: "Entidad alto nivel", shape: 'image', font: {color: '#2aba06'}, image: img_super, size: size_width, borderWidth: 3, color: {
+	  nodes.add({id: 9999999, label: labelName, shape: 'image', font: {color: '#2aba06'}, image: img_super, size: size_width, borderWidth: 3, color: {
 			 border: '#000000', 
 			 background:'#fafafa',
 			 highlight: {
@@ -137,10 +137,6 @@ var network_super = new vis.Network(container_super, data_super, options);
 					 }
 	  }, shapeProperties: { useBorderWithImage:true} });  
   }
-  
-  function simuleClickSuper12(){
-		return new Promise(resolve => createSuperEntity());
-}
   
   async function simuleClickAsync() {
 	  let promise = new Promise((resolve, reject) => {
@@ -217,12 +213,12 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  console.log("prueba12");
   }
   
-  async function simuleClickAsync12() {
+  async function simuleClickAsync12(labelName) {
 	  let promise = new Promise((resolve, reject) => {
 	    setTimeout(() => resolve("done!"), 2800)
 	  });
 	  let result = await promise;
-	  await createSuperEntity();
+	  await createSuperEntity(labelName);
 	}
   
   async function updateTableElementsPromise() {
@@ -233,7 +229,7 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  await updateTableElements();
 	}
   
-  function addElementsWithRelationsToSuperEntity(idElement){
+  function addElementsWithRelationsToSuperEntity(idElement, labelName){
 	  nodes.update({id: idElement, super_entity: true});
 	  getNodesElementsWithSuperEntity(network.getConnectedNodes(idElement));
 	  var nodes_super_select = [];
@@ -251,7 +247,7 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  simuleClickAsync();
 	  simuleClickAsyncNew();
 	  simuleClickAsync1();
-	  simuleClickAsync12();
+	  simuleClickAsync12(labelName);
 	  nodes_super_select.forEach(function(id_nd) {
 		  nodes.remove(id_nd);
 	  });

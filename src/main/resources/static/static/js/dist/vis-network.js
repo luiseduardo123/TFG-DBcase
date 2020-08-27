@@ -30306,14 +30306,37 @@
 		      
 	    	  if(edgeOption.options.state == "left"){
 	    		  if(grad>45){
-	    			  var x = arrowData.point.x;
+	    			  var x = arrowData.point.x-30;
 	    		      var y = arrowData.point.y;
 			      }else{
-			    	  var x = arrowData.point.x;
-				      var y = arrowData.point.y;
+			    	  if(grad>35){
+				    	  //console.log("entras 1 2");
+				    	  var x = arrowData.point.x-20;
+					      var y = arrowData.point.y;
+			    	  }else{
+			    		  if(grad>22){
+			    			  var x = arrowData.point.x-35;
+						      var y = arrowData.point.y;
+				    	  }else{
+				    		  if(grad>13){
+				    			  var x = arrowData.point.x-40;
+							      var y = arrowData.point.y-7;
+					    	  }else{
+					    		  if(grad>8){
+					    			  var x = arrowData.point.x-30;
+								      var y = arrowData.point.y-10;
+						    	  }else{
+						    		console.log("entras 1 2");
+							    	  var x = arrowData.point.x;
+								      var y = arrowData.point.y-17;
+						    	  }
+					    	  }
+				    	  }
+			    	  }
 			      }
 	    	  }
 	    	  if(edgeOption.options.state == "right"){
+	    		  console.log("entras 2");
 	    		  if(grad>45){
 	    			  var x = arrowData.point.x-30;
 	    		      var y = arrowData.point.y;
