@@ -12,6 +12,7 @@ public class Node {
 	int id;
 	DataAttribute dataAttribute;
 	int id_origin;
+	boolean isWeak;
 
 	public Node() {
 		this.id_origin = -1;
@@ -30,6 +31,7 @@ public class Node {
 		this.id = id;
 		this.dataAttribute = dataAttribute;
 		this.id_origin = -1;
+		this.isWeak = false;
 	}
 
 	public String getLabel() {
@@ -119,5 +121,14 @@ public class Node {
 	public void setId_origin(int id_origin) {
 		this.id_origin = id_origin;
 	}
+
+	public boolean isWeak() {
+		return isWeak;
+	}
+
+	public void setWeak(boolean isWeak) {
+		this.isWeak = isWeak;
+	}
+	
 	
 }

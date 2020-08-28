@@ -124,7 +124,7 @@ public class ConectorOracle extends ConectorDBMS {
 		Vector<String[]> primaries = t.getPrimaries();
 		if (!primaries.isEmpty()){
 			codigo+= "<p><strong>ALTER TABLE </strong>" + t.getNombreTabla() +
-			"<strong> ADD CONSTRAINT </strong>" + t.getNombreTabla() + "_pk" +
+			"<strong> ADD CONSTRAINT </strong>" + t.getNombreTabla_ini() + "_pk" + t.getNombreTabla_fin() +
 			"<strong> PRIMARY KEY </strong>"+"(";
 			for (int i=0;i<primaries.size();i++){
 				if (i>0) codigo+=", ";
@@ -140,7 +140,7 @@ public class ConectorOracle extends ConectorDBMS {
 			for (int j=0;j<foreigns.size();j++){
 				if(!abierto) {
 					codigo+="<p><strong>ALTER TABLE </strong>"+t.getNombreTabla()+"<strong> ADD CONSTRAINT </strong>" + 
-							t.getNombreTabla() + "_" + foreigns.elementAt(j)[0] + "<strong> FOREIGN KEY </strong>(";
+					t.getNombreTabla_ini() + "_" + foreigns.elementAt(j)[0].substring(1,foreigns.elementAt(j)[0].length()-1) +t.getNombreTabla_fin()+ "<strong> FOREIGN KEY </strong>(";
 					abierto=true;
 				}
 				keys+=foreigns.elementAt(j)[0];
@@ -165,7 +165,7 @@ public class ConectorOracle extends ConectorDBMS {
 		Vector<String> uniques = t.getUniques();
 		if(!uniques.isEmpty()){
 			codigo+="<p><strong>ALTER TABLE </strong>"+t.getNombreTabla()+
-					"<strong> ADD CONSTRAINT </strong>"+t.getNombreTabla() + "_unique_"+
+					"<strong> ADD CONSTRAINT </strong>"+t.getNombreTabla_ini() + "_unique_" +t.getNombreTabla_fin() +
 					"<strong> UNIQUE</strong> (";
 			for (int j=0;j<uniques.size();j++){
 				codigo+=uniques.elementAt(j);

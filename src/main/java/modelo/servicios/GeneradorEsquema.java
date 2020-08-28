@@ -211,7 +211,7 @@ public class GeneradorEsquema {
 					//tabla.aniadeListaClavesForaneas(primarias, ent.getNombreTabla(), referenciadas);
 					
 					// Si es 0..1 o 1..1 poner como clave
-					if (eya.getFinalRango() >= 1) tabla.aniadeListaClavesPrimarias(primarias);
+					if (eya.getFinalRango() > 1) tabla.aniadeListaClavesPrimarias(primarias);
 					else{
 						if (soloHayUnos && esLaPrimeraDel1a1){
 							tabla.aniadeListaClavesPrimarias(primarias);
@@ -219,8 +219,8 @@ public class GeneradorEsquema {
 						}else if (soloHayUnos){
 							for(String[] clave : (Vector<String[]>)ent.getPrimaries())
 								restriccionesPerdidas.add(
-		//								new restriccionPerdida(ent.getNombreTabla()+"_"+clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
-										new restriccionPerdida(clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
+										new restriccionPerdida(ent.getNombreTabla()+"_"+clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
+				//						new restriccionPerdida(clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
 							String uniques = "";
 							for (int q = 0; q < primarias.size(); q++){
 								if (q == 0) uniques += primarias.get(q)[0];
@@ -231,8 +231,8 @@ public class GeneradorEsquema {
 						}else if(eya.getPrincipioRango() == 1 && eya.getFinalRango() == Integer.MAX_VALUE)
 							for(String[] clave : (Vector<String[]>)ent.getPrimaries())
 								restriccionesPerdidas.add(
-									//	new restriccionPerdida(ent.getNombreTabla()+"_"+clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
-										new restriccionPerdida(clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
+										new restriccionPerdida(ent.getNombreTabla()+"_"+clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
+									//	new restriccionPerdida(clave[0], tr.getNombre(), restriccionPerdida.CANDIDATA));
 					}
 					//crea las restricciones perdidas (cuando rangoIni > 1 o rangoFin < N) || rangoIni == 1
 					if((eya.getPrincipioRango() > 0 && eya.getFinalRango() < Integer.MAX_VALUE && eya.getFinalRango() >1)||eya.getPrincipioRango()==1) {
@@ -804,8 +804,8 @@ public class GeneradorEsquema {
 					code+="<p>";
 					abierto=true;
 				}
-				//claves+= t.getNombreTabla()+"."+foreigns.elementAt(j)[3]+"_"+foreigns.elementAt(j)[0];
-				claves+= t.getNombreTabla()+"."+foreigns.elementAt(j)[0];
+				claves+= t.getNombreTabla()+"."+foreigns.elementAt(j)[3]+"_"+foreigns.elementAt(j)[0];
+				//claves+= t.getNombreTabla()+"."+foreigns.elementAt(j)[0];
 				valores+=foreigns.elementAt(j)[2];
 				if(foreigns.size()-j>1) {
 					if(foreigns.elementAt(j+1)[3]!=foreigns.elementAt(j)[3] || foreigns.elementAt(j+1)[2].equals(foreigns.elementAt(j)[2])) {

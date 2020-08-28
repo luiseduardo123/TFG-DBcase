@@ -251,7 +251,8 @@ public class Tabla {
 		String mr="";
 		if(p) mr+="<p>";
 		if(!nombreTabla.equals("Entidad_alto_nivel")){
-			mr+=this.ponGuionesBajos(nombreTabla,"DEFAULT")+" (";
+			//mr+=this.ponGuionesBajos(nombreTabla,"DEFAULT")+" (";
+			mr+= nombreTabla +" (";
 			Vector<String[]>definitivo= new Vector<String[]>();
 			//dejamos los elementos en las 3 listas sin duplicados.
 			definitivo=this.filtra(atributos, primaries);
@@ -300,11 +301,18 @@ public class Tabla {
 		return mr;
 	}
 	private String asterisco(String[] a,boolean scriptSQL) {
-		return c.isNullAttrs() && a[4]=="0" && !scriptSQL?"*":"";
+		return c.isNullAttrs() && a[4].equals("0") && !scriptSQL?"*":"";
 	}
 	public String getNombreTabla() {
 		return nombreTabla;
 	}
+	public String getNombreTabla_ini() {
+		return nombreTabla.substring(0,nombreTabla.length()-1);
+	}
+	public String getNombreTabla_fin() {
+		return nombreTabla.substring(nombreTabla.length()-1);
+	}
+
 	public void setNombreTabla(String nombreTabla) {
 		this.nombreTabla = nombreTabla;
 	}
@@ -374,7 +382,9 @@ public class Tabla {
 		return aux;
 	}
 	public String getNombreConstraint() {
-		String s = nombreTabla + "_ctr" + "_"+ (constraintNumber<10?"0" + constraintNumber:constraintNumber);
+		//String s = nombreTabla + "_ctr" + "_"+ (constraintNumber<10?"0" + constraintNumber:constraintNumber);
+		String s = nombreTabla.substring(0,nombreTabla.length()-1) + "_ctr" + "_"+ (constraintNumber<10?"0" + constraintNumber:constraintNumber)+nombreTabla.substring(nombreTabla.length()-1);
+		
 		constraintNumber++;
 		return s;
 	}

@@ -589,7 +589,7 @@ public class GoogleserviceApplication {
 					TransferEntidad entityTransf = new TransferEntidad();
 					entityTransf.setPosicion(new Point2D.Float(0, (float) 1.0));
 					entityTransf.setNombre(nodes.get(i).getLabel());
-					entityTransf.setDebil(false);
+					entityTransf.setDebil(nodes.get(i).isWeak());
 					entityTransf.setListaAtributos(new Vector());
 					entityTransf.setListaClavesPrimarias(new Vector());
 					entityTransf.setListaRestricciones(new Vector());
@@ -742,7 +742,7 @@ public class GoogleserviceApplication {
 		if(execute){
 			GeneradorEsquema testGen = new GeneradorEsquema(messageSource);
 			testGen.setControlador(c);
-			respuesta = testGen.generaModeloRelacional_v3("default",true);
+			respuesta = testGen.generaModeloRelacional_v3("default",false);
 			System.err.println(respuesta);
 		}
 		return respuesta;
@@ -785,7 +785,7 @@ public class GoogleserviceApplication {
 					TransferEntidad entityTransf = new TransferEntidad();
 					entityTransf.setPosicion(new Point2D.Float(0, (float) 1.0));
 					entityTransf.setNombre(nodes.get(i).getLabel());
-					entityTransf.setDebil(false);
+					entityTransf.setDebil(nodes.get(i).isWeak());
 					entityTransf.setListaAtributos(new Vector());
 					entityTransf.setListaClavesPrimarias(new Vector());
 					entityTransf.setListaRestricciones(new Vector());
@@ -815,11 +815,11 @@ public class GoogleserviceApplication {
 						attributeTransf.setEntidad_origenName("Entidad_no_encontrada");
 
 					// Si esta seleccionado la opcion multivalorado
-					attributeTransf.setMultivalorado(false);
+					attributeTransf.setMultivalorado(nodes.get(i).getDataAttribute().isMultivalued());
 					//Unique y Notnull
-					attributeTransf.setNotnull(false);
+					attributeTransf.setNotnull(nodes.get(i).getDataAttribute().isNotNull());
 					//ponemos unique a false, ya que en caso de ser Unique se hace la llamada abajo.
-					attributeTransf.setUnique(false);
+					attributeTransf.setUnique(nodes.get(i).getDataAttribute().isUnique());
 					TipoDominio dominio;
 					String dom;
 					// dom=(TipoDominio.VARCHAR).toString();
@@ -1117,6 +1117,7 @@ public class GoogleserviceApplication {
 
 			return generateEsquemaScriptSQL(nodes,edges,lblPhySchema,idxPhySchema,c,true,mapaAgregacion_nodosNombres);
 		}
+		
 		generateEsquemaScriptSQL(nodes,edges,lblPhySchema,idxPhySchema,c,false,mapaAgregacion_nodosNombres);
 		return generateEsquemaScriptSQL(nodesAltoNivel,edgesAltoNivel,lblPhySchema,idxPhySchema,c,true,mapaAgregacion_nodosNombres) ;
 
