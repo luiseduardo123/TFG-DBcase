@@ -283,8 +283,9 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  
 	  if(weakEntity && elementWithRelation != null){
 		  idRelation = addRelation(relationEntity, "create", null, "back");
-		  addEntitytoRelation(data_element.id, "1to1", "", "", "", "create", idRelation, false);
-		  addEntitytoRelation(parseInt(elementWithRelation), "1toN", "", "", "", "create", idRelation, false);
+		  console.log(data_element.id+" "+idRelation+" eeees");
+		  addEntitytoRelation(data_element.id, "", "1to1", "", "", "", "create", idRelation, false);
+		  addEntitytoRelation(parseInt(elementWithRelation), "", "1toN", "", "", "", "create", idRelation, false);
 	  }
 	  updateTableElements();
   }
@@ -377,7 +378,7 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  updateTableElements();
   }
   
-  function addEntitytoRelation(idTo, cardinality, roleName, minCardinality, maxCardinality, action, idSelected, partActive){
+  function addEntitytoRelation(idTo, element_role, cardinality, roleName, minCardinality, maxCardinality, action, idSelected, partActive){
 	  console.log(partActive);
 	  var left;
 	  var center;
@@ -420,20 +421,25 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  }else{
 		  labelText = center;
 	  }
-	  
 	  var idEdge = existEdge(idSelected, idTo);
 	  var data_element = {from: parseInt(idSelected), to: parseInt(idTo), label: labelText, labelFrom:right, labelTo:left, name:center, participation:partActive ,participationFrom: minCardinality, participationTo: maxCardinality, state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
-	  //var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: right+" .. "+left+" "+center, labelFrom:right, labelTo:left, name:center, state: "false", arrows:{to: { enabled: direct1 }}};
 	  var data_element1 = {from: parseInt(idSelected), to: parseInt(idTo), label: labelText, labelFrom:right, labelTo:left, name:center, participation:partActive ,participationFrom: minCardinality, participationTo: maxCardinality, state: "false", smooth:false, arrows:{to: { enabled: direct1 }}};
 	  var data_element_update = {};
-	  if(idEdge != null){
-		  data_element_update.id = idEdge;
-		  data_element_update.state = "left";
-		  data_element1.state = "right";
-		  edges.update(data_element_update);
-		  edges.add(data_element1);
+	  
+	  if(action == "edit"){
+		  var data_element3 = {label: labelText, labelFrom:right, labelTo:left, name:center, participation:partActive ,participationFrom: minCardinality, participationTo: maxCardinality, smooth:false, arrows:{to: { enabled: direct1 }}};
+		  data_element3.id = element_role;
+		  edges.update(data_element3);
 	  }else{
-		  edges.add(data_element);
+		  if(idEdge != null){
+			  data_element_update.id = idEdge;
+			  data_element_update.state = "left";
+			  data_element1.state = "right";
+			  edges.update(data_element_update);
+			  edges.add(data_element1);
+		  }else{
+			  edges.add(data_element);
+		  }  
 	  }
   }
   

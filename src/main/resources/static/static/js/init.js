@@ -381,7 +381,7 @@ $(document).ready(function () {
       	          		addAttribute($('#recipient-name').val(),$('#typeAction').val(),$('#idSelected').val(), $('#element').val(), $('#primaryKey').prop('checked'), $('#composite').prop('checked'), $('#notNull').prop('checked'), $('#unique').prop('checked'), $('#multivalued').prop('checked'), $('#domain').val(), $('#size').val());
       	            	break;
       	          	case "addEntitytoRelation":
-      	          		addEntitytoRelation($('#element').val(), $('[name=cardinality]:checked').val(), $('#roleName').val(), $('#minCardinality').val(), $('#maxCardinality').val(), $('#typeAction').val(),$('#idSelected').val(), $("#minMax").prop('checked'));
+      	          		addEntitytoRelation($('#element').val(), $('#element_role').val(), $('[name=cardinality]:checked').val(), $('#roleName').val(), $('#minCardinality').val(), $('#maxCardinality').val(), $('#typeAction').val(),$('#idSelected').val(), $("#minMax").prop('checked'));
       	            	break;
       	          	case "addEntityParent":
       	          		addEntityParent($('#element').val(), $('#typeAction').val(), $('#idSelected').val());
@@ -501,6 +501,7 @@ $(document).ready(function () {
             		  var dataType = {
               				temp_node_length: nodo.length,
               				temp_nodes: nodo,
+              				temp_node_roles: nodoRoles,
              				temp_node_select: nodo_select,
              				temp_option_selection: selection
              			  };

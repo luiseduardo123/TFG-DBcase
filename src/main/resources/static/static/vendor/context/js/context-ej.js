@@ -57,6 +57,9 @@ $(document).ready(function(){
 			$( "[functioninsert='addEntitytoRelation']").click();
 			$('#insertModal').prop('disabled', false);
 			$('#titleModal').html($('#textEditCardOrRol').text());
+			$('#element_role').removeClass("d-none");
+			$('#element_role_label').removeClass("d-none");
+			$( "#typeAction").val("edit");
 		}},
 		{text: $("#addNewAttribute").text(), action: function(e){
 			$( "[functioninsert='addAtribute']").click();
