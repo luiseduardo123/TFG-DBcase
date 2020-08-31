@@ -629,7 +629,8 @@ public class GoogleserviceApplication {
 				case "diamond":
 					TransferRelacion relationTransf = new TransferRelacion();
 					relationTransf.setNombre(nodes.get(i).getLabel());
-					relationTransf.setTipo("Normal");
+					relationTransf.setTipo(nodes.get(i).getTypeNode());
+					//relationTransf.setTipo("Normal");
 					relationTransf.setRol(null);
 					relationTransf.setListaEntidadesYAridades(new Vector());
 					relationTransf.setListaAtributos(new Vector());
@@ -835,7 +836,8 @@ public class GoogleserviceApplication {
 				case "diamond":
 					TransferRelacion relationTransf = new TransferRelacion();
 					relationTransf.setNombre(nodes.get(i).getLabel());
-					relationTransf.setTipo("Normal");
+					relationTransf.setTipo(nodes.get(i).getTypeNode());
+					//relationTransf.setTipo("Normal");
 					relationTransf.setRol(null);
 					relationTransf.setListaEntidadesYAridades(new Vector());
 					relationTransf.setListaAtributos(new Vector());

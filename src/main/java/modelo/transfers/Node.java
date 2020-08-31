@@ -12,7 +12,7 @@ public class Node {
 	int id;
 	DataAttribute dataAttribute;
 	int id_origin;
-	boolean isWeak;
+	boolean isWeak; 
 
 	public Node() {
 		this.id_origin = -1;
@@ -129,6 +129,9 @@ public class Node {
 	public void setWeak(boolean isWeak) {
 		this.isWeak = isWeak;
 	}
-	
-	
+
+	public String getTypeNode(){
+		return isWeak?"Debil":"Normal";
+	}
+ 
 }

@@ -30294,7 +30294,6 @@
 	      if (!isArray$5(points)) {
 	        points = [points];
 	      }
-	      
 	      if(edgeOption.options.state == "left" || edgeOption.options.state == "right"){
 	    	  var cat1 = Math.abs(edgeOption.toPoint.x - edgeOption.fromPoint.x); 
 		      var cat2 = Math.abs(edgeOption.toPoint.y - edgeOption.fromPoint.y);
@@ -30310,7 +30309,6 @@
 	    		      var y = arrowData.point.y;
 			      }else{
 			    	  if(grad>35){
-				    	  //console.log("entras 1 2");
 				    	  var x = arrowData.point.x-20;
 					      var y = arrowData.point.y;
 			    	  }else{
@@ -30326,7 +30324,6 @@
 					    			  var x = arrowData.point.x-30;
 								      var y = arrowData.point.y-10;
 						    	  }else{
-						    		console.log("entras 1 2");
 							    	  var x = arrowData.point.x;
 								      var y = arrowData.point.y-17;
 						    	  }
@@ -30334,9 +30331,14 @@
 				    	  }
 			    	  }
 			      }
+	    		  if(edgeOption.options.participation){
+			    	  if(parseInt(edgeOption.options.participationFrom)>0){
+		    			  x=x;
+		    			  y=y+3;
+			    	  }
+	    		  }
 	    	  }
 	    	  if(edgeOption.options.state == "right"){
-	    		  console.log("entras 2");
 	    		  if(grad>45){
 	    			  var x = arrowData.point.x-30;
 	    		      var y = arrowData.point.y;
@@ -30344,10 +30346,22 @@
 			    	  var x = arrowData.point.x;
 				      var y = arrowData.point.y+18;
 			      }
+	    		  if(edgeOption.options.participation){
+			    	  if(parseInt(edgeOption.options.participationFrom)>0){
+		    			  x=x;
+		    			  y=y+3;
+			    	  }
+	    		  }
 	    	  }	    	  
 	      }else{
 	    	  var x = arrowData.point.x;
 		      var y = arrowData.point.y;
+		      if(edgeOption.options.participation){
+		    	  if(parseInt(edgeOption.options.participationFrom)>0){
+	    			  x=x;
+	    			  y=y+3;
+		    	  }
+    		  }
 	      }
 	      
 	      var angle = arrowData.angle;
@@ -32652,7 +32666,13 @@
 	      }else{
 	    	  ctx.moveTo(this.fromPoint.x, this.fromPoint.y);
 		      ctx.lineTo(this.toPoint.x, this.toPoint.y); // draw shadow if enabled
-	      }
+		      if(this.options.participation){
+			      if(parseInt(this.options.participationFrom)>0){
+				      ctx.moveTo(this.fromPoint.x+8, this.fromPoint.y+5);
+				      ctx.lineTo(this.toPoint.x+8, this.toPoint.y+5);
+	  			  }
+		      }
+		  }
 	      this.enableShadow(ctx, values);
 	      ctx.stroke();
 	      this.disableShadow(ctx, values);
@@ -32757,6 +32777,11 @@
 	    /* It's an edge label */
 	    );
 	    this.options.state = options.state;
+	    this.options.participation = options.participation;
+	    if(options.participation){
+		    this.options.participationFrom = options.participationFrom;
+		    this.options.participationTo = options.participationTo;
+	    }
 	    this.setOptions(options);
 	  }
 	  /**
@@ -32928,8 +32953,12 @@
 	      var pile = [options, this.options, this.globalOptions, // Currently set global edge options
 	      this.defaultOptions];
 	      this.labelModule.update(this.options, pile);
-
 	      this.options.state = options.state;
+     	  this.options.participation = options.participation;
+	     	if(options.participation){
+			    this.options.participationFrom = options.participationFrom;
+			    this.options.participationTo = options.participationTo;
+		    }
 	      if (this.labelModule.baseSize !== undefined) {
 	        this.baseFontSize = this.labelModule.baseSize;
 	      }

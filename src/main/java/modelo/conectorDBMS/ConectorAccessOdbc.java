@@ -146,7 +146,7 @@ public class ConectorAccessOdbc extends ConectorDBMS {
 		if(!uniques.isEmpty()){
 			codigo+="<p><strong>ALTER TABLE </strong>"+t.getNombreTabla()+
 					"<strong> ADD CONSTRAINT </strong>" + t.getNombreTabla_ini() +  "_unique_" + t.getNombreTabla_fin() + 
-					"<strong> UNIQUE</strong> (";
+	"<strong> UNIQUE</strong> (";
 			for (int j=0;j<uniques.size();j++){
 				codigo+=uniques.elementAt(j);
 				if(uniques.size()-j>1) codigo +=", ";

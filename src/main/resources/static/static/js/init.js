@@ -155,13 +155,18 @@ $(document).ready(function () {
 
 				auxNodesTotal.forEach(function(item, index) {
 					var auxItem= item;
+
+					if(item.isWeak || item.isWeak == "active")
+						auxItem.isWeak = true;
+					else
+						auxItem.isWeak = false;
 					if(item.shape == "image"){
 						auxItem = {
 							heightConstraint: 25,
 							id: item.id,
 							isWeak: false,
 							//label: (item.label).replace(/ /g,'_'),
-							label: 'agregacion',
+							label: item.label,
 							physics: false,
 							scale: 10,
 							shape: "box",
@@ -244,7 +249,6 @@ $(document).ready(function () {
 							data = data.replace(re, traduct[prop]);
 						};
 						data = data.replace(/\*\*/g, "*");
-						data = data.replace(/\_/g, " ");
 						$("#testResult").html(data);
 					},
 					error: function (xhr, ajaxOptions, thrownError) {
@@ -266,6 +270,10 @@ $(document).ready(function () {
 
 				auxNodesTotal.forEach(function(item, index) {
 					var auxItem= item;
+					if(item.isWeak || item.isWeak == "active")
+						auxItem.isWeak = true;
+					else
+						auxItem.isWeak = false;
 					if(item.shape == "image"){
 						auxItem = {
 							heightConstraint: 25,

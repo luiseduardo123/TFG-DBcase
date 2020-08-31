@@ -384,7 +384,6 @@ public class Tabla {
 	public String getNombreConstraint() {
 		//String s = nombreTabla + "_ctr" + "_"+ (constraintNumber<10?"0" + constraintNumber:constraintNumber);
 		String s = nombreTabla.substring(0,nombreTabla.length()-1) + "_ctr" + "_"+ (constraintNumber<10?"0" + constraintNumber:constraintNumber)+nombreTabla.substring(nombreTabla.length()-1);
-		
 		constraintNumber++;
 		return s;
 	}
