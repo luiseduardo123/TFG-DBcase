@@ -105,54 +105,65 @@ $(document).ready(function () {
 	});
 	
 	$("#loadFile").click(function() {
-		$( "[functioninsert='loadFile']").click();
-        $("#formModalButton").hide();
-        
-        $("html").on("dragover", function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            $("#textoFileDrag").text($("#textDragHere").text());
-        });
-
-        $("html").on("drop", function(e) { e.preventDefault(); e.stopPropagation(); });
-
-        // Drag enter
-        $('.upload-area').on('dragenter', function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-        });
-
-        // Drag over
-        $('.upload-area').on('dragover', function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-        });
-
-        // Drop
-        $('.upload-area').on('drop', function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-
-            var file = e.originalEvent.dataTransfer.files;
-            var fd = new FormData();
-            fd.append('file', file[0]);
-            uploadData(fd);
-        });
-
-        // Open file selector on div click
-        $("#uploadfile").click(function(){
-            $("#file").click();
-        });
-
-        // file selected
-        $("#file").change(function(){
-            var fd = new FormData();
-            var files = $('#file')[0].files[0];
-            fd.append('file',files);
-            uploadData(fd);
-        });
-        
+		if(nodes.get().length>0 || nodes_super.get().length>0){
+			var salir = confirm($("#textCerrarArchivo").text());
+			if(salir){
+				dataExist();
+			}
+		}else{
+			dataExist();
+		}   
 	});
 	
 	 // preventing page from redirecting
 });
+
+
+function dataExist(){
+	$( "[functioninsert='loadFile']").click();
+    $("#formModalButton").hide();
+    
+    $("html").on("dragover", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $("#textoFileDrag").text($("#textDragHere").text());
+    });
+
+    $("html").on("drop", function(e) { e.preventDefault(); e.stopPropagation(); });
+
+    // Drag enter
+    $('.upload-area').on('dragenter', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    });
+
+    // Drag over
+    $('.upload-area').on('dragover', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    });
+
+    // Drop
+    $('.upload-area').on('drop', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        var file = e.originalEvent.dataTransfer.files;
+        var fd = new FormData();
+        fd.append('file', file[0]);
+        uploadData(fd);
+    });
+
+    // Open file selector on div click
+    $("#uploadfile").click(function(){
+        $("#file").click();
+    });
+
+    // file selected
+    $("#file").change(function(){
+        var fd = new FormData();
+        var files = $('#file')[0].files[0];
+        fd.append('file',files);
+        uploadData(fd);
+    });
+}

@@ -468,8 +468,16 @@ function updateTableElements(){
 	});
 	
 	$("#general-new").on('click',function(){
-		sessionStorage.setItem('codeSave', "");
-		location.reload();
+		if(nodes.get().length>0 || nodes_super.get().length>0){
+			var salir = confirm($("#textCerrarArchivo").text());
+			if(salir){
+				sessionStorage.setItem('codeSave', "");
+				location.reload();
+			}
+		}else{
+			sessionStorage.setItem('codeSave', "");
+			location.reload();
+		}
 	});
 	
 	function simuleClick(){
