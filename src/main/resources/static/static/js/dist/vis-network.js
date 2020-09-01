@@ -32636,15 +32636,16 @@
 	    value: function _line(ctx, values) {
 	      // draw a straight line
 	      ctx.beginPath();
+	      var cat1 = Math.abs(this.toPoint.x - this.fromPoint.x); 
+	      var cat2 = Math.abs(this.toPoint.y - this.fromPoint.y);
+	      var calculo1 = Math.pow(cat1, 2);
+	      var calculo2 = Math.pow(cat2, 2);
+	      var hipo = Math.sqrt(calculo1+calculo2);
+	      var sen = Math.sin(cat2/hipo);
+	      var grad = Math.asin(sen) * (180/Math.PI);
+	      
 	      if(this.options.state == "left" || this.options.state == "right"){
-	    	  var cat1 = Math.abs(this.toPoint.x - this.fromPoint.x); 
-		      var cat2 = Math.abs(this.toPoint.y - this.fromPoint.y);
-		      var calculo1 = Math.pow(cat1, 2);
-		      var calculo2 = Math.pow(cat2, 2);
-		      var hipo = Math.sqrt(calculo1+calculo2);
-		      var sen = Math.sin(cat2/hipo);
-		      var grad = Math.asin(sen) * (180/Math.PI);
-		      
+	      
 	    	  if(this.options.state == "left"){
 	    		  if(grad>45){
 			    	  ctx.moveTo(this.fromPoint.x+30, this.fromPoint.y);
@@ -32668,8 +32669,13 @@
 		      ctx.lineTo(this.toPoint.x, this.toPoint.y); // draw shadow if enabled
 		      if(this.options.participation){
 			      if(parseInt(this.options.participationFrom)>0){
-				      ctx.moveTo(this.fromPoint.x+8, this.fromPoint.y+5);
-				      ctx.lineTo(this.toPoint.x+8, this.toPoint.y+5);
+			    	  if(grad<47){
+					      ctx.moveTo(this.fromPoint.x+8, this.fromPoint.y+15);
+					      ctx.lineTo(this.toPoint.x+8, this.toPoint.y+15);
+			    	  }else{
+			    		  ctx.moveTo(this.fromPoint.x+8, this.fromPoint.y+5);
+					      ctx.lineTo(this.toPoint.x+8, this.toPoint.y+5);
+			    	  }
 	  			  }
 		      }
 		  }

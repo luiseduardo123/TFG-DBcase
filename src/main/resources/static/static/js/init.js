@@ -245,10 +245,16 @@ $(document).ready(function () {
 					contentType: "application/json",
 					success: function (data) {
 						for (const prop in traduct) {
-							var re = new RegExp(prop,"g");
+							//si existe un * en el regex le ponemos el caracter de escape
+							var auxConst = prop;
+							if(auxConst !== undefined && auxConst.indexOf("*") == auxConst.length-1)
+								auxConst = auxConst.substr(0,auxConst.length-1) + "\\*";
+								//auxConst = "test\\*";
+
+							var re = new RegExp(auxConst,"g");
 							data = data.replace(re, traduct[prop]);
 						};
-						data = data.replace(/\*\*/g, "*");
+						//data = data.replace(/\*/g, "");
 						$("#testResult").html(data);
 					},
 					error: function (xhr, ajaxOptions, thrownError) {
@@ -358,11 +364,18 @@ $(document).ready(function () {
 					data: json,
 					contentType: "application/json",
 					success: function (data) {
+						
 						for (const prop in traduct) {
-							var re = new RegExp(prop,"g");
+							//si existe un * en el regex le ponemos el caracter de escape
+							var auxConst = prop;
+							if(auxConst !== undefined && auxConst.indexOf("*") == auxConst.length-1)
+								auxConst = auxConst.substr(0,auxConst.length-1) + "\\*";
+								//auxConst = "test\\*";
+
+							var re = new RegExp(auxConst,"g");
 							data = data.replace(re, traduct[prop]);
 						};
-						data = data.replace(/\*/g, "");
+
 						$("#resultSPhysicalSchema").html(data);
 					},
 					error: function (xhr, ajaxOptions, thrownError) {

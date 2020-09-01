@@ -114,14 +114,12 @@ var network_super = new vis.Network(container_super, data_super, options);
   function createSuperEntity(labelName){
 	  var size_width = 110;
 	  var c = document.getElementsByTagName("canvas")[0];
-	  console.log("siuu "+c.style.width.slice(0, -2));
 	  var sizeWidth = c.style.width.slice(0, -2);
-	  console.log(parseInt(sizeWidth)+" veees");
 	  if(parseInt(sizeWidth)<120)
 		  size_width = sizeWidth;
-
-	  console.log(size_width+" orif");
-	  //if(document.getElementsByTagName("canvas")[0]<)
+	  
+	  if(nodes_super.get().length<5)
+		  size_width = 45;
 	  var ctx = c.getContext("2d");
 	  var img_super = ctx.canvas.toDataURL('image/png', 1.0);
 	  nodes.add({id: 9999999, label: labelName, shape: 'image', font: {color: '#2aba06'}, image: img_super, size: size_width, borderWidth: 3, color: {
