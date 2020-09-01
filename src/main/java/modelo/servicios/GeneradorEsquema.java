@@ -778,7 +778,7 @@ public class GeneradorEsquema {
 	}
 	
 	public String restriccionesPerdidas() {
-		return restriccionesPerdidas.toString();
+		return restriccionesPerdidas.toString(this.msgSrc.getMessage("textosId.candidateKeys", null, this.loc),this.msgSrc.getMessage("textosId.writeNumbersRelation", null, this.loc),this.msgSrc.getMessage("textosId.constraintsSection", null, this.loc));
 	}
 	
 	public String restriccionesIR() {
@@ -804,8 +804,8 @@ public class GeneradorEsquema {
 					code+="<p>";
 					abierto=true;
 				}
-				claves+= t.getNombreTabla()+"."+foreigns.elementAt(j)[3]+"_"+foreigns.elementAt(j)[0];
-				//claves+= t.getNombreTabla()+"."+foreigns.elementAt(j)[0];
+				//claves+= t.getNombreTabla()+"."+foreigns.elementAt(j)[3]+"_"+foreigns.elementAt(j)[0];
+				claves+= t.getNombreTabla()+"."+foreigns.elementAt(j)[0];
 				valores+=foreigns.elementAt(j)[2];
 				if(foreigns.size()-j>1) {
 					if(foreigns.elementAt(j+1)[3]!=foreigns.elementAt(j)[3] || foreigns.elementAt(j+1)[2].equals(foreigns.elementAt(j)[2])) {
