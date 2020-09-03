@@ -297,6 +297,12 @@ public class GoogleserviceApplication {
 		if(!nodesAltoNivel.isEmpty() & !edgesAltoNivel.isEmpty()){
 			nodes = gson.fromJson(r.getData1(), tipoNode);
 			edges = gson.fromJson(r.getData2(), tipoEdge);
+			int idAgregacion = -1;
+			//tomar id de la agregacion
+			for(int idxAgreg=0;idxAgreg<nodes.size();idxAgreg++)
+				if(nodes.get(idxAgreg).getLabel().equals("agregacion"))
+					idAgregacion = nodes.get(idxAgreg).getId();
+
 			//BUSCAMOS LA IMAGEN DE ALTO NIVEL PARA ASIGNARLE UNA PRIMARY KEY COMPUESTA POR TODAS PRIMARY KEYS INTERNAS EN LA AGREGACION
 			String lblEntidadAltoNivel = "";
 			for(int nodeIdx = 0; nodeIdx < nodesAltoNivel.size(); nodeIdx++){
@@ -324,7 +330,7 @@ public class GoogleserviceApplication {
 					//  CREAMOS LA RELACIóN ENTRE LA CLAVE CREADA Y LA ENTIDAD
 					Edge altoNivelPrimaryKeyEdge = new Edge();
 
-					altoNivelPrimaryKeyEdge.setFrom(9999999);
+					altoNivelPrimaryKeyEdge.setFrom(idAgregacion);
 					altoNivelPrimaryKeyEdge.setId(UUID.randomUUID().toString());
 					altoNivelPrimaryKeyEdge.setTo(999998-nodeIdx);
 

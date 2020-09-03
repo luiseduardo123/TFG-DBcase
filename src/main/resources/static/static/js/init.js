@@ -152,7 +152,7 @@ $(document).ready(function () {
 				 
 				var auxNodesTotal = nodes.get();
 				var resultNodes =[];
-
+				var agregation = "";
 				auxNodesTotal.forEach(function(item, index) {
 					var auxItem= item;
 
@@ -161,12 +161,13 @@ $(document).ready(function () {
 					else
 						auxItem.isWeak = false;
 					if(item.shape == "image"){
+						agregation = item.label;
 						auxItem = {
 							heightConstraint: 25,
 							id: item.id,
 							isWeak: false,
 							//label: (item.label).replace(/ /g,'_'),
-							label: item.label,
+							label: 'agregacion',
 							physics: false,
 							scale: 10,
 							shape: "box",
@@ -194,7 +195,7 @@ $(document).ready(function () {
 					var tempLabel = edgesData[i].label;
 					if(edgesData[i].label){
 						edgesData[i].label = normalize(edgesData[i].label);
-					}
+					}  
 					var nameLabel = edgesData[i].label;
 					traduct[nameLabel] = tempLabel;
 					
@@ -204,8 +205,7 @@ $(document).ready(function () {
 					}
 					var nameName = edgesData[i].name;
 					traduct[nameName] = tempName;
-				}
-				
+				} 
 				var nodesSuper = nodes_super.get();
 				for(var i = 0;i<nodesSuper.length;i++){
 					var tempLabel = nodesSuper[i].label;
@@ -254,7 +254,9 @@ $(document).ready(function () {
 							var re = new RegExp(auxConst,"g");
 							data = data.replace(re, traduct[prop]);
 						};
-						//data = data.replace(/\*/g, "");
+						data = data.replace(/\*\*/g, "*");
+						data = data.replace(/agregacion/g, agregation);
+						//data = data.replace(/\_/g, " ");
 						$("#testResult").html(data);
 					},
 					error: function (xhr, ajaxOptions, thrownError) {
@@ -273,7 +275,7 @@ $(document).ready(function () {
 
 				var auxNodesTotal = nodes.get();
 				var resultNodes =[];
-
+				var agregation = "";
 				auxNodesTotal.forEach(function(item, index) {
 					var auxItem= item;
 					if(item.isWeak || item.isWeak == "active")
@@ -281,6 +283,7 @@ $(document).ready(function () {
 					else
 						auxItem.isWeak = false;
 					if(item.shape == "image"){
+						agregation = item.label;
 						auxItem = {
 							heightConstraint: 25,
 							id: item.id,
@@ -364,7 +367,6 @@ $(document).ready(function () {
 					data: json,
 					contentType: "application/json",
 					success: function (data) {
-						
 						for (const prop in traduct) {
 							//si existe un * en el regex le ponemos el caracter de escape
 							var auxConst = prop;
@@ -375,7 +377,8 @@ $(document).ready(function () {
 							var re = new RegExp(auxConst,"g");
 							data = data.replace(re, traduct[prop]);
 						};
-
+						data = data.replace(/\*/g, "");
+						data = data.replace(/agregacion/g, agregation);
 						$("#resultSPhysicalSchema").html(data);
 					},
 					error: function (xhr, ajaxOptions, thrownError) {

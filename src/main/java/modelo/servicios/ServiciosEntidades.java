@@ -196,11 +196,11 @@ public class ServiciosEntidades {
 			controlador.mensajeDesde_SE(TC.SE_AnadirAtributoAEntidad_ERROR_DAOAtributos,v);
 			return;
 		}
-		for (int i=0; i<te.getListaAtributos().size();i++)
-			if(daoAtributos.nombreDeAtributo((Integer.parseInt((String)te.getListaAtributos().get(i)))).toLowerCase().equals(ta.getNombre().toLowerCase())){ 
-				controlador.mensajeDesde_SE(TC.SE_AnadirAtributoAEntidad_ERROR_NombreDeAtributoYaExiste,v);
-				return;
-			}
+		// for (int i=0; i<te.getListaAtributos().size();i++)
+		// 	if(daoAtributos.nombreDeAtributo((Integer.parseInt((String)te.getListaAtributos().get(i)))).toLowerCase().equals(ta.getNombre().toLowerCase())){ 
+		// 		controlador.mensajeDesde_SE(TC.SE_AnadirAtributoAEntidad_ERROR_NombreDeAtributoYaExiste,v);
+		// 		return;
+		// 	}
 		
 		// Si hay tamano y no es un entero positivo -> ERROR
 		if(v.size()==3){
