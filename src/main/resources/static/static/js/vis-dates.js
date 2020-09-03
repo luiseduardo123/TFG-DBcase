@@ -282,8 +282,8 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  if(weakEntity && elementWithRelation != null){
 		  idRelation = addRelation(relationEntity, "create", null, "back");
 		  console.log(data_element.id+" "+idRelation+" eeees");
-		  addEntitytoRelation(data_element.id, "", "1to1", "", "", "", "create", idRelation, false);
-		  addEntitytoRelation(parseInt(elementWithRelation), "", "1toN", "", "", "", "create", idRelation, false);
+		  addEntitytoRelation(data_element.id, "", "1to1", "", "1", "1", "create", idRelation, true, true);
+		  addEntitytoRelation(parseInt(elementWithRelation), "", "1toN", "", "1", "N", "create", idRelation, true);
 	  }
 	  updateTableElements();
   }
@@ -377,7 +377,7 @@ var network_super = new vis.Network(container_super, data_super, options);
   }
   
   function addEntitytoRelation(idTo, element_role, cardinality, roleName, minCardinality, maxCardinality, action, idSelected, partActive){
-	  console.log(partActive);
+	  console.log(idTo+" - "+element_role+" - "+cardinality+" - "+roleName+" - "+minCardinality+" - "+maxCardinality+" - "+action+" - "+idSelected+" - "+ partActive);
 	  var left;
 	  var center;
 	  var right;
@@ -939,6 +939,41 @@ var network_super = new vis.Network(container_super, data_super, options);
 	  return (nodes.get(idSelected).constraints === undefined)
   }
   
+  function allEntitysToRelation2(nodo_select, onlyType=null){
+	  var data = [];
+	  var dataAll = [];
+	  var type = "all";
+	  
+	  if(onlyType != null){
+		  type = onlyType;
+	  }
+
+	  nodos = network.getConnectedEdges(parseInt(nodo_select));
+	  nodos.forEach(function(edg) {
+		  	idNodo = edges.get(edg).to;
+		  	roleName = edges.get(edg).label;
+		  	labelF = edges.get(edg).labelFrom;
+		  	labelT = edges.get(edg).labelTo;
+		  	if(nodes.get(idNodo).shape == type || nodes.get(idNodo).shape == "image"){
+		  		if(nodes.get(idNodo).shape == "box")
+		  			data.push({id:edg, label:nodes.get(idNodo).label, role:roleName, asoc:labelF+"-"+labelT});
+		  		else
+		  			data.push({id:edg, label:nodes.get(idNodo).label, role:roleName});
+		  	}
+		  	if(nodes.get(idNodo).shape == "box")
+		  		dataAll.push({id:edg, label:nodes.get(idNodo).label, role:roleName, asoc:labelF+"-"+labelT});
+	  		else
+	  			dataAll.push({id:edg, label:nodes.get(idNodo).label, role:roleName});
+		  		
+	  });
+	  
+	  if(onlyType != null){
+		  return data;
+	  }else{
+		  return dataAll;
+	  }
+	  
+  }
   /**
    * Devuelve los elementos de una relacion, todas o solo las del tipo especificado
    * @param nodo_select id del elemento tipo relacion del que se quiere obtener sus elementos conectados

@@ -519,3 +519,7 @@ iframe {
 a[aria-expanded="true"] {
     background: transparent !important;
 }
+
+.dropdown-menu{
+	z-index: 1000000 !important;
+}

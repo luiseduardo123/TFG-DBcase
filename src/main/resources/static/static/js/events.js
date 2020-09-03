@@ -177,6 +177,18 @@ function eventSubAttribute(){
 	});
 }
 
+function eventAddEventRecipientAttribute(){
+	$( "#recipient-name" ).on( "blur keyup", function(){
+		  var nameValue = $( "#recipient-name" ).val();
+		  var tipoAdd = $( "#tipoAdd" ).val();
+		  if(nameValue != ""){
+		  $('#insertModal').prop('disabled', false);
+		  }else{
+			  $('#insertModal').prop('disabled', true);
+		  }
+	});
+}
+
 function eventAddEventRecipient(){
 	$( "#recipient-name" ).on( "blur keyup", function(){
 		  var nameValue = $( "#recipient-name" ).val();

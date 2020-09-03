@@ -488,7 +488,7 @@ $(document).ready(function () {
             		  }
             		  
             		  $('#formModal').html($('#templateAddAtribute').tmpl(dataType));
-            		  eventAddEventRecipient();
+            		  eventAddEventRecipientAttribute();
             		  eventEventPrimaryKeyAttribute();
               	    break;
             	  case "addSubAtribute":
@@ -581,7 +581,7 @@ $(document).ready(function () {
               		  $('#formModal').html($('#templateAddEntityChild').tmpl(dataType));
               	    break;
             	  case "removeEntitytoRelation":
-            		  nodo = allEntitysToRelation(nodo_select, "box");
+            		  nodo = allEntitysToRelation2(nodo_select, "box");
             		  var dataType = {
                 				temp_node_length: nodo.length,
                 				temp_nodes: nodo,

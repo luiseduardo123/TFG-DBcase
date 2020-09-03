@@ -22,6 +22,7 @@ $(document).ready(function(){
 		{text: $("#textEditEntity").text(), href: '#', action: function(e){
 			$( "[functioninsert='addEntity']").click();
 			$( "#typeAction").val("edit");
+			$("#insertModal").text($("#textAccept").text());
 			idSele = $("#idSelected").val();
 			fillEditEntity(idSele);
 		}},
@@ -59,6 +60,7 @@ $(document).ready(function(){
 			$('#titleModal').html($('#textEditCardOrRol').text());
 			$('#element_role').removeClass("d-none");
 			$('#element_role_label').removeClass("d-none");
+			$("#insertModal").text($("#textAccept").text());
 			$( "#typeAction").val("edit");
 		}},
 		{text: $("#addNewAttribute").text(), action: function(e){
@@ -67,6 +69,7 @@ $(document).ready(function(){
 		{text: $("#textEditRelation").text(), href: '#', action: function(e){
 			$( "[functioninsert='addRelation']").click();
 			$( "#typeAction").val("edit");
+			$("#insertModal").text($("#textAccept").text());
 			idSele = $("#idSelected").val();
 			fillEditRelation(idSele);
 		}},
@@ -91,6 +94,7 @@ $(document).ready(function(){
 		// atributos
 		{text: $("#renameEntity").text()+" Atributo", href: '#', action: function(e){
 			$( "[functioninsert='addAtribute']").click();
+			$("#insertModal").text($("#textAccept").text());
 			$( "#typeAction").val("edit");
 			idSele = $("#idSelected").val();
 			fillEditAtributte(idSele);
