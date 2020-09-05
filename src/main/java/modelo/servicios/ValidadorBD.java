@@ -100,7 +100,7 @@ public class ValidadorBD extends GeneradorEsquema{
 		while (i<entidades.size()){
 			t=entidades.elementAt(i);
 			//por ahora validamos las claves y avisamos de si es padre de varias isA
-			valido &= validaKey(t) && this.validaNombresAtributosEntidad(t);
+			valido &= validaKey(t); //&& this.validaNombresAtributosEntidad(t);
 			validaFidelidadEntidadEnIsA(t);
 			i++;
 		}

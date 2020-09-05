@@ -377,6 +377,7 @@ public class DAOEntidades {
 	}
 
 	private void guardaDoc() {
+		//OutputFormat formato = new OutputFormat(doc, "utf-8", true);
 		OutputFormat formato = new OutputFormat(doc, "utf-8", true);
 		StringWriter s = new StringWriter();
 		XMLSerializer ser = new XMLSerializer(s, formato);
