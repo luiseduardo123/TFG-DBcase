@@ -294,6 +294,18 @@ public class GoogleserviceApplication {
 		List<Edge> edgesAltoNivel = gson.fromJson(r.getData4(), tipoEdge);
 
 
+		HashMap<Integer,DataAtributoEntidadOrigen> mapaAgregacion_nodosNombres = new HashMap<>();
+
+		Controlador c = null;
+		try {
+			c = new Controlador("debug");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		cargarHashDeNombres(mapaAgregacion_nodosNombres,nodes,nodesAltoNivel,edges,edgesAltoNivel);
+		
 		if(!nodesAltoNivel.isEmpty() & !edgesAltoNivel.isEmpty()){
 			nodes = gson.fromJson(r.getData1(), tipoNode);
 			edges = gson.fromJson(r.getData2(), tipoEdge);
@@ -315,7 +327,7 @@ public class GoogleserviceApplication {
 					altoNivelDataAttribute.setMultivalued(false);
 					altoNivelDataAttribute.setNotNull(false);
 					altoNivelDataAttribute.setPrimaryKey(true);
-					altoNivelDataAttribute.setSize("20");
+					altoNivelDataAttribute.setSize("120");
 					altoNivelDataAttribute.setUnique(false);
 
 					altoNivelPrimaryKey.setId(999998-nodeIdx);
@@ -324,7 +336,8 @@ public class GoogleserviceApplication {
 					altoNivelPrimaryKey.setShape("ellipse");
 					altoNivelPrimaryKey.setStrong(false);
 					altoNivelPrimaryKey.setDataAttribute(altoNivelDataAttribute);
-
+					altoNivelPrimaryKey.setId_origin(nodesAltoNivel.get(nodeIdx).getId());
+					
 					nodes.add(altoNivelPrimaryKey);
 
 					//  CREAMOS LA RELACIóN ENTRE LA CLAVE CREADA Y LA ENTIDAD
@@ -382,15 +395,15 @@ public class GoogleserviceApplication {
 			edges = gson.fromJson(r.getData2(), tipoEdge);
 		}
 
-		Controlador c = null;
-		try {
-			c = new Controlador("debug");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		generateEsquema(nodes,edges,c,false);
-		return generateEsquema(nodesAltoNivel,edgesAltoNivel,c,true) ;
+//		Controlador c = null;
+//		try {
+//			c = new Controlador("debug");
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		generateEsquema(nodes,edges,c,false,mapaAgregacion_nodosNombres);
+		return generateEsquema(nodesAltoNivel,edgesAltoNivel,c,true,mapaAgregacion_nodosNombres) ;
 		//List<Object> dataParseada = new ArrayList<Object>();
 		// HashMap dataParseada = new HashMap<Integer,Object>();
 
@@ -567,7 +580,7 @@ public class GoogleserviceApplication {
 		// return respuesta;
 	}
 
-	public String generateEsquema(List<Node>  nodes,List<Edge>  edges,Controlador c, Boolean execute){
+	public String generateEsquema(List<Node>  nodes,List<Edge>  edges,Controlador c, Boolean execute,HashMap<Integer,DataAtributoEntidadOrigen> mapaEntidadesAgreagacionNombres){
 		//List<Object> dataParseada = new ArrayList<Object>();
 		HashMap dataParseada = new HashMap<Integer,Object>();
 
@@ -579,8 +592,9 @@ public class GoogleserviceApplication {
 		// 	e.printStackTrace();
 		// }
 
-		// NO SE ESTA PASANDO CADENA LIMPIA.
 		for (int k = 0; k < nodes.size(); k++) {
+			if(mapaEntidadesAgreagacionNombres.containsKey(nodes.get(k).getId()))
+				nodes.get(k).setId_origin(mapaEntidadesAgreagacionNombres.get(nodes.get(k).getId()).getIdEntidad());
 			if(nodes.get(k).getLabel().contains("\n")) {
 				String auxText= nodes.get(k).getLabel();
 				String nameCleaned[]= auxText.split("\n");
@@ -588,6 +602,15 @@ public class GoogleserviceApplication {
 			}
 
 		}
+//		// NO SE ESTA PASANDO CADENA LIMPIA.
+//		for (int k = 0; k < nodes.size(); k++) {
+//			if(nodes.get(k).getLabel().contains("\n")) {
+//				String auxText= nodes.get(k).getLabel();
+//				String nameCleaned[]= auxText.split("\n");
+//				nodes.get(k).setLabel(nameCleaned[0]);
+//			}
+//
+//		}
 
 		for (int i = 0; i < nodes.size(); i++) {
 			switch (nodes.get(i).getShape()) {
@@ -616,6 +639,12 @@ public class GoogleserviceApplication {
 					attributeTransf.setListaComponentes(new Vector());
 					attributeTransf.setClavePrimaria(nodes.get(i).getDataAttribute().isPrimaryKey());
 					attributeTransf.setCompuesto(nodes.get(i).getDataAttribute().isComposite());
+					
+					if(nodes.get(i).getId_origin()!=-1 && mapaEntidadesAgreagacionNombres.containsKey(nodes.get(i).getId_origin()))
+						attributeTransf.setEntidad_origenName(mapaEntidadesAgreagacionNombres.get(nodes.get(i).getId_origin()).getNameEntidad());
+					else
+						attributeTransf.setEntidad_origenName("Entidad_no_encontrada");
+					
 					// Si esta seleccionado la opcion multivalorado
 					attributeTransf.setMultivalorado(nodes.get(i).getDataAttribute().isMultivalued());
 					//Unique y Notnull
@@ -702,7 +731,7 @@ public class GoogleserviceApplication {
 
 			}
 			else if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferAtributo)) {
-				System.out.println("no implementado");
+				//System.out.println("no implementado");
 			}
 			else if(edges.get(j).getType() == null &&  (dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferEntidad)) {
 				Vector<Object> vData= new Vector<Object>();
@@ -740,7 +769,7 @@ public class GoogleserviceApplication {
 
 			}
 			else {
-				System.err.println("problemas al parseo de las relaciones");
+				//System.err.println("problemas al parseo de las relaciones");
 			}
 		}
 
@@ -750,7 +779,7 @@ public class GoogleserviceApplication {
 			GeneradorEsquema testGen = new GeneradorEsquema(messageSource);
 			testGen.setControlador(c);
 			respuesta = testGen.generaModeloRelacional_v3("default",false);
-			System.err.println(respuesta);
+			//System.err.println(respuesta);
 		}
 		return respuesta;
 	}
@@ -897,7 +926,7 @@ public class GoogleserviceApplication {
 
 		}
 		else if((dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferAtributo)) {
-			System.out.println("no implementado");
+			//System.out.println("no implementado");
 		}
 		else if(edges.get(j).getType() == null &&  (dataParseada.get(edges.get(j).getFrom()) instanceof TransferRelacion) && (dataParseada.get(edges.get(j).getTo()) instanceof TransferEntidad)) {
 			Vector<Object> vData= new Vector<Object>();
@@ -935,7 +964,7 @@ public class GoogleserviceApplication {
 
 		}
 		else {
-			System.err.println("problemas al parseo de las relaciones");
+			//System.err.println("problemas al parseo de las relaciones");
 		}
 	}
 
@@ -1285,7 +1314,7 @@ public class GoogleserviceApplication {
 
 			}
 		}
-		System.err.println("");
+		//System.err.println("");
 	}
 
 

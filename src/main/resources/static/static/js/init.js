@@ -208,15 +208,15 @@ $(document).ready(function () {
 					var nameName = edgesData[i].name;
 					traduct[nameName] = tempName;
 				} 
-				var nodesSuper =[]/* nodes_super.get();
+				var nodesSuper = nodes_super.get();
 				for(var i = 0;i<nodesSuper.length;i++){
 					var tempLabel = nodesSuper[i].label;
 					nodesSuper[i].label = normalize(nodesSuper[i].label);
 					var nameLabel = nodesSuper[i].label;
 					traduct[nameLabel] = tempLabel;
-				}*/
+				}
 				
-				var edgesSuperData =[];/* edges_super.get();
+				var edgesSuperData = edges_super.get();
 				for(var i = 0;i<edgesSuperData.length;i++){
 					var tempLabel = edgesSuperData[i].label;
 					if(edgesData[i].label){
@@ -231,7 +231,7 @@ $(document).ready(function () {
 					}
 					var nameName = edgesSuperData[i].name;
 					traduct[nameName] = tempName;
-				}*/
+				}
 				myObj["data1"] = JSON.stringify(resultNodes); 
 				myObj["data2"] = JSON.stringify(edgesData); 
 

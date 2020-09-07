@@ -198,7 +198,7 @@ public class GeneradorEsquema {
 						clave[2] = previasPrimarias.get(q)[2];
 						primarias.add(clave);
 						
-						if(previasPrimarias.get(q)[2].equals("Entidad_alto_nivel"))
+						if(previasPrimarias.get(q)[2].equals("agregacion"))
 							primariasEntidades.add(previasPrimarias.get(q)[3]);
 						else
 							primariasEntidades.add(previasPrimarias.get(q)[2]);
@@ -641,14 +641,14 @@ public class GeneradorEsquema {
 		Iterator tablasM=tablasMultivalorados.iterator();
 		while (tablasM.hasNext()){
 			Tabla t =(Tabla)tablasM.next();
-			if(!t.getNombreTabla().equals("Entidad_alto_nivel"))
+			if(!t.getNombreTabla().equals("agregacion"))
 				sqlHTML+=t.codigoHTMLCreacionDeTabla(conexion);
 		}
 	
 		Iterator tablasR=tablasRelaciones.values().iterator();
 		while (tablasR.hasNext()){
 			Tabla t =(Tabla)tablasR.next();
-			if(!t.getNombreTabla().equals("Entidad_alto_nivel"))
+			if(!t.getNombreTabla().equals("agregacion"))
 				sqlHTML+=t.codigoHTMLCreacionDeTabla(conexion);
 		}
 		
@@ -658,7 +658,7 @@ public class GeneradorEsquema {
 		Iterator tablasE=tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
-			if(!t.getNombreTabla().equals("Entidad_alto_nivel")){
+			if(!t.getNombreTabla().equals("agregacion")){
 				if (esPadreEnIsa(t,conexion.getRuta())){
 					tablasEntidadHTML = t.codigoHTMLCreacionDeTabla(conexion) + tablasEntidadHTML;
 					tablasEntidad = t.codigoEstandarCreacionDeTabla(conexion) + tablasEntidad;
@@ -718,7 +718,7 @@ public class GeneradorEsquema {
 		Iterator tablasE=tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
-			if(!t.getNombreTabla().equals("Entidad_alto_nivel"))
+			if(!t.getNombreTabla().equals("agregacion"))
 				sqlHTML += t.codigoHTMLRestriccionesDeTabla(conexion);
 			
 		}
@@ -727,7 +727,7 @@ public class GeneradorEsquema {
 		Iterator tablasR=tablasRelaciones.values().iterator();
 		while (tablasR.hasNext()){
 			Tabla t =(Tabla)tablasR.next();
-			if(!t.getNombreTabla().equals("Entidad_alto_nivel"))
+			if(!t.getNombreTabla().equals("agregacion"))
 				sqlHTML += t.codigoHTMLRestriccionesDeTabla(conexion);
 		}
 		
@@ -735,7 +735,7 @@ public class GeneradorEsquema {
 		Iterator tablasA=tablasMultivalorados.iterator();
 		while (tablasA.hasNext()){
 			Tabla t =(Tabla)tablasA.next();
-			if(!t.getNombreTabla().equals("Entidad_alto_nivel"))
+			if(!t.getNombreTabla().equals("agregacion"))
 				sqlHTML += t.codigoHTMLRestriccionesDeTabla(conexion);
 		}
 		sqlHTML+="<p></p></div>";
@@ -750,7 +750,7 @@ public class GeneradorEsquema {
 		Iterator tablasE=tablasEntidades.values().iterator();
 		while (tablasE.hasNext()){
 			Tabla t =(Tabla)tablasE.next();
-			if(!t.getNombreTabla().equals("Entidad_alto_nivel")){
+			if(!t.getNombreTabla().equals("agregacion")){
 				if (esPadreEnIsa(t,conexion.getRuta())){
 					restEntidadHTML = t.codigoHTMLClavesDeTabla(conexion) + restEntidadHTML;
 					restEntidad = t.codigoEstandarClavesDeTabla(conexion) + restEntidad;
