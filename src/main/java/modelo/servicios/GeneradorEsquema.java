@@ -991,12 +991,21 @@ public class GeneradorEsquema {
 		this.validadorBD = new ValidadorBD(this.msgSrc);//this.validadorBD = ValidadorBD.getInstancia();
 		this.validadorBD.setControlador(controlador);
 	}
-	
+	/*
+		DBASEWEB V.3
+		David Conde Cubas 
+	*/
+	//
+	//SQLTYPE --> INDICA EL TIPO DE LANGUAGE SQL SELECCIONADO EN LA VISTA
+	//SCRIPTSQL --> INDICA SI SE 
 	public String generaModeloRelacional_v3(String sqlType,boolean scriptSQL) {
 		reset();
 		StringBuilder warnings = new StringBuilder();
+		//comprueba los errores posibles en el diagrama (lña mayoria de ellos ya se comprueban en vista igualmente)
 		if (!validadorBD.validaBaseDeDatos(true, warnings))
 			return warnings.toString();
+		
+		//ESTO GENERA UN CODIGO HTML QUE SE DEVUELVE A LA VISTA PARA PROCEDER INSERTARLO EN UN DIV
 		restriccionesPerdidas = new RestriccionesPerdidas();
 		generaTablasEntidades();
 		generaTablasRelaciones(sqlType);
@@ -1024,6 +1033,8 @@ public class GeneradorEsquema {
 		mr += "<p></p></div><div class='pl-1 pt-1 pr-1 alert alert-light'><p class='h5 text-dark font-weight-bold'>"+this.msgSrc.getMessage("textosId.lostConstr", null, this.loc)+"</p>";
 		mr += restriccionesPerdidas();
 		mr += "<p></p></div>";
+		
+		//MR CONTIENE EL RESULTADO FINAL DE LA EJECUCIÓN
 		return mr;
 	}
 }
