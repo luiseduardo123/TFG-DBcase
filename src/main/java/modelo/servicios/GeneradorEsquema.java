@@ -997,7 +997,7 @@ public class GeneradorEsquema {
 	*/
 	//
 	//SQLTYPE --> INDICA EL TIPO DE LANGUAGE SQL SELECCIONADO EN LA VISTA
-	//SCRIPTSQL --> INDICA SI SE 
+	//SCRIPTSQL --> SI ES TRUE INDICA QUE ES UN ESQUEMA FISICO, SE DEBEN OCULTAR LOS ASTERISCOS Y EJECUTAR EL METODO QUE OBTIENE LAS QUERIES DESDE EL DIAGRAMA EJECUTADO.
 	public String generaModeloRelacional_v3(String sqlType,boolean scriptSQL) {
 		reset();
 		StringBuilder warnings = new StringBuilder();
