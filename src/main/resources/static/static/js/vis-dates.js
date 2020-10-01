@@ -283,7 +283,7 @@ var network_super = new vis.Network(container_super, data_super, options);
 		  idRelation = addRelation(relationEntity, "create", null, "back");
 		  console.log(data_element.id+" "+idRelation+" eeees");
 		  addEntitytoRelation(data_element.id, "", "1to1", "", "1", "1", "create", idRelation, true, true);
-		  addEntitytoRelation(parseInt(elementWithRelation), "", "1toN", "", "1", "N", "create", idRelation, true);
+		  addEntitytoRelation(parseInt(elementWithRelation), "", "1toN", "", "1", "N", "create", idRelation, false);
 	  }
 	  updateTableElements();
   }

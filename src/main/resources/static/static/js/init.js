@@ -192,8 +192,14 @@ $(document).ready(function () {
 					var nameLabel = resultNodes[i].label;
 					traduct[nameLabel] = tempLabel;
 				}
+				
 				var edgesData = edges.get();
 				for(var i = 0;i<edgesData.length;i++){
+					if(edgesData[i].participation){
+						edgesData[i].labelFrom = edgesData[3].participationFrom;
+						edgesData[i].labelTo = edgesData[3].participationTo;
+					}
+						
 					var tempLabel = edgesData[i].label;
 					if(edgesData[i].label){
 						edgesData[i].label = normalize(edgesData[i].label);
@@ -218,6 +224,10 @@ $(document).ready(function () {
 				
 				var edgesSuperData = edges_super.get();
 				for(var i = 0;i<edgesSuperData.length;i++){
+					if(edgesSuperData[i].participation){
+						edgesSuperData[i].labelFrom = edgesSuperData[3].participationFrom;
+						edgesSuperData[i].labelTo = edgesSuperData[3].participationTo;
+					}
 					var tempLabel = edgesSuperData[i].label;
 					if(edgesData[i].label){
 						edgesSuperData[i].label = normalize(edgesSuperData[i].label);
@@ -315,6 +325,10 @@ $(document).ready(function () {
 				}
 				var edgesData = edges.get();
 				for(var i = 0;i<edgesData.length;i++){
+					if(edgesData[i].participation){
+						edgesData[i].labelFrom = edgesData[3].participationFrom;
+						edgesData[i].labelTo = edgesData[3].participationTo;
+					}
 					var tempLabel = edgesData[i].label;
 					if(edgesData[i].label){
 						edgesData[i].label = normalize(edgesData[i].label);
@@ -340,6 +354,10 @@ $(document).ready(function () {
 				
 				var edgesSuperData = edges_super.get();
 				for(var i = 0;i<edgesSuperData.length;i++){
+					if(edgesSuperData[i].participation){
+						edgesSuperData[i].labelFrom = edgesSuperData[3].participationFrom;
+						edgesSuperData[i].labelTo = edgesSuperData[3].participationTo;
+					}
 					var tempLabel = edgesSuperData[i].label;
 					if(edgesData[i].label){
 						edgesSuperData[i].label = normalize(edgesSuperData[i].label);
@@ -515,7 +533,7 @@ $(document).ready(function () {
               	    break;
             	  case "addEntitytoRelation":
             		  nodo = getAllNodes(["box", "image"]);
-            		  nodoRoles = allEntitysToRelation(nodo_select, "box");
+            		  nodoRoles = allEntitysToRelation2(nodo_select, "box");
             		  console.log(nodoRoles);
             		  var childs = allEntityOfRelation(nodo_select);
 	        		  var selection = -1;

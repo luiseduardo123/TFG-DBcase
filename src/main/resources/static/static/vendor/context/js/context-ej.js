@@ -59,6 +59,23 @@ $(document).ready(function(){
 			$('#insertModal').prop('disabled', false);
 			$('#titleModal').html($('#textEditCardOrRol').text());
 			$('#element_role').removeClass("d-none");
+			$('#element_role').bind("change", function(){
+				var edgS = edges.get($(this).val());
+				$('input:radio[value="max'+edgS.labelTo+'"]').prop('checked', true);
+				if(edgS.participation){
+					$('#minCardinality').prop("disabled", false);
+					$('#maxCardinality').prop("disabled", false);
+					$('#minCardinality').val(edgS.participationFrom);
+					$('#maxCardinality').val(edgS.participationTo);
+				}else{
+					$('#minCardinality').prop("disabled", true);
+					$('#maxCardinality').prop("disabled", true);
+					$('#minCardinality').val("");
+					$('#maxCardinality').val("");
+				}
+				$('#roleName').val(edgS.name);
+				$('#minMax').prop('checked',edgS.participation);
+			});
 			$('#element_role_label').removeClass("d-none");
 			$("#insertModal").text($("#textAccept").text());
 			$( "#typeAction").val("edit");

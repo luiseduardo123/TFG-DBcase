@@ -1,9 +1,3 @@
-/* 
- * Context.js
- * Copyright Jacob Kelley
- * MIT License
- */
-
 var context = context || (function () {
     
 	var options = {

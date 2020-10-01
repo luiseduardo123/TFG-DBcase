@@ -250,7 +250,7 @@ public class Tabla {
 	public String modeloRelacionalDeTabla(boolean p, String sqlType, boolean scriptSQL){
 		String mr="";
 		if(p) mr+="<p>";
-		if(!nombreTabla.equals("Entidad_alto_nivel")){
+		if(!nombreTabla.equals("agregacion")){
 			//mr+=this.ponGuionesBajos(nombreTabla,"DEFAULT")+" (";
 			mr+= nombreTabla +" (";
 			Vector<String[]>definitivo= new Vector<String[]>();
